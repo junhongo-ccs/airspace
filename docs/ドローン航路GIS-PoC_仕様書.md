@@ -1,11 +1,12 @@
 # 空域デジタルツイン活用・ドローン航路GIS-PoC 仕様書
 
-版：0.3（レビュー反映版）  
+版：0.4（実装反映版）  
 作成日：2026年8月5日  
-ステータス：実装前レビュー用  
+ステータス：Phase A実装検証中  
 
 | 版 | 日付 | 変更内容 | 対応レビュー |
 |---|---|---|---|
+| 0.4 | 2026年8月5日 | Streamlit ViewerおよびDrone-webの実装・Render配備を実施し判明した事実を反映。API各エンドポイントの実際の必須パラメータ・レスポンス形式（§6-2）、空間IDの実仕様（ズーム17固定・Web Mercatorタイル形式）、area/flight_prohibited_area登録がネイティブ変換処理に依存し取得側が機能しない可能性がある点、Render配備の実際の構成（MySQLはPrivate Service＋永続ディスクで代替、ローカルDockerではなくRenderのPrivate Serviceで検証）を追加。§14の実コード確認根拠を追加。 | 実装セッション（2026-08-05、[進捗ログ](進捗ログ.md)参照） |
 | 0.3 | 2026年8月5日 | 実コード確認の根拠、PLATEAU秩父市2025を正データとする方針、高度基準、PoC識別、ライセンス、撤退基準、実行環境上の注意を追加。フェーズ呼称をA/B/Cへ統一。 | 仕様レビュー指摘（第2回・第3回） |
 | 0.2 | 2026年8月5日 | Streamlit単体GIS評価から、空域デジタルツインをデータ基盤として直接起動・活用する構成へ変更。 | 仕様レビュー指摘（第1回） |
 
@@ -100,12 +101,12 @@ Streamlitは空域デジタルツインの代替DBではない。データ登録
 
 | サービス | 実装 | 責務 | 配備先 |
 |---|---|---|---|
-| Digital Twin API | `Drone-web`（Laravel/PHP） | 空域データの登録・照会 | Render Web ServiceまたはDocker対応基盤 |
-| Digital Twin DB | MySQL | Laravelの永続データストア | Render外のMySQL互換マネージドDB、または同等サービス |
-| GIS ETL | Python／C++バッチ | GISをAPI投入形式・空間ID・ボクセルへ変換 | Render Cron Job／Background Worker、または手動実行 |
-| Viewer | Streamlit | データの登録操作、照会、可視化、CSV/GeoJSON出力 | Render Web Service |
+| Digital Twin API | `Drone-web`（Laravel/PHP） | 空域データの登録・照会 | **実績**：Render Docker Private Service（`airspace-drone-web`、外部非公開） |
+| Digital Twin DB | MySQL | Laravelの永続データストア | **実績**：Render Private Service（`airspace-mysql`、公式イメージ＋永続ディスク。§10-2・§12参照） |
+| GIS ETL | Python／C++バッチ | GISをAPI投入形式・空間ID・ボクセルへ変換 | Render Cron Job／Background Worker、または手動実行（Phase B、未着手） |
+| Viewer | Streamlit | データの登録操作、照会、可視化、CSV/GeoJSON出力 | **実績**：Render Web Service（`airspace-viewer`、公開・アクセスコードで入室制限） |
 
-RenderへStreamlitだけを置く構成ではない。LaravelとMySQLを必要とするため、まずローカルDockerで空域デジタルツインの起動・API疎通を確認してから、サービス単位で配備する。
+RenderへStreamlitだけを置く構成ではない。LaravelとMySQLを必要とする。当初はまずローカルDockerで起動・疎通を確認してからの配備を想定していたが、実際にはローカルDocker環境が無かったため、Render上に直接3サービスを構築して疎通確認した（§10-1実績注記）。
 
 ---
 
@@ -185,6 +186,36 @@ PoCで作成・登録する全レコードは、実データと機械的に区�
 - `environment` は少なくとも `poc-local`、`poc-staging` を区別する。
 - PoCレコードを実環境または実運用用DBへ登録しない。
 
+### 6-2. 実コード確認済みのAPIパラメータ（2026年8月5日、v0.4で追加）
+
+§6冒頭で「本仕様でJSONペイロードを固定しない」としていた部分について、実際に
+junhongo-ccs/airspace の Streamlit Viewer から junhongo-ccs/airway-digitaltwin-db
+（fork、Render Private Serviceとして配備）へ疎通した結果、以下が判明した。
+根拠ファイルは §14 を参照。
+
+| API | 実際の必須パラメータ | 備考 |
+|---|---|---|
+| `GET /drone_route` | `drone_route_id`（数値） | **一覧取得ではない。** 指定idの単体取得のみで、一覧APIは存在しない。無指定・存在しないidは400。 |
+| `POST /drone_route` | `drone_route_id`（数値、クライアント採番）、`drone_route_name`、`coordinates`、`from_datetime`（`Y-m-d H:i:s`厳密一致） | 成功時のレスポンス本文は空。`drone_route_id`はDBの主キーとして使われるため、クライアント側で衝突しない値を採番する必要がある。 |
+| `GET /ground_feature_voxel` | `other.typeCd`（数値）、`identification`（空間ID文字列）、`timing`（日時） | 呼び出し元コントローラはtry/catchしておらず、必須パラメータ欠如は例外未捕捉のまま500になる。レスポンスは緯度経度ポリゴンを含まず、ボクセルビットファイルへの参照（`spatialId`／`voxelBitFileName`等）のみ。地図への直接描画は不可。 |
+| `GET /general_purpose` | `identification`、`timing`、`requestType`（`area`／`flightProhibitedArea`／`groundFeature`等） | `requestType=area`の場合は`other[timingTo]`も必須。抽出条件は`from_datetime BETWEEN timing AND timingTo`であり「timing時点で有効か」ではない。 |
+| `POST /area` | `features`（GeoJSON Feature配列。各Featureに`geometry.coordinates`、`properties.area`、`properties.timestamp`、`properties.intrusionStatus`、`properties.traffics[].currentTime`） | 成功時のレスポンス本文は空。DBの主キー（`area_object_id`、自動採番）はAPIから返らないため、`properties.area`に指定した値を手掛かりに追跡する必要がある。 |
+| `POST /flight_prohibited_area` | `flightProhibitedAreaInfo`（配列。`flightProhibitedAreaId`、`name`、`range`、`flightProhibitedAreaTypeId`、`startTime`等） | `startTime`は空白除去後に独自変換（`ApiFunction::edit_datetime`）を経るため、一般的なISO8601とは異なる入力形式を要求する。 |
+
+**area・flight_prohibited_areaの登録は、外部のネイティブ実行ファイル
+（`popen('start /B '.$cmd)`で起動、`SpaceInfra-cpp`相当と推定）を呼び出し、
+空間IDとの紐付けテーブル（`area_detail_objects`／`flight_prohibited_area_objects`）
+を作成する設計になっている。** このexeは`airway-digitaltwin-db`リポジトリに
+同梱されておらず、Docker配備にも含めていないため、**登録（POST）自体は成功しても、
+一覧取得（`GET /general_purpose`）が恒久的に空を返す可能性が高い**。§7-4・§11の
+評価に影響する既知のリスクとして扱う。
+
+空間IDの水平方向の仕様も確認できた：`ApiFunction::get_spatial_xy_on_point`は
+ズームレベル17固定のWeb Mercatorスライッピータイル座標（`"{zoom}/0/{x}/{y}"`
+形式、OSM等のXYZタイルと同じ計算式）を返す。§12で未決定としていた「空間ID仕様」
+のうち水平方向の形式はこれで判明した。高度方向の扱い（AGLとの対応、ボクセルの
+鉛直分割）は実コードからは未確認のまま残る。
+
 ---
 
 ## 7. 実施フェーズと機能仕様
@@ -224,6 +255,11 @@ PoCで作成・登録する全レコードは、実データと機械的に区�
 - DEM・建物の精度、変換誤差、更新時点、ボクセル解像度を別途表示する。
 - AGL、絶対高度、建物高さ、地形高の比較式は、格納形式を実測してから確定する。
 - §5-3の高度基準の統一が完了するまで、垂直方向の交差・離隔判定を表示しない。
+- **§6-2で判明した既知のリスク**：area・flight_prohibited_areaは、登録（POST）が
+  成功しても、空間ID紐付け用のネイティブ変換処理が未配備のため、一覧取得（GET）が
+  恒久的に空を返す可能性がある。Phase Aの受入基準（§11-3）「登録し、APIから照会
+  できることを確認する」のうち、照会側の充足はこの制約の解消（ネイティブ処理の
+  代替実装、またはDBへの直接検証）に依存する。
 
 ---
 
@@ -253,7 +289,7 @@ PoCで作成・登録する全レコードは、実データと機械的に区�
 |---|---|
 | データ永続化 | 空域デジタルツインのMySQLへ保存する。Streamlitに恒久保存しない。 |
 | 公開範囲 | 初期はアクセス制限を掛けた検証環境とする。一般公開はデータ利用条件と脆弱性確認後に判断する。 |
-| 認証 | 公開ルートでは認証がコメントアウトされているため、外部公開前にAPI認証・ネットワーク制限を追加する。 |
+| 認証 | 公開ルートでは認証がコメントアウトされているため、外部公開前にAPI認証・ネットワーク制限を追加する。**実績（2026年8月5日）**：簡易APIキー認証＋Render Private Service化により対応済み（§10-2、§14-2）。本格的なSanctum認証は引き続き未着手（§12）。 |
 | 秘密情報 | DIPS、Weathernews、実運用の認証情報を投入しない。 |
 | アップロード | 初期は運用者が変換済みのデータを投入し、一般利用者による任意ファイルアップロードは行わない。 |
 | 性能 | 対象都市・範囲・ボクセル解像度を限定し、登録と照会の所要時間を計測する。 |
@@ -275,16 +311,30 @@ PLATEAU、国土地理院、国土数値情報についても、アプリケー�
 
 開発PCのZscaler等のプロキシ・証明書設定により、Dockerのイメージ取得、依存パッケージ取得、外部GISタイル／データ取得が失敗する可能性がある。最初の起動検証では、ネットワーク、プロキシ、CA証明書の状況を切り分けて記録する。
 
+**実績（2026年8月5日）**：開発PCにDocker Desktopが未導入であり、Zscaler環境下での
+Docker利用可否の切り分けも未実施だったため、ローカルDocker検証は見送った。代わりに
+Render上でDrone-web（Laravel）をDocker Web Service（Private Service）として、
+MySQLを公式イメージ＋永続ディスクのPrivate Serviceとしてビルド・起動し、Phase Aの
+検証をRender上で行った。ビルド自体はRender側がリモートで実行するため、ローカルの
+Docker Desktop有無に関わらず実施できることを確認した（§10-2参照）。ローカルでの
+再現・デバッグが必要になった場合は、本節の手順を別途実施する。
+
 ### 10-2. Render配備
 
 | サービス | Renderでの扱い |
 |---|---|
-| Streamlit Viewer | Python Web Service。`PORT`へ`0.0.0.0`でbindする。 |
-| Laravel API | Docker Web Service。環境変数にDB接続情報のみを設定する。 |
-| GIS ETL | Cron Jobまたは手動実行ジョブ。大容量CityGML／点群処理はRenderのリソース制約を先に検証する。 |
-| MySQL | Renderの提供形態・要件を確認の上、互換マネージドDBを選定する。永続ディスクだけで代用しない。 |
+| Streamlit Viewer | Python Web Service（公開）。`PORT`へ`0.0.0.0`でbindする。仕様書§9への対応として簡易アクセスコードで入室制限する。 |
+| Laravel API | Docker Private Service（外部非公開）。簡易APIキー認証（`X-API-Key`）で書き込み系エンドポイントを保護する。環境変数にDB接続情報・`APP_KEY`・`API_KEY`を設定する。 |
+| GIS ETL | Cron Jobまたは手動実行ジョブ。大容量CityGML／点群処理はRenderのリソース制約を先に検証する。（未着手、Phase B対応） |
+| MySQL | **実績（2026年8月5日）**：RenderにネイティブのMySQL管理サービスが無いため（Postgres・Key Valueのみ提供）、公式`mysql:8`イメージ＋永続ディスクのPrivate Serviceで代替した。当初想定していた「互換マネージドDBを選定し、永続ディスクだけで代用しない」方針とは異なる、PoCとしての割り切り。自動バックアップ等の運用面はマネージドDBに劣るため、長期運用する場合は外部マネージドMySQL（PlanetScale、Aiven等）への移行を検討する。 |
 
 初期デプロイでは、DBを一般公開せずLaravel APIからのみ接続可能にする。StreamlitはLaravel APIだけを参照する。
+
+**実績（2026年8月5日）**：Laravel APIも公開Web ServiceではなくPrivate Serviceとして
+配備し、Render内部ネットワーク経由でのみStreamlit Viewerから到達できる構成にした。
+これにより、簡易APIキー認証と合わせて「認証・ネットワーク制限」の両方（仕様書§9）に
+対応している。デプロイ構成の詳細・トラブルシューティング手順は
+[Render配備手順.md](Render配備手順.md)を参照。
 
 ### 10-3. フォールバックと撤退基準
 
@@ -302,9 +352,9 @@ Phase AまたはBで直接利用を停止した場合は、前版の構成へ戻
 
 以下をすべて満たせば、空域デジタルツイン活用PoCの**Phase C（MVP）**を完了とする。
 
-1. `Drone-web` とMySQLをローカルで起動し、マイグレーションを完了できる。
+1. `Drone-web` とMySQLをローカルで起動し、マイグレーションを完了できる（§10-1の実績注記のとおり、ローカルDockerの代わりにRender上での起動・マイグレーション完了をもって充足したものとする）。
 2. `POST /airDtw/api/drone_route` でサンプル航路を登録し、`GET`で同じ航路を取得できる。
-3. サンプルの注意区域をエリアまたは禁止区域として登録し、APIから照会できる。
+3. サンプルの注意区域をエリアまたは禁止区域として登録し、APIから照会できる（§6-2・§7-4のとおり、照会側はネイティブ変換処理未配備のため現時点で未充足の可能性がある）。
 4. StreamlitがデジタルツインAPIの接続状態と取得結果を表示できる。
 5. Streamlit上で、登録済み航路・注意区域・背景地図を重ねて表示できる。
 6. 出力に、入力値、API応答時刻、データ出典、変換履歴、注意文を含められる。
@@ -314,18 +364,20 @@ Phase AまたはBで直接利用を停止した場合は、前版の構成へ戻
 
 PLATEAUの建物を `SpaceInfra-cpp` 経由で登録・照会できた場合を、**Phase B**の完了基準とする。
 
+現時点（2026年8月5日）の充足状況は[進捗ログ.md](進捗ログ.md)の該当日エントリを参照。本節の基準自体はここでは変更しない。
+
 ---
 
 ## 12. 未決定事項と事前調査項目
 
 | 論点 | 確認・決定事項 |
 |---|---|
-| 対象メッシュ | 秩父市PLATEAU 2025の索引図を確認し、建物・地形・災害リスクのレイヤが重なる1メッシュを選ぶ。 |
-| MySQLの配備先 | Renderと接続可能なMySQL互換マネージドDBを選定する。 |
-| API認証 | Laravel Sanctumを有効化するか、API Gateway／ネットワーク制限を組み合わせるか。 |
-| APIペイロード | `drone_route`、`area`、地物ボクセル等の実コードに対する最小成功リクエストを確認する。 |
+| 対象メッシュ | 秩父市PLATEAU 2025の索引図を確認し、建物・地形・災害リスクのレイヤが重なる1メッシュを選ぶ。（未着手） |
+| MySQLの配備先 | **暫定決定済み（2026年8月5日）**：RenderにネイティブMySQLが無いため、公式イメージ＋永続ディスクのPrivate Serviceで代替（§10-2）。長期運用時は外部マネージドDBへの移行を再検討する。 |
+| API認証 | **暫定決定済み（2026年8月5日）**：本格的なSanctum導入までの間、簡易APIキー認証（`X-API-Key`）＋Render Private Serviceによるネットワーク制限を組み合わせる（§10-2）。Sanctum本格導入は引き続き未着手。 |
+| APIペイロード | **判明済み（2026年8月5日）**：`drone_route`・`ground_feature_voxel`・`area`・`flight_prohibited_area`（`general_purpose`経由含む）の必須パラメータを実コードから確認（§6-2）。ただしarea／flight_prohibited_areaの取得側はネイティブ変換処理依存の制約が残る。 |
 | 変換経路 | PLATEAU CityGMLを`SpaceInfra-cpp`のどの実行ファイル・引数で変換し、どのAPI／DBへ投入するか。 |
-| 空間ID・ボクセル | ID仕様、座標系、単位、高度基準、解像度を確認する。 |
+| 空間ID・ボクセル | **水平方向のID形式は2026年8月5日に判明済み**（§6-2：ズーム17固定のWeb Mercatorタイル形式`"z/0/x/y"`、`ApiFunction::get_spatial_xy_on_point`）。座標系（EPSG）、単位、**高度基準・鉛直方向のボクセル分割**、解像度は引き続き未確認。 |
 | データ量 | CityGML・点群をRenderで扱えるか。必要なら変換はローカルまたは別バッチ基盤へ分離する。 |
 | 気象 | 無償データを取り込む場合の遅延・利用条件・格納形式を確認する。 |
 
@@ -333,8 +385,14 @@ PLATEAUの建物を `SpaceInfra-cpp` 経由で登録・照会できた場合を�
 
 ## 13. 参照先
 
+- 実装リポジトリ（Streamlit Viewer、Render配備設定）  
+  https://github.com/junhongo-ccs/airspace
+- Drone-web実装フォーク（Docker配備・簡易APIキー認証を追加）  
+  https://github.com/junhongo-ccs/airway-digitaltwin-db
+- 実装進捗ログ（日付ごとの作業記録）  
+  `C:\github\airspace\docs\進捗ログ.md`
 - ODS-IS-UASL コード実装調査  
-  `C:\github\airspace\docs\ODS-IS-UASL_コード実装調査.md`
+  `C:\github\airspace\docs\research\ODS-IS-UASL_コード実装調査.md`
 - 国土地理院「地理院タイルについて」  
   https://maps.gsi.go.jp/development/siyou.html
 - 国土地理院「標高タイルの詳細仕様」  
@@ -353,9 +411,11 @@ PLATEAUの建物を `SpaceInfra-cpp` 経由で登録・照会できた場合を�
 
 ## 14. 実コード確認の根拠
 
-本仕様のAPIパス、実装言語、DB既定値、認証状態に関する記述は、次の公開コードを2026年8月5日に確認した結果に基づく。以下はソースコード上の事実であり、起動・本番稼働を確認した結果ではない。
+本仕様のAPIパス、実装言語、DB既定値、認証状態に関する記述は、次の公開コードを2026年8月5日に確認した結果に基づく。§14-1は初回のコードリーディング（起動確認前）による事実、§14-2はRenderへの実配備・実接続を通じて確認した事実である。
 
 本書では、README準拠の表示名を `Drone-web`／`SpaceInfra-cpp`、ファイルパスを実ディレクトリ名の `drone-web`／`spaceInfra-cpp` と表記する。根拠パスはすべて `airway-digitaltwin-db` を起点とし、大文字小文字を含めて実ファイルシステムに一致させる。
+
+### 14-1. 初回コードリーディングによる根拠
 
 | 仕様で用いる事実 | 根拠ファイルと行 |
 |---|---|
@@ -369,4 +429,22 @@ PLATEAUの建物を `SpaceInfra-cpp` 経由で登録・照会できた場合を�
 | Apache License 2.0 | `airway-digitaltwin-db/LICENSE:2-4` |
 | 取得時点の公開HEAD | `cc3da7a`（2025年4月25日、取得日2026年8月5日） |
 
-実行時の必須ペイロード、認証動作、DBスキーマ適合、変換ツールの実用性は未検証であり、§10-3のタイムボックス内で確認する。
+### 14-2. Render実配備・実接続による根拠（2026年8月5日、v0.4で追加）
+
+junhongo-ccs/airspaceのStreamlit Viewerからjunhongo-ccs/airway-digitaltwin-db（fork、コミット`a6817b0`以降）をRender Private Serviceとして実際に配備・接続し、以下を確認した。§6-2の記述の直接の根拠。
+
+| 仕様で用いる事実 | 根拠ファイルと行 |
+|---|---|
+| `GET /drone_route`が`drone_route_id`必須の単体取得であり一覧取得ではない | `drone-web/laravel/app/Http/Controllers/Api/DroneRouteController.php:96-165`（`get_drone_route`） |
+| `POST /drone_route`の必須パラメータと成功時の空レスポンス | `drone-web/laravel/app/Http/Controllers/Api/DroneRouteController.php:21-94`（`drone_route`） |
+| `check_datetime`が`'Y-m-d H:i:s'`の厳密一致のみ許可する | `drone-web/laravel/app/Http/Controllers/Api/ApiFunction.php:37-53` |
+| 空間IDがズーム17固定のWeb Mercatorタイル形式`"z/0/x/y"`である | `drone-web/laravel/app/Http/Controllers/Api/ApiFunction.php:256-273`（`get_spatial_xy_on_point`） |
+| `GET /ground_feature_voxel`が`other.typeCd`／`identification`／`timing`必須で、try/catchが無く例外は500になる | `drone-web/laravel/app/Http/Controllers/Api/GroundFeatureVoxelController.php:19-66` |
+| `GET /general_purpose`が`identification`／`timing`／`requestType`必須のディスパッチャである | `drone-web/laravel/app/Http/Controllers/Api/GeneralPurposeController.php:22-93` |
+| `POST /area`の必須パラメータ（features配列）と、登録が外部exe（`popen('start /B ...')`）に依存する設計 | `drone-web/laravel/app/Http/Controllers/Api/AreaObjectController.php:17-131` |
+| `area`の取得が`area_object_masters`と`area_detail_objects`のJOINに依存する | `drone-web/laravel/app/Models/AreaObjectMaster.php:23-26`、`drone-web/laravel/database/migrations/2024_11_30_100000_create_area_detail_objects.php` |
+| `POST /flight_prohibited_area`の必須パラメータと、登録が外部exeに依存する設計 | `drone-web/laravel/app/Http/Controllers/Api/FlightProhibitedAreaController.php:18-145` |
+| `drone-web`に`Dockerfile`・`public/.htaccess`が同梱されていない（新規作成が必要だった） | fork時点のリポジトリ全体を再帰検索し確認（該当ファイル無し） |
+| Sanctum認証は実際にコメントアウトされたままであり、書き込み系エンドポイントが無認証で到達可能だった | `drone-web/laravel/routes/api.php:46, 82`（v0.3時点の記述どおり。fork後、簡易APIキー認証へ置き換え済み） |
+
+実行時の必須ペイロード・認証動作・DBスキーマ適合は上記のとおり検証済み。ただし、area／flight_prohibited_areaの取得側（ネイティブ変換処理依存）とPLATEAUデータでの変換ツール（`SpaceInfra-cpp`）の実用性は、Phase Bの範囲としてなお未検証である。
