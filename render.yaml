@@ -1,0 +1,21 @@
+# Render Blueprint（Streamlit Viewerのみ）
+# 参照: docs/実装タスクリスト.md §5、docs/ドローン航路GIS-PoC_仕様書.md §10-2
+#
+# Drone-web（Laravel）・MySQLはPhase A/Bが未完了のため、本Blueprintには含めない。
+# Streamlit ViewerはDocker不要のネイティブPython Web Serviceとして配備する。
+services:
+  - type: web
+    name: airspace-viewer
+    runtime: python
+    plan: starter
+    region: singapore
+    branch: main
+    buildCommand: pip install -r viewer/requirements.txt
+    startCommand: streamlit run viewer/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      # 仕様書§9「公開範囲：初期はアクセス制限を掛けた検証環境とする」への対応。
+      # Renderダッシュボードで実際の値を設定すること（このリポジトリには値を含めない）。
+      - key: APP_ACCESS_CODE
+        sync: false

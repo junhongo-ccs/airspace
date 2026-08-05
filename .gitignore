@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 調査用の外部リポジトリクローン（各リポジトリのライセンス下にあるため本リポジトリには含めない）
+_analysis/
