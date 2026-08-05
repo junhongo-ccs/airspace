@@ -1,5 +1,6 @@
 """design.md §4-1・§10: 左設定パネル（API状態・評価状態・航路設定・レイヤ選択・登録・照会）。"""
 
+import os
 import time
 from datetime import datetime, timezone
 
@@ -21,25 +22,44 @@ def _bbox_from_route(start: tuple, end: tuple, margin: float = 0.01) -> tuple:
     return (min(lats) - margin, min(lons) - margin, max(lats) + margin, max(lons) + margin)
 
 
+def _default_base_url() -> str:
+    """RenderのairspaceviewerがPrivate Service airspace-drone-webと同居する場合、
+    render.yamlのfromServiceで注入されるDIGITAL_TWIN_HOST/PORTから接続先を組み立てる。
+    無ければローカル開発向けの既定値にフォールバックする。"""
+    host = os.environ.get("DIGITAL_TWIN_HOST")
+    port = os.environ.get("DIGITAL_TWIN_PORT")
+    if host and port:
+        return f"http://{host}:{port}"
+    return "http://localhost:8000"
+
+
 def render_settings_panel() -> dict:
     with st.sidebar:
         st.markdown("## API状態・評価状態")
 
         base_url = st.text_input(
             "API接続先",
-            value=st.session_state.get("api_base_url", "http://localhost:8000"),
+            value=st.session_state.get("api_base_url", _default_base_url()),
             key="api_base_url",
             help="Drone-web（Laravel）のベースURL。APIプレフィックスは /airDtw/api（仕様書§6）。",
         )
+        api_key = st.text_input(
+            "APIキー（X-API-Key）",
+            value=st.session_state.get("digital_twin_api_key", os.environ.get("DIGITAL_TWIN_API_KEY", "")),
+            key="digital_twin_api_key",
+            type="password",
+            help="Drone-webの簡易APIキー認証（VerifyApiKeyミドルウェア）に対応するキー。"
+            "モックAPI使用時は不要。",
+        )
         mock_mode = st.toggle(
             "モックAPIを使用する",
-            value=st.session_state.get("mock_mode", True),
+            value=st.session_state.get("mock_mode", not bool(os.environ.get("DIGITAL_TWIN_HOST"))),
             key="mock_mode",
-            help="Phase A（ローカルDocker起動）が未完了のため既定でON。"
+            help="実際のDrone-webが接続先に用意できていない場合はON。"
             "OFFにすると API接続先へ実際に接続を試みる。",
         )
 
-        client = DigitalTwinApiClient(base_url, mock=mock_mode)
+        client = DigitalTwinApiClient(base_url, mock=mock_mode, api_key=api_key or None)
         connection_state = client.check_connection()
         status_panel.render_connection_status(connection_state, mock_mode)
 

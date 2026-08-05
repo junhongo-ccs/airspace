@@ -44,9 +44,13 @@ def poc_metadata() -> dict:
 
 
 class DigitalTwinApiClient:
-    def __init__(self, base_url: str, mock: bool = True, timeout: float = 5.0):
+    """api_key を指定すると、Drone-web側の簡易APIキー認証（junhongo-ccs/airway-digitaltwin-db
+    の VerifyApiKey ミドルウェア）向けに X-API-Key ヘッダーを全リクエストへ付与する。"""
+
+    def __init__(self, base_url: str, mock: bool = True, api_key: str | None = None, timeout: float = 5.0):
         self.base_url = base_url.rstrip("/")
         self.mock = mock
+        self.api_key = api_key
         self.timeout = timeout
         if mock:
             self._store = st.session_state.setdefault(
@@ -54,13 +58,18 @@ class DigitalTwinApiClient:
                 {"routes": [], "areas": [], "prohibited_areas": [], "voxels": None},
             )
 
+    def _headers(self) -> dict:
+        return {"X-API-Key": self.api_key} if self.api_key else {}
+
     # --- 接続状態（design.md §9-1） -----------------------------------
     def check_connection(self) -> str:
         """'connected' / 'disconnected' / 'error' のいずれかを返す。"""
         if self.mock:
             return "connected"
         try:
-            resp = requests.get(f"{self.base_url}{API_PREFIX}/drone_route", timeout=self.timeout)
+            resp = requests.get(
+                f"{self.base_url}{API_PREFIX}/drone_route", headers=self._headers(), timeout=self.timeout
+            )
         except requests.exceptions.RequestException:
             return "disconnected"
         return "error" if resp.status_code >= 400 else "connected"
@@ -139,7 +148,7 @@ class DigitalTwinApiClient:
     def _get(self, path: str, params: dict | None = None):
         url = f"{self.base_url}{API_PREFIX}{path}"
         try:
-            resp = requests.get(url, params=params, timeout=self.timeout)
+            resp = requests.get(url, params=params, headers=self._headers(), timeout=self.timeout)
         except requests.exceptions.RequestException as exc:
             raise ApiError(str(exc), endpoint=url) from exc
         if resp.status_code >= 400:
@@ -149,7 +158,7 @@ class DigitalTwinApiClient:
     def _post(self, path: str, payload: dict):
         url = f"{self.base_url}{API_PREFIX}{path}"
         try:
-            resp = requests.post(url, json=payload, timeout=self.timeout)
+            resp = requests.post(url, json=payload, headers=self._headers(), timeout=self.timeout)
         except requests.exceptions.RequestException as exc:
             raise ApiError(str(exc), endpoint=url) from exc
         if resp.status_code >= 400:

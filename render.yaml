@@ -1,8 +1,19 @@
-# Render Blueprint（Streamlit Viewerのみ）
-# 参照: docs/実装タスクリスト.md §5、docs/ドローン航路GIS-PoC_仕様書.md §10-2
+# Render Blueprint
+# 参照: docs/実装タスクリスト.md §1・§5、docs/ドローン航路GIS-PoC_仕様書.md §10-2、§9
 #
-# Drone-web（Laravel）・MySQLはPhase A/Bが未完了のため、本Blueprintには含めない。
-# Streamlit ViewerはDocker不要のネイティブPython Web Serviceとして配備する。
+# 構成:
+#   airspace-viewer     Streamlit Viewer（公開Web Service。Docker不要のネイティブPython）
+#   airspace-drone-web  Drone-web（Laravel、junhongo-ccs/airway-digitaltwin-db フォークの
+#                        Dockerfileでビルド）。Private Serviceとし外部から直接到達させない。
+#   airspace-mysql      MySQL 8（公式イメージ）。Private Service＋永続ディスク。
+#                        仕様書§10-2は「永続ディスクだけで代用しない」＝本番はマネージドDB
+#                        推奨としているが、本PoCでは割り切ってこの構成を採用する。
+#
+# Blueprint同期時の注意:
+#   - airspace-drone-webは別リポジトリ（junhongo-ccs/airway-digitaltwin-db）を参照する。
+#     Renderが未連携の場合はアクセス許可を求められるので許可する。
+#   - fromService／dockerfilePath等のフィールド名はRender側の検証で弾かれる場合がある。
+#     エラーが出たら、そのメッセージをそのまま開発者に共有すること。
 services:
   - type: web
     name: airspace-viewer
@@ -16,6 +27,73 @@ services:
       - key: PYTHON_VERSION
         value: 3.12.10
       # 仕様書§9「公開範囲：初期はアクセス制限を掛けた検証環境とする」への対応。
-      # Renderダッシュボードで実際の値を設定すること（このリポジトリには値を含めない）。
       - key: APP_ACCESS_CODE
+        sync: false
+      # airspace-drone-web（Private Service）への接続情報。
+      - key: DIGITAL_TWIN_HOST
+        fromService:
+          name: airspace-drone-web
+          type: pserv
+          property: host
+      - key: DIGITAL_TWIN_PORT
+        fromService:
+          name: airspace-drone-web
+          type: pserv
+          property: port
+      - key: DIGITAL_TWIN_API_KEY
+        sync: false
+
+  - type: pserv
+    name: airspace-mysql
+    runtime: image
+    image:
+      url: docker.io/library/mysql:8
+    plan: starter
+    region: singapore
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 1
+    envVars:
+      - key: MYSQL_DATABASE
+        value: airdtw
+      - key: MYSQL_USER
+        value: airdtw
+      - key: MYSQL_PASSWORD
+        sync: false
+      - key: MYSQL_ROOT_PASSWORD
+        sync: false
+
+  - type: pserv
+    name: airspace-drone-web
+    runtime: docker
+    repo: https://github.com/junhongo-ccs/airway-digitaltwin-db
+    branch: main
+    dockerfilePath: drone-web/laravel/Dockerfile
+    dockerContext: drone-web/laravel
+    plan: starter
+    region: singapore
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromService:
+          name: airspace-mysql
+          type: pserv
+          property: host
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        value: airdtw
+      - key: DB_USERNAME
+        value: airdtw
+      - key: DB_PASSWORD
         sync: false

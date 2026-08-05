@@ -1,47 +1,94 @@
-# Streamlit ViewerのRender配備手順
+# RenderへのPoC配備手順
 
-対象：`airway-digitaltwin-db`を含まない、Streamlit Viewer単体の配備（仕様書§10-2、実装タスクリスト§5-1）。
-リポジトリ：https://github.com/junhongo-ccs/airspace
-Blueprint定義：`render.yaml`（リポジトリ直下）
+対象：Streamlit Viewer、Drone-web（Laravel）、MySQLの3サービス（仕様書§10-2、実装タスクリスト§1・§5-1）。
+Viewerリポジトリ：https://github.com/junhongo-ccs/airspace
+Drone-webリポジトリ：https://github.com/junhongo-ccs/airway-digitaltwin-db（ODS-IS-UASL/airway-digitaltwin-dbのfork。Apache License 2.0）
+Blueprint定義：`render.yaml`（junhongo-ccs/airspace リポジトリ直下）
 
-Drone-web（Laravel）・MySQLはPhase A/Bが未完了のため、本手順の対象外。`render.yaml`にも含めていない。
+## 全体構成
+
+| サービス | 種別 | 公開範囲 | 役割 |
+|---|---|---|---|
+| airspace-viewer | Web Service（Python、Docker不要） | 公開（アクセスコードで入室制限） | Streamlit Viewer |
+| airspace-drone-web | Private Service（Docker） | Render内部のみ（外部到達不可） | Drone-web API、簡易APIキー認証で保護 |
+| airspace-mysql | Private Service（Docker、公式mysqlイメージ＋永続ディスク） | Render内部のみ | Drone-webの永続ストア |
+
+仕様書§10-2は「MySQLは永続ディスクだけで代用しない」＝本来はマネージドDB推奨としているが、
+Renderにネイティブ管理MySQLが無いため、本PoCではPrivate Service＋永続ディスクで割り切る
+（レビュー時の合意事項）。
+
+`airspace-drone-web`をPrivate Serviceにしているのは、仕様書§9「外部公開前にAPI認証・
+ネットワーク制限を追加する」に対応するため。簡易APIキー認証（`X-API-Key`ヘッダー、
+`VerifyApiKey`ミドルウェア）と、Render内部ネットワークからしか到達できない構成の
+二重防御にしている。本格的なSanctumトークン認証はまだ導入していない。
 
 ---
 
-## 1. Blueprintから作成
+## 1. Blueprintを同期する
 
-1. Renderダッシュボード（https://dashboard.render.com/）にログインする。
-2. 「New +」→「Blueprint」を選択する。
-3. GitHubリポジトリ `junhongo-ccs/airspace` を選択する。初回はRenderからGitHubへのアクセス許可（リポジトリ選択）が必要。
-4. `render.yaml` が自動検出され、サービス `airspace-viewer`（Python Web Service）の内容が表示される。
-5. プランを確認する。`render.yaml`では暫定で `starter` を指定している。実際に契約している安価な有償プラン名と異なる場合は、この画面またはデプロイ後のサービス設定で選び直す。
-6. リージョンは `singapore` を指定している（Render に東京リージョンが無いため最寄り）。変更したい場合はここで選び直す。
-7. 「Apply」でデプロイを開始する。
+既存の `airspace-poc` Blueprint（junhongo-ccs/airspace）を更新すると、`render.yaml`に
+追加した `airspace-mysql` と `airspace-drone-web` が新規サービスとして検出されるはず。
 
-## 2. 環境変数の設定（デプロイ前後どちらでも可）
+1. Renderダッシュボードで `airspace-poc` Blueprintのページを開く。
+2. 「Manual Sync」を実行し、最新コミットを取り込む。
+3. `airspace-drone-web` は別リポジトリ（`junhongo-ccs/airway-digitaltwin-db`）を参照するため、初回はそのリポジトリへのアクセス許可を求められる可能性がある。許可する。
+4. 新規サービス2件（`airspace-mysql`、`airspace-drone-web`）の作成内容が表示される。プラン・リージョンを確認し、問題なければ適用する。
 
-`render.yaml` は `APP_ACCESS_CODE` を `sync: false` で宣言しているため、値はダッシュボード側で個別に設定する必要がある（リポジトリには含めていない）。
+**もし `render.yaml` の検証エラーが出た場合**（`fromService`や`dockerfilePath`等のフィールド名がRender側の現行仕様と合わない可能性がある）：エラーメッセージをそのまま開発者に共有してほしい。フィールド名を実際の仕様に合わせて修正する。
 
-1. 作成されたサービス `airspace-viewer` → 「Environment」タブを開く。
-2. `APP_ACCESS_CODE` に、関係者だけに共有する合言葉を設定する（仕様書§9「公開範囲：初期はアクセス制限を掛けた検証環境とする」への対応）。
-3. 保存すると自動的に再デプロイされる。
+## 2. 環境変数を設定する
 
-**注意**：これはAPI認証やネットワーク制限の代替ではない、簡易な入室確認に過ぎない（`viewer/src/access_gate.py` 参照）。将来Drone-web APIを外部公開する際は、仕様書§9-1が求めるAPI認証・ネットワーク制限を別途実装すること。
+`render.yaml`で`sync: false`にしている項目は値をリポジトリに含めていないため、各サービスの
+「Environment」タブで個別に設定する。下記の値は今回のセッションで生成したものなので、
+このまま使うか、社内のシークレット管理ルールに従って別の値に差し替えてよい。
 
-## 3. デプロイ確認
+### airspace-mysql
 
-1. 「Logs」タブでビルド・起動ログを確認する。`streamlit run viewer/app.py` が起動し、エラーが出ていないことを確認する。
-2. サービス上部に表示されるURL（`https://airspace-viewer-XXXX.onrender.com` 形式）を開く。
-3. `APP_ACCESS_CODE` を設定した場合はアクセスコード入力画面が出ることを確認する。
-4. 入室後、design.mdどおりの画面（左設定パネル・地図・登録/照会結果・免責フッター）が表示されることを確認する。
-5. 「航路を登録」→「周辺データを照会」を実行し、モックデータで地図・テーブル・CSV/GeoJSONダウンロードが動くことを確認する（`viewer/README.md`の「現在の状態」を参照。Phase A/B未実施のため実データではない）。
+| キー | 値 |
+|---|---|
+| `MYSQL_ROOT_PASSWORD` | チャットで共有した値を使用 |
+| `MYSQL_PASSWORD` | チャットで共有した値を使用 |
 
-## 4. 既知の制約
+### airspace-drone-web
 
-- 無料プランではなく有償プランを使う前提のため、スリープ（アイドル時の自動停止）は基本的に発生しない想定。実際の挙動はプランの仕様に従う。
-- Drone-web・MySQLは未配備のため、左パネルで「モックAPIを使用する」をOFFにしても接続先が存在せず、Disconnected/Errorになる。これは想定どおりの挙動。
-- `render.yaml`のリージョン・プラン名は暫定値。実際の契約内容に合わせてダッシュボード側で調整すること。
+| キー | 値 |
+|---|---|
+| `APP_KEY` | チャットで共有した `base64:...` の値 |
+| `API_KEY` | チャットで共有した値 |
+| `DB_PASSWORD` | airspace-mysqlの`MYSQL_PASSWORD`と**同じ値** |
 
-## 5. 今後（Phase A/B着手後）
+`DB_HOST`は`render.yaml`の`fromService`でairspace-mysqlから自動注入される想定。もし空欄になる場合は、airspace-mysqlサービスの内部ホスト名（サービス詳細画面に表示される）を手動で設定する。
 
-Drone-webを配備する場合は、`render.yaml`にDocker Web Service（Laravel）とMySQL互換マネージドDBのサービス定義を追加する。ローカルDocker環境の準備は別途、仕様書§10-1（Zscaler等のプロキシ・証明書の切り分け）に従う。
+### airspace-viewer
+
+| キー | 値 |
+|---|---|
+| `APP_ACCESS_CODE` | 関係者に共有する合言葉（既存の手順どおり） |
+| `DIGITAL_TWIN_API_KEY` | airspace-drone-webの`API_KEY`と**同じ値** |
+
+`DIGITAL_TWIN_HOST`・`DIGITAL_TWIN_PORT`は`fromService`でairspace-drone-webから自動注入される想定。
+
+## 3. マイグレーションの確認
+
+`airspace-drone-web`の起動時（`docker/entrypoint.sh`）に`php artisan migrate --force`を
+自動実行する。「Logs」タブで以下を確認する。
+
+- `Migrating: ...` のログが並び、エラーなく完了していること
+- 最終的に `Your service is live` 相当のメッセージが出ること
+
+失敗する場合は、`DB_HOST`/`DB_PASSWORD`がairspace-mysql側の値と一致しているかをまず疑う。
+
+## 4. 動作確認
+
+1. `airspace-viewer`のURLを開き、アクセスコードで入室する。
+2. 左パネルの「モックAPIを使用する」をOFFにする。「API接続先」「APIキー」は環境変数から自動で埋まっているはず（空なら手動入力）。
+3. API接続状態が `● Connected` になることを確認する（`Connected（mock）`ではなく実接続の表示）。
+4. 「航路を登録」→「周辺データを照会」を実行し、実際にDrone-web／MySQLへ登録・取得できることを確認する。
+5. 登録したレコードに`POC-CHICHIBU-`接頭辞とPoCメタデータが付与されていることを確認する（仕様書§6-1、受入基準#8）。
+
+## 5. 既知の制約・今後の課題
+
+- 認証は簡易APIキーのみ。本格的なSanctumトークン認証・ユーザー単位の権限管理は未実装（仕様書§12の未決定事項）。
+- MySQLはRenderのPrivate Service＋永続ディスクで代用しており、自動バックアップ等の運用面はマネージドDBに劣る。長期運用する場合は外部マネージドMySQL（PlanetScale、Aiven等）への移行を検討する。
+- Phase B（PLATEAU秩父市2025データの投入）はまだ実施していない。API疎通確認ができても、地物ボクセル等は空またはPoC用のダミーデータのみ。
+- ローカルDocker環境（仕様書§10-1）は今回使っていない。ローカル検証が必要になった場合は、Zscaler等のプロキシ・証明書の切り分けを別途行うこと。
