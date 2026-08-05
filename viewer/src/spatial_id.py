@@ -1,17 +1,31 @@
-"""空間ID／ボクセル解像度のプレースホルダ計算。
+"""空間ID計算。
 
-仕様書§12「未決定事項」に「空間ID・ボクセル：ID仕様、座標系、単位、高度基準、解像度を
-確認する」とある通り、実際の算出方式は未確定である。本実装は `SpatialId`
-（airway-digitaltwin-db）と疎通できるまでのプレースホルダであり、実仕様確定後は
-compute_placeholder_space_id の中身のみを差し替える想定。
+仕様書§12「未決定事項」は「空間ID・ボクセル：ID仕様、座標系、単位、高度基準、解像度を
+確認する」としていたが、Drone-web実コード（ApiFunction::get_spatial_xy_on_point、
+airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/ApiFunction.php）を
+確認した結果、水平方向のID形式は判明した：`"{zoom}/0/{x}/{y}"`という、Web Mercator
+スライッピーマップタイル方式（OSM等と同じXYZタイル座標）。ズームレベルは17固定で
+使われている（GroundFeatureVoxelController等）。
+
+ただし高度方向の扱い（AGLとの対応、ボクセルの鉛直分割）は実コードからは未確認のまま。
+仕様書§5-3の高度基準統一が完了するまで、この空間IDを高度比較には使用しない。
 """
 
-import hashlib
+import math
 
-# 仕様書§12で未確定。暫定表示用の値。
-PLACEHOLDER_RESOLUTION_M = 1000
+# 実コード確認済み（GroundFeatureVoxelController等が17固定で使用）
+DEFAULT_ZOOM_LEVEL = 17
 
 
-def compute_placeholder_space_id(lat: float, lon: float, agl_m: float) -> str:
-    digest = hashlib.sha1(f"{lat:.6f},{lon:.6f},{agl_m}".encode()).hexdigest()[:12]
-    return f"PLACEHOLDER-{digest}"
+def compute_real_spatial_id(lon: float, lat: float, zoom: int = DEFAULT_ZOOM_LEVEL) -> str:
+    """ApiFunction::get_spatial_xy_on_pointのPython移植。"z/0/x/y"形式の空間ID文字列を返す。"""
+    if lon == 180:
+        lon = -180.0
+    p = 2.0**zoom
+    x = int(math.floor(p * ((lon + 180.0) / 360.0)))
+    y = int(
+        math.floor(
+            p * (1.0 - math.log(math.tan(math.radians(lat)) + (1.0 / math.cos(math.radians(lat)))) / math.pi) / 2.0
+        )
+    )
+    return f"{zoom}/0/{x}/{y}"

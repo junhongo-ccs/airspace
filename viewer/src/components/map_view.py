@@ -91,6 +91,10 @@ def render_map(ctx: dict, query_result: dict | None) -> None:
 
         if "建物" in show_layers:
             for voxel in query_result.get("voxels", []):
+                if "footprint" not in voxel:
+                    # 実APIのground_feature_voxelはボクセルビット参照を返すのみで
+                    # 緯度経度ポリゴンを含まないため、地図描画は対象外とする（結果テーブルには出る）。
+                    continue
                 is_placeholder = "mock" in str(voxel.get("source", ""))
                 color = COLOR_UNKNOWN if is_placeholder else COLOR_BUILDING
                 folium.Polygon(
@@ -108,6 +112,9 @@ def render_map(ctx: dict, query_result: dict | None) -> None:
         # （design.md §8-1の初期表示レイヤは4種のみのため、禁止区域は同グループとして扱う）
         if "注意区域" in show_layers:
             for area in query_result.get("areas", []):
+                if "polygon" not in area:
+                    # 実APIのgeneral_purpose(area)はポリゴンを返さないため地図描画は対象外
+                    continue
                 pts = [(p["lat"], p["lon"]) for p in area["polygon"]]
                 kind = "PoC" if area.get("is_poc") else "実データ"
                 folium.Polygon(
@@ -116,6 +123,8 @@ def render_map(ctx: dict, query_result: dict | None) -> None:
                     tooltip=f"{area.get('name', '')}（注意区域・{kind}）",
                 ).add_to(m)
             for area in query_result.get("prohibited", []):
+                if "polygon" not in area:
+                    continue
                 pts = [(p["lat"], p["lon"]) for p in area["polygon"]]
                 kind = "PoC" if area.get("is_poc") else "実データ"
                 folium.Polygon(

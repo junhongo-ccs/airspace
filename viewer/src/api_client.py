@@ -21,6 +21,7 @@ import requests
 import streamlit as st
 
 from .config import API_PREFIX, CREATED_BY, ENVIRONMENT, IS_POC, POC_PREFIX
+from .spatial_id import DEFAULT_ZOOM_LEVEL, compute_real_spatial_id
 
 
 class ApiError(Exception):
@@ -56,6 +57,12 @@ def _safe_json(resp: requests.Response):
         return resp.json()
     except ValueError:
         return {"raw": resp.text}
+
+
+def _center_spatial_id(bbox: tuple) -> str:
+    min_lat, min_lon, max_lat, max_lon = bbox
+    center_lat, center_lon = (min_lat + max_lat) / 2, (min_lon + max_lon) / 2
+    return compute_real_spatial_id(lon=center_lon, lat=center_lat, zoom=DEFAULT_ZOOM_LEVEL)
 
 
 def poc_metadata() -> dict:
@@ -186,32 +193,124 @@ class DigitalTwinApiClient:
         Phase B（PLATEAU秩父市2025投入）が未実施のため、mockは
         「区分＝PoC」かつ出典に「mock」と明記したプレースホルダ建物を返す。
         実データ投入後は最初にこのメソッドの mock 分岐だけを外す。
+
+        実コード確認済み（GroundFeatureVoxelController::get_ground_feature_voxel）:
+        パラメータは bbox ではなく other.typeCd（数値の地物種別コード）・
+        identification（空間ID）・timing（日時）。この関数は自前でtry/catchして
+        いないため、必須パラメータが欠けると例外が非捕捉のまま500になる。
+        またレスポンスは footprint（緯度経度ポリゴン）を含まず、ボクセルビット
+        ファイルへの参照（spatialId／voxelBitFileName等）を返す。地図上への
+        ポリゴン描画は未対応（Phase B完了後、ボクセル形式のデコードが別途必要）。
         """
         if self.mock:
             return self._mock_buildings(bbox)
-        return self._get("/ground_feature_voxel", params={"bbox": ",".join(map(str, bbox))})
+
+        identification = _center_spatial_id(bbox)
+        params = {
+            "other[typeCd]": 1,
+            "identification": identification,
+            "timing": _now_mysql_datetime(),
+        }
+        data = self._get("/ground_feature_voxel", params=params)
+        objects = data.get("objects", []) if isinstance(data, dict) else []
+        return [
+            {
+                "id": obj.get("spatialId"),
+                "layer": "building",
+                "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
+                "is_poc": False,
+                "raw": obj,
+            }
+            for obj in objects
+        ]
 
     # --- エリア（注意区域）：POST /airDtw/api/area、GET汎用オブジェクト --
     def register_area(self, name: str, polygon: list[tuple], category: str = "caution") -> dict:
+        """実コード確認済み（AreaObjectController::set_area_object_masters）。
+
+        featuresはGeoJSON Feature配列。properties.areaは自由文字列（DBのarea_id列、
+        主キーではない）。properties.timestamp・traffics[].currentTimeは
+        'Y-m-d H:i:s'厳密一致（T区切りでも可、内部でformat_iso8601により変換される）。
+        成功時のレスポンス本文は空で、DB上の主キー（area_object_id、自動採番）は
+        APIから返ってこない。properties.areaに指定した値（=poc_name）を手掛かりに
+        DB側で引く必要がある。
+        """
+        poc_name = f"{POC_PREFIX}{name}"
+        if self.mock:
+            record = {
+                "name": poc_name,
+                "polygon": [{"lat": p[0], "lon": p[1]} for p in polygon],
+                "category": category,
+                **poc_metadata(),
+                "id": str(uuid.uuid4()),
+            }
+            self._store["areas"].append(record)
+            return record
+
+        now = _now_mysql_datetime()
+        ring = [[p[1], p[0]] for p in polygon]
+        if ring[0] != ring[-1]:
+            ring.append(ring[0])
         payload = {
-            "name": f"{POC_PREFIX}{name}",
+            "features": [
+                {
+                    "geometry": {"type": "Polygon", "coordinates": [ring]},
+                    "properties": {
+                        "area": poc_name,
+                        "timestamp": now,
+                        "intrusionStatus": 0,
+                        "traffics": [{"currentTime": now}],
+                    },
+                }
+            ]
+        }
+        self._post("/area", payload)
+
+        return {
+            "id": poc_name,
+            "name": poc_name,
             "polygon": [{"lat": p[0], "lon": p[1]} for p in polygon],
             "category": category,
             **poc_metadata(),
         }
-        if self.mock:
-            record = dict(payload, id=str(uuid.uuid4()))
-            self._store["areas"].append(record)
-            return record
-        return self._post("/area", payload)
 
-    def list_areas(self) -> list[dict]:
+    def list_areas(self, bbox: tuple | None = None) -> list[dict]:
         if self.mock:
             return list(self._store["areas"])
-        return self._get("/general_purpose", params={"type": "area"})
+
+        # 実コード確認済み（GeneralPurposeController::get_general_purpose、
+        # AreaObjectController::get_area）: identification（空間ID）・timing・
+        # requestType=area に加え、other[timingTo]（検索対象期間の終端日時）が必須。
+        # 抽出条件は from_datetime BETWEEN timing AND timingTo であり
+        # （"timingの時点で有効か"ではない）、過去に登録した分も拾うため
+        # timingには十分過去の固定値を使う。
+        identification = _center_spatial_id(bbox) if bbox else None
+        params = {
+            "identification": identification,
+            "timing": "2000-01-01 00:00:00",
+            "requestType": "area",
+            "other[timingTo]": "9999-12-31 23:59:59",
+        }
+        data = self._get("/general_purpose", params=params)
+        objects = (data.get("result") or {}).get("objects", []) if isinstance(data, dict) else []
+        return [
+            {
+                "id": obj.get("spatialId"),
+                "name": (obj.get("other") or {}).get("area"),
+                "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
+                "is_poc": False,
+                "raw": obj,
+            }
+            for obj in objects
+        ]
 
     # --- 飛行禁止区域：POST /airDtw/api/flight_prohibited_area --------
     def register_flight_prohibited_area(self, name: str, polygon: list[tuple]) -> dict:
+        """実コード確認済み（FlightProhibitedAreaController::set_flight_prohibited_area）:
+        本メソッドのpayloadは実際の必須形式（flightProhibitedAreaInfo配列、
+        flightProhibitedAreaId／range／flightProhibitedAreaTypeId／startTime等）と
+        まだ一致していない。register_areaと同様、UI未実装のため未検証のまま残す。
+        """
         payload = {
             "name": f"{POC_PREFIX}{name}",
             "polygon": [{"lat": p[0], "lon": p[1]} for p in polygon],
@@ -223,10 +322,28 @@ class DigitalTwinApiClient:
             return record
         return self._post("/flight_prohibited_area", payload)
 
-    def list_flight_prohibited_areas(self) -> list[dict]:
+    def list_flight_prohibited_areas(self, bbox: tuple | None = None) -> list[dict]:
         if self.mock:
             return list(self._store["prohibited_areas"])
-        return self._get("/general_purpose", params={"type": "flight_prohibited_area"})
+
+        identification = _center_spatial_id(bbox) if bbox else None
+        params = {
+            "identification": identification,
+            "timing": _now_mysql_datetime(),
+            "requestType": "flightProhibitedArea",
+        }
+        data = self._get("/general_purpose", params=params)
+        objects = (data.get("result") or {}).get("objects", []) if isinstance(data, dict) else []
+        return [
+            {
+                "id": obj.get("spatialId"),
+                "name": (obj.get("other") or {}).get("name"),
+                "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
+                "is_poc": False,
+                "raw": obj,
+            }
+            for obj in objects
+        ]
 
     # --- HTTPヘルパー（mock=False、実API疎通用） -----------------------
     def _get(self, path: str, params: dict | None = None):

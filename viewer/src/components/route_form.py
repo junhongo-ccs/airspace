@@ -97,6 +97,9 @@ def render_settings_panel() -> dict:
         register_clicked = st.button("航路を登録", type="primary", use_container_width=True)
         query_clicked = st.button("周辺データを照会", type="primary", use_container_width=True)
 
+        st.caption("以下はPhase A（仕様書§10-3）の受入基準確認用。design.mdの正式なUI要素ではない。")
+        area_register_clicked = st.button("テスト用の注意区域を登録（Phase A確認用）", use_container_width=True)
+
     ctx = {
         "client": client,
         "connection_state": connection_state,
@@ -113,6 +116,8 @@ def render_settings_panel() -> dict:
         _handle_register(client, ctx)
     if query_clicked:
         _handle_query(client, ctx)
+    if area_register_clicked:
+        _handle_register_area(client, ctx)
 
     return ctx
 
@@ -151,26 +156,48 @@ def _handle_register(client: DigitalTwinApiClient, ctx: dict) -> None:
 
 
 def _handle_query(client: DigitalTwinApiClient, ctx: dict) -> None:
+    """4つの取得元（航路・地物ボクセル・注意区域・禁止区域）はそれぞれ独立したAPI
+    呼び出しであり、1つが失敗しても他の成功結果まで捨てないよう個別にcatchする。"""
     bbox = _bbox_from_route(ctx["start"], ctx["end"])
+    errors: dict = {}
+
+    def _safe(label: str, fn):
+        try:
+            return fn()
+        except ApiError as exc:
+            errors[label] = {"error": str(exc), "status_code": exc.status_code, "endpoint": exc.endpoint}
+            return []
+
+    with st.spinner("照会中..."):
+        routes = _safe("routes", client.list_routes)
+        voxels = _safe("voxels", lambda: client.get_ground_feature_voxel(bbox))
+        areas = _safe("areas", lambda: client.list_areas(bbox))
+        prohibited = _safe("prohibited", lambda: client.list_flight_prohibited_areas(bbox))
+
+    st.session_state["last_query_result"] = {
+        "ok": True,
+        "routes": routes,
+        "voxels": voxels,
+        "areas": areas,
+        "prohibited": prohibited,
+        "bbox": bbox,
+        "errors": errors,
+        "responded_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+    }
+
+
+def _handle_register_area(client: DigitalTwinApiClient, ctx: dict) -> None:
+    """Phase A受入基準（仕様書§10-3、§11-3）「サンプルの注意区域を登録し、APIから
+    照会できることを確認する」の検証用。design.mdに規定された正式なUI要素ではない。
+
+    航路のbboxを単純な矩形ポリゴンとして注意区域登録に使う（座標選択UIは未実装）。
+    """
+    bbox = _bbox_from_route(ctx["start"], ctx["end"], margin=0.002)
+    min_lat, min_lon, max_lat, max_lon = bbox
+    polygon = [(min_lat, min_lon), (min_lat, max_lon), (max_lat, max_lon), (max_lat, min_lon)]
     try:
-        with st.spinner("照会中..."):
-            routes = client.list_routes()
-            voxels = client.get_ground_feature_voxel(bbox)
-            areas = client.list_areas()
-            prohibited = client.list_flight_prohibited_areas()
-        st.session_state["last_query_result"] = {
-            "ok": True,
-            "routes": routes,
-            "voxels": voxels,
-            "areas": areas,
-            "prohibited": prohibited,
-            "bbox": bbox,
-            "responded_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        }
+        with st.spinner("注意区域を登録中..."):
+            record = client.register_area(name=f"caution-{int(time.time())}", polygon=polygon)
+        st.success(f"注意区域を登録しました（area_id: {record['id']}）。「周辺データを照会」で取得を確認してください。")
     except ApiError as exc:
-        st.session_state["last_query_result"] = {
-            "ok": False,
-            "error": str(exc),
-            "status_code": exc.status_code,
-            "endpoint": exc.endpoint,
-        }
+        st.error(f"注意区域の登録に失敗しました（エンドポイント: {exc.endpoint}、HTTPステータス: {exc.status_code}、詳細: {exc}）")

@@ -58,14 +58,28 @@ def render_query_result_summary(result: dict | None) -> None:
             st.rerun()
         return
     counts = {
-        "航路": len(result["routes"]),
-        "地物ボクセル": len(result["voxels"]),
-        "注意区域": len(result["areas"]),
-        "禁止区域": len(result["prohibited"]),
+        "routes": ("航路", result["routes"]),
+        "voxels": ("地物ボクセル", result["voxels"]),
+        "areas": ("注意区域", result["areas"]),
+        "prohibited": ("禁止区域", result["prohibited"]),
     }
-    st.success(" ／ ".join(f"{k}: {v}件" for k, v in counts.items()) + f" ／ API応答時刻: {result['responded_at']}")
-    if all(v == 0 for v in counts.values()):
-        st.warning("該当するデータがありません。対象範囲・レイヤ設定を確認してください。")
+    errors = result.get("errors", {})
+    summary = " ／ ".join(
+        f"{label}: 取得失敗" if key in errors else f"{label}: {len(items)}件" for key, (label, items) in counts.items()
+    )
+    if errors:
+        st.warning(summary + f" ／ API応答時刻: {result['responded_at']}")
+        for key, (label, _items) in counts.items():
+            if key in errors:
+                err = errors[key]
+                st.caption(
+                    f"{label}の取得に失敗: エンドポイント {err.get('endpoint', '-')}、"
+                    f"HTTPステータス {err.get('status_code', '-')}、詳細: {err.get('error', '-')}"
+                )
+    else:
+        st.success(summary + f" ／ API応答時刻: {result['responded_at']}")
+        if all(len(items) == 0 for _label, items in counts.values()):
+            st.warning("該当するデータがありません。対象範囲・レイヤ設定を確認してください。")
 
 
 def build_result_rows(query_result: dict | None) -> list[dict]:
@@ -105,6 +119,12 @@ def build_result_rows(query_result: dict | None) -> list[dict]:
 
     for voxel in query_result["voxels"]:
         is_placeholder = "mock" in str(voxel.get("source", ""))
+        if is_placeholder:
+            intersect = "要確認（属性不足・プレースホルダ）"
+        elif "footprint" in voxel:
+            intersect = _intersect_flag(voxel["footprint"])
+        else:
+            intersect = "要確認（ジオメトリ未提供・ボクセル形式）"
         rows.append(
             {
                 "取得日時": responded_at,
@@ -112,12 +132,15 @@ def build_result_rows(query_result: dict | None) -> list[dict]:
                 "レイヤ種別": "建物",
                 "区分": "PoC" if voxel.get("is_poc") else "実データ",
                 "座標参照系／高度基準": "未検証（仕様書§5-3）",
-                "交差判定": (
-                    "要確認（属性不足・プレースホルダ）" if is_placeholder else _intersect_flag(voxel["footprint"])
-                ),
+                "交差判定": intersect,
                 "名称": voxel.get("id"),
             }
         )
+
+    def _area_intersect(area: dict) -> str:
+        if "polygon" not in area:
+            return "要確認（ジオメトリ未提供・ボクセル形式）"
+        return _intersect_flag([(p["lat"], p["lon"]) for p in area["polygon"]])
 
     for area in query_result["areas"]:
         rows.append(
@@ -127,7 +150,7 @@ def build_result_rows(query_result: dict | None) -> list[dict]:
                 "レイヤ種別": "注意区域",
                 "区分": "PoC" if area.get("is_poc") else "実データ",
                 "座標参照系／高度基準": "未検証（仕様書§5-3）",
-                "交差判定": _intersect_flag([(p["lat"], p["lon"]) for p in area["polygon"]]),
+                "交差判定": _area_intersect(area),
                 "名称": area.get("name"),
             }
         )
@@ -140,7 +163,7 @@ def build_result_rows(query_result: dict | None) -> list[dict]:
                 "レイヤ種別": "禁止区域",
                 "区分": "PoC" if area.get("is_poc") else "実データ",
                 "座標参照系／高度基準": "未検証（仕様書§5-3）",
-                "交差判定": _intersect_flag([(p["lat"], p["lon"]) for p in area["polygon"]]),
+                "交差判定": _area_intersect(area),
                 "名称": area.get("name"),
             }
         )
@@ -212,6 +235,9 @@ def _to_geojson(query_result: dict) -> dict:
             }
         )
     for voxel in query_result["voxels"]:
+        if "footprint" not in voxel:
+            # 実APIのground_feature_voxelはポリゴンを返さないため、GeoJSON化できない。
+            continue
         coords = [[lon, lat] for lat, lon in voxel["footprint"]]
         coords.append(coords[0])
         features.append(
@@ -222,6 +248,8 @@ def _to_geojson(query_result: dict) -> dict:
             }
         )
     for area in query_result["areas"] + query_result["prohibited"]:
+        if "polygon" not in area:
+            continue
         coords = [[p["lon"], p["lat"]] for p in area["polygon"]]
         coords.append(coords[0])
         features.append(

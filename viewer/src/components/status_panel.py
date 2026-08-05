@@ -3,7 +3,7 @@
 import streamlit as st
 
 from ..config import ENVIRONMENT
-from ..spatial_id import PLACEHOLDER_RESOLUTION_M, compute_placeholder_space_id
+from ..spatial_id import DEFAULT_ZOOM_LEVEL, compute_real_spatial_id
 from ..theme import poc_badge_html, status_badge_html
 
 _CONNECTION_LABEL = {"connected": "Connected", "disconnected": "Disconnected", "error": "Error"}
@@ -25,20 +25,26 @@ def render_space_id(start: tuple | None, agl_m: float | None) -> tuple[str | Non
     """design.md §9-1: 対象空間ID／ボクセル解像度を表示する。ユーザー入力ではなく、
     始点・終点・AGLから算出した値を表示する（仕様書§8）。
 
-    戻り値: (space_id, resolution_m) — 未算出の場合は (None, None)。
+    水平方向のID形式は実コード確認済み（ApiFunction::get_spatial_xy_on_point、
+    spatial_id.py参照）。ズームレベル17固定のWeb Mercatorタイル形式。
+    高度（AGL）を空間IDへどう反映するかは実コードからは未確認のため、
+    現状はAGLをID計算に使わず、別表示に留める（仕様書§5-3が完了するまで
+    高度方向の対応関係を主張しない）。
+
+    戻り値: (space_id, resolution_m) — 未算出の場合は (None, None)。resolution_m は
+    現時点では未確認のため None を返す。
     """
     if start is None or agl_m is None:
-        st.caption("対象空間ID／ボクセル解像度：未算出（始点・AGLを入力してください）")
+        st.caption("対象空間ID：未算出（始点・AGLを入力してください）")
         return None, None
 
-    space_id = compute_placeholder_space_id(start[0], start[1], agl_m)
-    resolution_m = PLACEHOLDER_RESOLUTION_M
+    space_id = compute_real_spatial_id(lon=start[1], lat=start[0], zoom=DEFAULT_ZOOM_LEVEL)
     st.markdown(
-        f'<span class="mono caption-text">空間ID: {space_id} ／ 解像度: {resolution_m} m'
-        f"（プレースホルダ。仕様書§12の空間ID仕様確定後に置き換え）</span>",
+        f'<span class="mono caption-text">空間ID: {space_id}（ズーム{DEFAULT_ZOOM_LEVEL}固定・水平方向のみ）'
+        f"／ AGL {agl_m}m（高度方向の対応は仕様書§5-3完了後に確定）</span>",
         unsafe_allow_html=True,
     )
-    return space_id, resolution_m
+    return space_id, None
 
 
 def render_altitude_verification_status() -> None:
