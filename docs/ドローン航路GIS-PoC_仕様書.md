@@ -6,7 +6,7 @@
 
 | 版 | 日付 | 変更内容 | 対応レビュー |
 |---|---|---|---|
-| 0.4 | 2026年8月5日 | Streamlit ViewerおよびDrone-webの実装・Render配備を実施し判明した事実を反映。API各エンドポイントの実際の必須パラメータ・レスポンス形式（§6-2）、空間IDの実仕様（ズーム17固定・Web Mercatorタイル形式）、area/flight_prohibited_area登録がネイティブ変換処理に依存し取得側が機能しない可能性がある点、Render配備の実際の構成（MySQLはPrivate Service＋永続ディスクで代替、ローカルDockerではなくRenderのPrivate Serviceで検証）を追加。§14の実コード確認根拠を追加。 | 実装セッション（2026-08-05、[進捗ログ](進捗ログ.md)参照） |
+| 0.4 | 2026年8月5日 | Streamlit ViewerおよびDrone-webの実装・Render配備を実施し判明した事実を反映。API各エンドポイントの実際の必須パラメータ・レスポンス形式（§6-2）、空間IDの実仕様（ズーム17固定・Web Mercatorタイル形式）、drone_route取得が主キー`drone_route_info_id`とクライアント採番`drone_route_id`の不一致により機能しない点、area/flight_prohibited_area登録がネイティブ変換処理に依存し取得側が機能しない可能性がある点、Render配備の実際の構成（MySQLはPrivate Service＋永続ディスクで代替、ローカルDockerではなくRenderのPrivate Serviceで検証）を追加。§6冒頭・§7-1・§10-3の前提を「ローカルまたはRender Private Service」に統一。§14に実コード確認根拠（§14-2、forkのパス起点ルールを明記）を追加。 | 実装セッション（2026-08-05、[進捗ログ](進捗ログ.md)参照。レビュー指摘を反映） |
 | 0.3 | 2026年8月5日 | 実コード確認の根拠、PLATEAU秩父市2025を正データとする方針、高度基準、PoC識別、ライセンス、撤退基準、実行環境上の注意を追加。フェーズ呼称をA/B/Cへ統一。 | 仕様レビュー指摘（第2回・第3回） |
 | 0.2 | 2026年8月5日 | Streamlit単体GIS評価から、空域デジタルツインをデータ基盤として直接起動・活用する構成へ変更。 | 仕様レビュー指摘（第1回） |
 
@@ -175,7 +175,7 @@ AGLは地盤標高を基準とする入力値である。計画絶対高度へ�
 
 風・気象のAPI（`/wind`、`/weather/now`、`/weather/forecast`）は、データ形式と無償ソースからの変換を確認後、**Phase B以降**で扱う。
 
-各エンドポイントの必須パラメータ、認証要否、レスポンス形式は、実際にローカル起動したAPIへ最小データを送って確定する。公開コードのルート定義だけを根拠に、本仕様でJSONペイロードを固定しない。
+各エンドポイントの必須パラメータ、認証要否、レスポンス形式は、実際にローカルまたはRender Private Serviceで起動したAPIへ最小データを送って確定する。公開コードのルート定義だけを根拠に、本仕様でJSONペイロードを固定しない。§6-2はRender Private Serviceでの起動検証により確定した内容である。
 
 ### 6-1. PoCデータの識別
 
@@ -196,7 +196,7 @@ junhongo-ccs/airspace の Streamlit Viewer から junhongo-ccs/airway-digitaltwi
 | API | 実際の必須パラメータ | 備考 |
 |---|---|---|
 | `GET /drone_route` | `drone_route_id`（数値） | **一覧取得ではない。** 指定idの単体取得のみで、一覧APIは存在しない。無指定・存在しないidは400。 |
-| `POST /drone_route` | `drone_route_id`（数値、クライアント採番）、`drone_route_name`、`coordinates`、`from_datetime`（`Y-m-d H:i:s`厳密一致） | 成功時のレスポンス本文は空。`drone_route_id`はDBの主キーとして使われるため、クライアント側で衝突しない値を採番する必要がある。 |
+| `POST /drone_route` | `drone_route_id`（数値、クライアント採番）、`drone_route_name`、`coordinates`、`from_datetime`（`Y-m-d H:i:s`厳密一致） | 成功時のレスポンス本文は空。**`drone_route_id`はDBの主キーではない**（`drone_route`テーブルの主キーは自動採番の`drone_route_info_id`で、`drone_route_id`は一意制約の無いただのInteger列）。さらに`GET /drone_route`側は`DroneRoute::find($request->drone_route_id)`を呼んでおり、Eloquentの`find()`はモデルの`$primaryKey`（＝`drone_route_info_id`）で検索するため、**クライアントが指定・記憶する`drone_route_id`では実質的に該当行を引けない**。GET側で存在確認を行うには、別途`drone_route_info_id`を返す手段（現状のAPIには無い）か、`drone_route_id`列に対する検索条件への実装修正が必要。 |
 | `GET /ground_feature_voxel` | `other.typeCd`（数値）、`identification`（空間ID文字列）、`timing`（日時） | 呼び出し元コントローラはtry/catchしておらず、必須パラメータ欠如は例外未捕捉のまま500になる。レスポンスは緯度経度ポリゴンを含まず、ボクセルビットファイルへの参照（`spatialId`／`voxelBitFileName`等）のみ。地図への直接描画は不可。 |
 | `GET /general_purpose` | `identification`、`timing`、`requestType`（`area`／`flightProhibitedArea`／`groundFeature`等） | `requestType=area`の場合は`other[timingTo]`も必須。抽出条件は`from_datetime BETWEEN timing AND timingTo`であり「timing時点で有効か」ではない。 |
 | `POST /area` | `features`（GeoJSON Feature配列。各Featureに`geometry.coordinates`、`properties.area`、`properties.timestamp`、`properties.intrusionStatus`、`properties.traffics[].currentTime`） | 成功時のレスポンス本文は空。DBの主キー（`area_object_id`、自動採番）はAPIから返らないため、`properties.area`に指定した値を手掛かりに追跡する必要がある。 |
@@ -224,7 +224,7 @@ junhongo-ccs/airspace の Streamlit Viewer から junhongo-ccs/airway-digitaltwi
 
 ### 7-1. Phase A：起動・API登録検証
 
-1. `Drone-web` とMySQLをローカルコンテナで起動する。
+1. `Drone-web` とMySQLを、ローカルコンテナまたはRenderのPrivate Serviceとして起動する。
 2. マイグレーションを実行し、航路・エリア・地物関連テーブルを作成する。
 3. サンプル航路を `drone_route` APIへ登録し、同APIから取得できることを確認する。
 4. サンプルGeoJSONから作成した注意区域を、エリアまたは禁止区域APIへ登録する。
@@ -255,7 +255,13 @@ junhongo-ccs/airspace の Streamlit Viewer から junhongo-ccs/airway-digitaltwi
 - DEM・建物の精度、変換誤差、更新時点、ボクセル解像度を別途表示する。
 - AGL、絶対高度、建物高さ、地形高の比較式は、格納形式を実測してから確定する。
 - §5-3の高度基準の統一が完了するまで、垂直方向の交差・離隔判定を表示しない。
-- **§6-2で判明した既知のリスク**：area・flight_prohibited_areaは、登録（POST）が
+- **§6-2で判明した既知のリスク（drone_route）**：`GET /drone_route`は主キー
+  `drone_route_info_id`で検索する実装になっており、クライアントが送る
+  `drone_route_id`とは一致しない。POST側のレスポンスも空で`drone_route_info_id`を
+  返さないため、現状のAPI・クライアント実装のままではPhase Aの受入基準（§11-2）
+  「GETで同じ航路を取得できる」を満たせない。API側の修正（`drone_route_id`列での
+  検索への変更）か、代替の存在確認手段が必要。
+- **§6-2で判明した既知のリスク（area・flight_prohibited_area）**：登録（POST）が
   成功しても、空間ID紐付け用のネイティブ変換処理が未配備のため、一覧取得（GET）が
   恒久的に空を返す可能性がある。Phase Aの受入基準（§11-3）「登録し、APIから照会
   できることを確認する」のうち、照会側の充足はこの制約の解消（ネイティブ処理の
@@ -340,7 +346,7 @@ Docker Desktop有無に関わらず実施できることを確認した（§10-2
 
 | 段階 | タイムボックス | 成功条件 | 未達時の判断 |
 |---|---|---|---|
-| Phase A: 起動・API登録検証 | 10営業日 | `Drone-web`、MySQL、マイグレーション、最小APIがローカルで動作し、仮想航路とPoC注意区域を登録・取得できる。 | 原因をランタイム、依存関係、ネットワーク、コード不整合に分類する。大規模改修が必要または解消見込みがない場合、空域デジタルツインの直接利用は停止する。 |
+| Phase A: 起動・API登録検証 | 10営業日 | `Drone-web`、MySQL、マイグレーション、最小APIがローカルまたはRender Private Serviceで動作し、仮想航路とPoC注意区域を登録・取得できる。 | 原因をランタイム、依存関係、ネットワーク、コード不整合に分類する。大規模改修が必要または解消見込みがない場合、空域デジタルツインの直接利用は停止する。 |
 | Phase B: PLATEAU静的GISの投入 | 10営業日 | 小範囲のLOD1建物を変換・登録・照会できる。 | `SpaceInfra-cpp`を使えない場合は、LOD1建物のフットプリントと高さから自前でボクセル化し、同一の登録インターフェースへ投入する代替案を評価する。 |
 | Phase C: Streamlit Viewer | 5営業日 | StreamlitがAPIから航路・空域レイヤを取得し、接続状態・PoC識別・地図・結果を表示できる。 | APIまたはUIの最小限の補正で解決可能かを判断する。解決不能なら、Viewerを単独の照会ツールに限定し、統合PoC完了とはしない。 |
 
@@ -352,8 +358,8 @@ Phase AまたはBで直接利用を停止した場合は、前版の構成へ戻
 
 以下をすべて満たせば、空域デジタルツイン活用PoCの**Phase C（MVP）**を完了とする。
 
-1. `Drone-web` とMySQLをローカルで起動し、マイグレーションを完了できる（§10-1の実績注記のとおり、ローカルDockerの代わりにRender上での起動・マイグレーション完了をもって充足したものとする）。
-2. `POST /airDtw/api/drone_route` でサンプル航路を登録し、`GET`で同じ航路を取得できる。
+1. `Drone-web` とMySQLをローカルまたはRender Private Serviceで起動し、マイグレーションを完了できる。
+2. `POST /airDtw/api/drone_route` でサンプル航路を登録し、`GET`で同じ航路を取得できる（§6-2・§7-4のとおり、`GET /drone_route`は主キー`drone_route_info_id`で検索するためクライアント採番の`drone_route_id`では引けず、API側の修正または代替の存在確認手段が無い限り現時点で未充足）。
 3. サンプルの注意区域をエリアまたは禁止区域として登録し、APIから照会できる（§6-2・§7-4のとおり、照会側はネイティブ変換処理未配備のため現時点で未充足の可能性がある）。
 4. StreamlitがデジタルツインAPIの接続状態と取得結果を表示できる。
 5. Streamlit上で、登録済み航路・注意区域・背景地図を重ねて表示できる。
@@ -413,7 +419,7 @@ PLATEAUの建物を `SpaceInfra-cpp` 経由で登録・照会できた場合を�
 
 本仕様のAPIパス、実装言語、DB既定値、認証状態に関する記述は、次の公開コードを2026年8月5日に確認した結果に基づく。§14-1は初回のコードリーディング（起動確認前）による事実、§14-2はRenderへの実配備・実接続を通じて確認した事実である。
 
-本書では、README準拠の表示名を `Drone-web`／`SpaceInfra-cpp`、ファイルパスを実ディレクトリ名の `drone-web`／`spaceInfra-cpp` と表記する。根拠パスはすべて `airway-digitaltwin-db` を起点とし、大文字小文字を含めて実ファイルシステムに一致させる。
+本書では、README準拠の表示名を `Drone-web`／`SpaceInfra-cpp`、ファイルパスを実ディレクトリ名の `drone-web`／`spaceInfra-cpp` と表記する。根拠パスはすべて `airway-digitaltwin-db` を起点とし、大文字小文字を含めて実ファイルシステムに一致させる。**§14-2（v0.4で追加）における `airway-digitaltwin-db` は、junhongo-ccs/airway-digitaltwin-db（fork）を指す。** forkはリポジトリ直下の構成をそのまま引き継いでいるため、アプリケーションコードのパスは上流（ODS-IS-UASL/airway-digitaltwin-db）と同一である。fork後に追加したファイル（`Dockerfile`、`docker/`配下、`VerifyApiKey.php`等）は上流には存在しない。
 
 ### 14-1. 初回コードリーディングによる根拠
 
@@ -435,16 +441,17 @@ junhongo-ccs/airspaceのStreamlit Viewerからjunhongo-ccs/airway-digitaltwin-db
 
 | 仕様で用いる事実 | 根拠ファイルと行 |
 |---|---|
-| `GET /drone_route`が`drone_route_id`必須の単体取得であり一覧取得ではない | `drone-web/laravel/app/Http/Controllers/Api/DroneRouteController.php:96-165`（`get_drone_route`） |
-| `POST /drone_route`の必須パラメータと成功時の空レスポンス | `drone-web/laravel/app/Http/Controllers/Api/DroneRouteController.php:21-94`（`drone_route`） |
-| `check_datetime`が`'Y-m-d H:i:s'`の厳密一致のみ許可する | `drone-web/laravel/app/Http/Controllers/Api/ApiFunction.php:37-53` |
-| 空間IDがズーム17固定のWeb Mercatorタイル形式`"z/0/x/y"`である | `drone-web/laravel/app/Http/Controllers/Api/ApiFunction.php:256-273`（`get_spatial_xy_on_point`） |
-| `GET /ground_feature_voxel`が`other.typeCd`／`identification`／`timing`必須で、try/catchが無く例外は500になる | `drone-web/laravel/app/Http/Controllers/Api/GroundFeatureVoxelController.php:19-66` |
-| `GET /general_purpose`が`identification`／`timing`／`requestType`必須のディスパッチャである | `drone-web/laravel/app/Http/Controllers/Api/GeneralPurposeController.php:22-93` |
-| `POST /area`の必須パラメータ（features配列）と、登録が外部exe（`popen('start /B ...')`）に依存する設計 | `drone-web/laravel/app/Http/Controllers/Api/AreaObjectController.php:17-131` |
-| `area`の取得が`area_object_masters`と`area_detail_objects`のJOINに依存する | `drone-web/laravel/app/Models/AreaObjectMaster.php:23-26`、`drone-web/laravel/database/migrations/2024_11_30_100000_create_area_detail_objects.php` |
-| `POST /flight_prohibited_area`の必須パラメータと、登録が外部exeに依存する設計 | `drone-web/laravel/app/Http/Controllers/Api/FlightProhibitedAreaController.php:18-145` |
-| `drone-web`に`Dockerfile`・`public/.htaccess`が同梱されていない（新規作成が必要だった） | fork時点のリポジトリ全体を再帰検索し確認（該当ファイル無し） |
-| Sanctum認証は実際にコメントアウトされたままであり、書き込み系エンドポイントが無認証で到達可能だった | `drone-web/laravel/routes/api.php:46, 82`（v0.3時点の記述どおり。fork後、簡易APIキー認証へ置き換え済み） |
+| `GET /drone_route`が`drone_route_id`必須の単体取得であり一覧取得ではない | `airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/DroneRouteController.php:96-165`（`get_drone_route`） |
+| `POST /drone_route`の必須パラメータと成功時の空レスポンス | `airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/DroneRouteController.php:21-94`（`drone_route`） |
+| `drone_route`テーブルの主キーは`drone_route_info_id`（自動採番）であり、`drone_route_id`は一意制約の無いInteger列。`DroneRoute::find()`は`$primaryKey`（＝`drone_route_info_id`）で検索するため、GETの`drone_route_id`パラメータでは実質的に該当行を引けない | `airway-digitaltwin-db/drone-web/laravel/app/Models/DroneRoute.php:13-17`、`airway-digitaltwin-db/drone-web/laravel/database/migrations/2024_10_05_0758000_create_dorone_route.php:14-16` |
+| `check_datetime`が`'Y-m-d H:i:s'`の厳密一致のみ許可する | `airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/ApiFunction.php:37-53` |
+| 空間IDがズーム17固定のWeb Mercatorタイル形式`"z/0/x/y"`である | `airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/ApiFunction.php:256-273`（`get_spatial_xy_on_point`） |
+| `GET /ground_feature_voxel`が`other.typeCd`／`identification`／`timing`必須で、try/catchが無く例外は500になる | `airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/GroundFeatureVoxelController.php:19-66` |
+| `GET /general_purpose`が`identification`／`timing`／`requestType`必須のディスパッチャである | `airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/GeneralPurposeController.php:22-93` |
+| `POST /area`の必須パラメータ（features配列）と、登録が外部exe（`popen('start /B ...')`）に依存する設計 | `airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/AreaObjectController.php:17-131` |
+| `area`の取得が`area_object_masters`と`area_detail_objects`のJOINに依存する | `airway-digitaltwin-db/drone-web/laravel/app/Models/AreaObjectMaster.php:23-26`、`airway-digitaltwin-db/drone-web/laravel/database/migrations/2024_11_30_100000_create_area_detail_objects.php` |
+| `POST /flight_prohibited_area`の必須パラメータと、登録が外部exeに依存する設計 | `airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/FlightProhibitedAreaController.php:18-145` |
+| `drone-web`に`Dockerfile`・`public/.htaccess`が同梱されていない（新規作成が必要だった） | fork時点のリポジトリ全体（`airway-digitaltwin-db/`以下）を再帰検索し確認（該当ファイル無し） |
+| Sanctum認証は実際にコメントアウトされたままであり、書き込み系エンドポイントが無認証で到達可能だった | `airway-digitaltwin-db/drone-web/laravel/routes/api.php:46, 82`（v0.3時点の記述どおり。fork後、簡易APIキー認証へ置き換え済み） |
 
 実行時の必須ペイロード・認証動作・DBスキーマ適合は上記のとおり検証済み。ただし、area／flight_prohibited_areaの取得側（ネイティブ変換処理依存）とPLATEAUデータでの変換ツール（`SpaceInfra-cpp`）の実用性は、Phase Bの範囲としてなお未検証である。
