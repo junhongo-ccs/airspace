@@ -12,6 +12,8 @@ PoC識別（POC-CHICHIBU-接頭辞、source/created_by/created_at/environment/is
 
 from __future__ import annotations
 
+import random
+import time
 import uuid
 from datetime import datetime, timezone
 
@@ -30,6 +32,30 @@ class ApiError(Exception):
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _now_mysql_datetime() -> str:
+    """実コード確認済み: ApiFunction::check_datetime は 'Y-m-d H:i:s' の厳密一致のみ許可する
+    （airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/ApiFunction.php）。"""
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def _generate_numeric_id() -> int:
+    """DroneRouteController::drone_route は drone_route_id（数値、クライアント採番）を
+    必須パラメータとして要求する。DBの主キーとして使われるため、衝突しにくい値にする。"""
+    return int(time.time() * 1000) % 2_000_000_000 + random.randint(0, 999)
+
+
+def _safe_json(resp: requests.Response):
+    """実コード確認済み: drone_route の登録成功時など、本文が空のレスポンスがある
+    （DroneRouteController::drone_route の成功パスはreturn文が無い）。
+    空またはJSONとして解釈できない場合はエラーにせず空dictを返す。"""
+    if not resp.content:
+        return {}
+    try:
+        return resp.json()
+    except ValueError:
+        return {"raw": resp.text}
 
 
 def poc_metadata() -> dict:
@@ -57,43 +83,101 @@ class DigitalTwinApiClient:
                 "_mock_digital_twin_store",
                 {"routes": [], "areas": [], "prohibited_areas": [], "voxels": None},
             )
+        else:
+            # 実APIの GET /drone_route は drone_route_id 単体取得のみで一覧取得が無く、
+            # POST /drone_route も成功時に本文を返さない（実コード確認済み）。
+            # そのため「このセッションで登録したid」と「登録時に送った表示用の座標等」を
+            # クライアント側で覚えておき、list_routes()ではidごとにGETして存在確認しつつ、
+            # 表示にはこのキャッシュを使う。
+            self._real_route_cache = st.session_state.setdefault("_real_digital_twin_route_cache", {})
 
     def _headers(self) -> dict:
         return {"X-API-Key": self.api_key} if self.api_key else {}
 
     # --- 接続状態（design.md §9-1） -----------------------------------
     def check_connection(self) -> str:
-        """'connected' / 'disconnected' / 'error' のいずれかを返す。"""
+        """'connected' / 'disconnected' / 'error' のいずれかを返す。
+
+        実コード確認済み: GET /drone_route は drone_route_id が無いと400、
+        存在しないidでも400（"is not exist"）を返す。400は「サーバへは到達し
+        認証も通ったが、該当データが無いだけ」なので接続確認としては成功扱いにする。
+        401/403（認証失敗）と5xx（サーバ側エラー）だけを"error"とする。
+        """
         if self.mock:
             return "connected"
         try:
             resp = requests.get(
-                f"{self.base_url}{API_PREFIX}/drone_route", headers=self._headers(), timeout=self.timeout
+                f"{self.base_url}{API_PREFIX}/drone_route",
+                params={"drone_route_id": 0},
+                headers=self._headers(),
+                timeout=self.timeout,
             )
         except requests.exceptions.RequestException:
             return "disconnected"
-        return "error" if resp.status_code >= 400 else "connected"
+        if resp.status_code in (401, 403) or resp.status_code >= 500:
+            return "error"
+        return "connected"
 
     # --- 航路：POST/GET /airDtw/api/drone_route -----------------------
     def register_route(self, name: str, start: tuple, end: tuple, agl_m: float, layers: list[str]) -> dict:
+        poc_name = f"{POC_PREFIX}{name}"
+        if self.mock:
+            record = {
+                "name": poc_name,
+                "start": {"lat": start[0], "lon": start[1]},
+                "end": {"lat": end[0], "lon": end[1]},
+                "agl_m": agl_m,
+                "layers": layers,
+                **poc_metadata(),
+                "id": str(uuid.uuid4()),
+            }
+            self._store["routes"].append(record)
+            return record
+
+        # 実コード確認済み（DroneRouteController::drone_route）:
+        # drone_route_id（数値、クライアント採番）・drone_route_name・coordinates・
+        # from_datetime が必須。成功時のレスポンス本文は空（_postがそれを許容する）。
+        route_id = _generate_numeric_id()
         payload = {
-            "name": f"{POC_PREFIX}{name}",
+            "drone_route_id": route_id,
+            "drone_route_name": poc_name,
+            "coordinates": {
+                "type": "LineString",
+                "coordinates": [[start[1], start[0]], [end[1], end[0]]],
+            },
+            "from_datetime": _now_mysql_datetime(),
+        }
+        self._post("/drone_route", payload)
+
+        record = {
+            "id": route_id,
+            "name": poc_name,
             "start": {"lat": start[0], "lon": start[1]},
             "end": {"lat": end[0], "lon": end[1]},
             "agl_m": agl_m,
             "layers": layers,
             **poc_metadata(),
         }
-        if self.mock:
-            record = dict(payload, id=str(uuid.uuid4()))
-            self._store["routes"].append(record)
-            return record
-        return self._post("/drone_route", payload)
+        self._real_route_cache[route_id] = record
+        return record
 
     def list_routes(self) -> list[dict]:
         if self.mock:
             return list(self._store["routes"])
-        return self._get("/drone_route")
+
+        # 実APIには一覧取得が無い（GET /drone_route は drone_route_id 必須の単体取得）。
+        # このセッションで登録したidをキャッシュから辿り、1件ずつGETしてDB上の存在を
+        # 確認する。表示用の座標等はAPIが返さないため、登録時にキャッシュした値を使う。
+        routes = []
+        for route_id, cached in self._real_route_cache.items():
+            confirmed = False
+            try:
+                self._get("/drone_route", params={"drone_route_id": route_id})
+                confirmed = True
+            except ApiError:
+                confirmed = False
+            routes.append({**cached, "server_confirmed": confirmed})
+        return routes
 
     # --- 地物ボクセル：GET /airDtw/api/ground_feature_voxel -----------
     def get_ground_feature_voxel(self, bbox: tuple) -> list[dict]:
@@ -152,8 +236,10 @@ class DigitalTwinApiClient:
         except requests.exceptions.RequestException as exc:
             raise ApiError(str(exc), endpoint=url) from exc
         if resp.status_code >= 400:
-            raise ApiError(f"HTTP {resp.status_code}", status_code=resp.status_code, endpoint=url)
-        return resp.json()
+            raise ApiError(
+                f"HTTP {resp.status_code}: {resp.text[:200]}", status_code=resp.status_code, endpoint=url
+            )
+        return _safe_json(resp)
 
     def _post(self, path: str, payload: dict):
         url = f"{self.base_url}{API_PREFIX}{path}"
@@ -162,8 +248,10 @@ class DigitalTwinApiClient:
         except requests.exceptions.RequestException as exc:
             raise ApiError(str(exc), endpoint=url) from exc
         if resp.status_code >= 400:
-            raise ApiError(f"HTTP {resp.status_code}", status_code=resp.status_code, endpoint=url)
-        return resp.json()
+            raise ApiError(
+                f"HTTP {resp.status_code}: {resp.text[:200]}", status_code=resp.status_code, endpoint=url
+            )
+        return _safe_json(resp)
 
     # --- mockデータ -----------------------------------------------------
     def _mock_buildings(self, bbox: tuple) -> list[dict]:
