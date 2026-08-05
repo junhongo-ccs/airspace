@@ -1,0 +1,9 @@
+# design.md §5-2 UI基本色トークンに合わせてStreamlitのテーマを明示的に固定する。
+# 未指定だと訪問者のOS/ブラウザのダークモード設定に追従してしまい、
+# 独自CSS（src/theme.py）と衝突してコントラストが崩れる（§5-5 コントラスト要件違反）。
+[theme]
+base = "light"
+primaryColor = "#0F6FC6"
+backgroundColor = "#F4F6F8"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#0B1E2D"
