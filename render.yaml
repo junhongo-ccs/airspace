@@ -79,7 +79,7 @@ services:
       - key: MYSQL_ROOT_PASSWORD
         sync: false
 
-  - type: pserv
+  - type: web
     name: airspace-drone-web
     runtime: docker
     repo: https://github.com/junhongo-ccs/airway-digitaltwin-db
