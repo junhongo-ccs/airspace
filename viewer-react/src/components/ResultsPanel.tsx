@@ -1,6 +1,18 @@
 import { useState } from 'react';
 
-export default function ResultsPanel() {
+interface QueryResult {
+  status: 'idle' | 'loading' | 'success' | 'error';
+  routeId?: string;
+  features?: any[];
+  timestamp?: string;
+  message?: string;
+}
+
+interface ResultsPanelProps {
+  queryResult: QueryResult;
+}
+
+export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
   const [queryExpanded, setQueryExpanded] = useState(true);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
 
@@ -21,20 +33,34 @@ export default function ResultsPanel() {
         </button>
         {queryExpanded && (
           <div className="px-6 py-4 bg-bg-app text-sm text-text-secondary">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span>Route Status:</span>
-                <span className="text-status-ok font-medium">✓ Valid</span>
+            {queryResult.status === 'idle' && (
+              <p className="text-text-secondary">Click "Query & Register" to start</p>
+            )}
+            {queryResult.status === 'loading' && (
+              <p className="text-status-idle">Loading...</p>
+            )}
+            {queryResult.status === 'success' && (
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Route ID:</span>
+                  <span className="mono text-text-primary font-medium">{queryResult.routeId}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Ground Features:</span>
+                  <span className="text-text-primary font-medium">{queryResult.features?.length || 0} items</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Timestamp:</span>
+                  <span className="text-text-secondary text-xs">{queryResult.timestamp ? new Date(queryResult.timestamp).toLocaleString() : '-'}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span>Max Altitude (AGL):</span>
-                <span className="text-text-primary font-medium">100m</span>
+            )}
+            {queryResult.status === 'error' && (
+              <div className="text-status-error">
+                <p className="font-medium">Error</p>
+                <p className="text-xs">{queryResult.message}</p>
               </div>
-              <div className="flex justify-between">
-                <span>Prohibition Zones:</span>
-                <span className="text-status-warn font-medium">1 DID Zone Detected</span>
-              </div>
-            </div>
+            )}
           </div>
         )}
       </div>

@@ -12,6 +12,8 @@ interface SettingsPanelProps {
   setEndLon: (val: number) => void;
   aglM: number;
   setAglM: (val: number) => void;
+  onQuery: () => void;
+  isLoading: boolean;
 }
 
 export default function SettingsPanel({
@@ -26,6 +28,8 @@ export default function SettingsPanel({
   setEndLon,
   aglM,
   setAglM,
+  onQuery,
+  isLoading,
 }: SettingsPanelProps) {
   const [spatialId, setSpatialId] = useState<string | null>(null);
 
@@ -160,6 +164,15 @@ export default function SettingsPanel({
             </label>
           </div>
         </div>
+
+        {/* Query button */}
+        <button
+          onClick={onQuery}
+          disabled={isLoading}
+          className="w-full px-4 py-3 bg-action-primary text-white font-semibold rounded transition-colors hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          {isLoading ? 'Loading...' : 'Query & Register'}
+        </button>
       </div>
     </div>
   );
