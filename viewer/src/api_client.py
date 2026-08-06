@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 import requests
 import streamlit as st
 
+from .altitude import extract_building_id, lookup_building_height
 from .config import API_PREFIX, CREATED_BY, ENVIRONMENT, IS_POC, POC_PREFIX
 from .spatial_id import DEFAULT_ZOOM_LEVEL, compute_real_spatial_id
 
@@ -226,16 +227,23 @@ class DigitalTwinApiClient:
             }
             data = self._get("/ground_feature_voxel", params=params)
             objects = data.get("objects", []) if isinstance(data, dict) else []
-            results.extend(
-                {
+            for obj in objects:
+                voxel = {
                     "id": obj.get("spatialId"),
                     "layer": layer_label,
                     "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
                     "is_poc": False,
                     "raw": obj,
                 }
-                for obj in objects
-            )
+                if layer_label == "building":
+                    # 仕様書§5-3: 実APIレスポンスにmeasuredHeightは含まれないため、
+                    # voxelBitFileName（plateau/{mesh}/{buildingId}.json）からbuildingIdを
+                    # 逆引きし、Phase B投入時に保持したクライアント側の高さ表（altitude.py）
+                    # と突き合わせる。
+                    voxel_bit_file_path = (obj.get("other") or {}).get("voxelBitFileName")
+                    building_id = extract_building_id(voxel_bit_file_path)
+                    voxel["height_m"] = lookup_building_height(building_id)
+                results.append(voxel)
         return results
 
     # --- エリア（注意区域）：POST /airDtw/api/area、GET汎用オブジェクト --

@@ -10,6 +10,7 @@ import json
 import pandas as pd
 import streamlit as st
 
+from ..altitude import evaluate_building_vertical
 from ..config import DISCLAIMER_TEXT
 
 
@@ -85,14 +86,16 @@ def render_query_result_summary(result: dict | None) -> None:
 def build_result_rows(query_result: dict | None) -> list[dict]:
     """design.md §7-1 必須列を満たす行データを組み立てる。
 
-    「交差判定」は水平方向のバウンディングボックス重なりのみを見た簡易判定である。
-    仕様書§5-3の高度基準統一が未完了のため、垂直方向の判定は一切行わない
-    （design.md §9-2に対応）。
+    「交差判定」は基本的に水平方向のバウンディングボックス重なりのみを見た簡易判定である。
+    仕様書§5-3の前提を満たした**建物レイヤのみ**、AGL入力とmeasuredHeightを比較する
+    垂直方向の判定（altitude.py）を追加する（design.md §9-2に対応）。建物以外のレイヤは
+    高さ情報を持たないため、引き続き垂直方向の判定は行わない。
     """
     if not query_result or not query_result.get("ok"):
         return []
 
     responded_at = query_result["responded_at"]
+    agl_m = query_result.get("agl_m")
     route_bboxes = []
     rows: list[dict] = []
 
@@ -128,19 +131,36 @@ def build_result_rows(query_result: dict | None) -> list[dict]:
 
     for voxel in query_result["voxels"]:
         is_placeholder = "mock" in str(voxel.get("source", ""))
-        if is_placeholder:
+        is_building = voxel.get("layer") == "building"
+        height_m = voxel.get("height_m") if is_building else None
+
+        if is_building:
+            vertical = evaluate_building_vertical(height_m, agl_m)
+            horizontally_clear = "footprint" in voxel and not any(
+                _bbox_overlap(_bbox(voxel["footprint"]), rb) for rb in route_bboxes
+            )
+            intersect = "交差なし（水平方向に重なりなし）" if horizontally_clear else vertical
+            altitude_basis = (
+                "検証済み（地盤基準相対高、暫定許容差±2m。仕様書§5-3参照）"
+                if height_m is not None
+                else "未検証（仕様書§5-3、この建物は高さ情報なし）"
+            )
+        elif is_placeholder:
             intersect = "要確認（属性不足・プレースホルダ）"
+            altitude_basis = "未検証（仕様書§5-3）"
         elif "footprint" in voxel:
             intersect = _intersect_flag(voxel["footprint"])
+            altitude_basis = "未検証（仕様書§5-3）"
         else:
             intersect = "要確認（ジオメトリ未提供・ボクセル形式）"
+            altitude_basis = "未検証（仕様書§5-3）"
         rows.append(
             {
                 "取得日時": responded_at,
                 "データ出典": voxel.get("source", "-"),
                 "レイヤ種別": voxel_layer_labels.get(voxel.get("layer"), voxel.get("layer", "地物")),
                 "区分": "PoC" if voxel.get("is_poc") else "実データ",
-                "座標参照系／高度基準": "未検証（仕様書§5-3）",
+                "座標参照系／高度基準": altitude_basis,
                 "交差判定": intersect,
                 "名称": voxel.get("id"),
             }

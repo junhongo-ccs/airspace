@@ -183,6 +183,7 @@ def _handle_query(client: DigitalTwinApiClient, ctx: dict) -> None:
         "areas": areas,
         "prohibited": prohibited,
         "bbox": bbox,
+        "agl_m": ctx["agl_m"],
         "errors": errors,
         "responded_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }

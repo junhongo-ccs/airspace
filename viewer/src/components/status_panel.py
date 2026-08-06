@@ -41,7 +41,7 @@ def render_space_id(start: tuple | None, agl_m: float | None) -> tuple[str | Non
     space_id = compute_real_spatial_id(lon=start[1], lat=start[0], zoom=DEFAULT_ZOOM_LEVEL)
     st.markdown(
         f'<span class="mono caption-text">空間ID: {space_id}（ズーム{DEFAULT_ZOOM_LEVEL}固定・水平方向のみ）'
-        f"／ AGL {agl_m}m（高度方向の対応は仕様書§5-3完了後に確定）</span>",
+        f"／ AGL {agl_m}m（建物との垂直比較にのみ使用。空間ID自体は高度方向を含まない）</span>",
         unsafe_allow_html=True,
     )
     return space_id, None
@@ -50,17 +50,20 @@ def render_space_id(start: tuple | None, agl_m: float | None) -> tuple[str | Non
 def render_altitude_verification_status() -> None:
     """design.md §9-2: 仕様書§5-3の高度基準統一と受入基準#9に対応する。
 
-    §5-3の前提条件（座標参照系の記録、変換式の登録、既知地点での比較、許容差の定義）が
-    完了するまでは常に「未検証」を表示し、垂直方向の交差・離隔判定は出力しない。
-    Phase Bが未実施の現時点では常にこの状態になる。
+    §5-3の前提条件（座標参照系の記録、変換式の登録、既知地点での比較、許容差の定義）は
+    **建物レイヤに限り**記録・整理できたため（altitude.py参照）、建物のみAGL入力と
+    measuredHeightの垂直方向比較を有効化した（暫定許容差±2m）。建物以外のレイヤ
+    （道路・土砂災害・洪水浸水・土地利用・注意区域・禁止区域）は高さ情報を保持しないため、
+    引き続き「未検証」のままとする。
     """
     st.markdown(
-        status_badge_html("▲ 高度比較未検証／垂直判定は出力しません", "warn"),
+        status_badge_html("△ 高度比較：建物のみ検証済み（暫定許容差±2m）／他レイヤは未検証", "warn"),
         unsafe_allow_html=True,
     )
     st.caption(
-        "仕様書§5-3の高度基準統一が完了するまで、垂直方向の交差・離隔判定は「未検証」と"
-        "表示され、判定結果は出力されません。"
+        "仕様書§5-3に基づき、建物のみAGL入力とPLATEAU measuredHeight（地盤基準相対高）を"
+        "比較する。暫定許容差±2mは実測未検証のPoC上の仮定値。建物以外のレイヤは高さ情報が"
+        "無いため「未検証」のまま、垂直方向の交差・離隔判定は出力しない。"
     )
 
 
