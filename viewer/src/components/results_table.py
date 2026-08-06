@@ -10,7 +10,7 @@ import json
 import pandas as pd
 import streamlit as st
 
-from ..altitude import evaluate_building_vertical
+from ..altitude import evaluate_agl_legal_limit, evaluate_building_vertical
 from ..config import DISCLAIMER_TEXT
 
 
@@ -108,8 +108,8 @@ def build_result_rows(query_result: dict | None) -> list[dict]:
                 "データ出典": route.get("source", "-"),
                 "レイヤ種別": "航路",
                 "区分": "PoC" if route.get("is_poc") else "実データ",
-                "座標参照系／高度基準": "未検証（仕様書§5-3）",
-                "交差判定": "-",
+                "座標参照系／高度基準": "検証済み（航空法150m高度制限、空間データ不要）",
+                "交差判定": evaluate_agl_legal_limit(agl_m),
                 "名称": route.get("name"),
             }
         )

@@ -79,3 +79,18 @@ def evaluate_building_vertical(height_m: float | None, agl_m: float | None) -> s
     if agl_m <= height_m + AGL_TOLERANCE_M:
         return f"要確認（高さ方向・建物高{height_m:.1f}m・暫定許容差±{AGL_TOLERANCE_M:.0f}m）"
     return f"交差なし（高さ方向・建物高{height_m:.1f}m・暫定許容差±{AGL_TOLERANCE_M:.0f}m）"
+
+
+# 航空法上の飛行禁止空域3類型のうち、空間データを一切要さない「地表・水面から150m以上」
+# ルール（無人航空機の飛行禁止空域、国土交通省）。この判定は座標・地物データに依存せず、
+# AGL入力のみで判定できるため、§5-3の座標参照系統一の前提とは独立に評価してよい。
+AGL_LEGAL_LIMIT_M = 150.0
+
+
+def evaluate_agl_legal_limit(agl_m: float | None) -> str:
+    """AGLが航空法上の150m高度制限に抵触するかを判定する（空間データ不要）。"""
+    if agl_m is None:
+        return "未検証（AGL未入力）"
+    if agl_m >= AGL_LEGAL_LIMIT_M:
+        return f"要確認（150m以上・航空法上の許可等が必要、AGL={agl_m:.0f}m）"
+    return f"制限内（150m未満、AGL={agl_m:.0f}m）"
