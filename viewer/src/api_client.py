@@ -31,6 +31,7 @@ OBJECT_CD_LAYERS = {
     2: "road",
     3: "landslide",
     4: "flood",
+    5: "landuse",
 }
 
 

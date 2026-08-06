@@ -123,6 +123,7 @@ def build_result_rows(query_result: dict | None) -> list[dict]:
         "road": "道路",
         "landslide": "土砂災害",
         "flood": "洪水浸水",
+        "landuse": "土地利用",
     }
 
     for voxel in query_result["voxels"]:
