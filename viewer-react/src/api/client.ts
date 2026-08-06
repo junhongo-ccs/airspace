@@ -41,7 +41,7 @@ async function describeError(response: Response): Promise<string> {
   } catch {
     // JSON でない場合は下のフォールバックへ
   }
-  return `HTTP ${response.status} from BFF`;
+  return `BFFがHTTP ${response.status}を返しました`;
 }
 
 // 航路を登録（BFF 経由）
@@ -184,7 +184,7 @@ export async function getConnectionStatus(): Promise<ConnectionStatus> {
       connected: false,
       state: 'disconnected',
       mock: false,
-      message: error instanceof Error ? error.message : 'BFF unreachable',
+      message: error instanceof Error ? error.message : 'BFFに接続できません',
     };
   }
 }

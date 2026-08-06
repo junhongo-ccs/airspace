@@ -48,6 +48,13 @@ export default function MapContainer({ routeData }: MapContainerProps) {
       },
       center: [139.0313939, 35.9683357],
       zoom: 15,
+      // MapLibre が既定で付与する英語のaria-label等を日本語にする。
+      locale: {
+        'Map.Title': '地図',
+        'AttributionControl.ToggleAttribution': '出典表示の切り替え',
+        'NavigationControl.ZoomIn': '拡大',
+        'NavigationControl.ZoomOut': '縮小',
+      },
     });
 
     map.current.on('load', () => setStyleReady(true));
@@ -178,8 +185,8 @@ export default function MapContainer({ routeData }: MapContainerProps) {
       <div ref={mapContainer} className="w-full h-full" />
       {/* Map overlay info */}
       <div className="absolute top-4 right-4 bg-bg-panel rounded shadow-lg p-3 text-xs text-text-secondary max-w-48">
-        <p>MapLibre GL Map</p>
-        <p>Zoom-level 15, center near Chichibu</p>
+        <p>地図：MapLibre GL</p>
+        <p>ズーム15・秩父市周辺</p>
       </div>
     </div>
   );

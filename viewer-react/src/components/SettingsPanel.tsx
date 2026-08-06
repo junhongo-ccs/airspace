@@ -25,20 +25,20 @@ function describeConnection(connection: ConnectionStatus | null): {
   detail?: string;
 } {
   if (connection === null) {
-    return { label: 'Checking...', dotClass: 'bg-status-idle' };
+    return { label: '接続確認中…', dotClass: 'bg-status-idle' };
   }
   if (connection.mock) {
     return {
-      label: 'Mock mode',
+      label: 'モックモード',
       dotClass: 'bg-status-warn',
-      detail: 'BFF がモックで応答しています（Laravel 未接続）',
+      detail: 'BFFがモックで応答しています（実APIには未接続）',
     };
   }
   if (connection.connected) {
-    return { label: 'Connected', dotClass: 'bg-status-ok', detail: connection.baseUrl };
+    return { label: '接続済み', dotClass: 'bg-status-ok', detail: connection.baseUrl };
   }
   return {
-    label: connection.state === 'error' ? 'Error' : 'Disconnected',
+    label: connection.state === 'error' ? 'エラー' : '未接続',
     dotClass: 'bg-status-error',
     detail: connection.message ?? connection.baseUrl,
   };
@@ -98,8 +98,8 @@ export default function SettingsPanel({
         {/* Spatial ID display */}
         {spatialId && (
           <div>
-            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">
-              Spatial ID
+            <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-2">
+              空間ID
             </label>
             <div className="mono bg-bg-app p-2 rounded border border-bg-table-head text-xs text-text-primary">
               {spatialId}
@@ -109,8 +109,8 @@ export default function SettingsPanel({
 
         {/* Start coordinates */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">
-            Start Point
+          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-3">
+            始点
           </label>
           <div className="space-y-2">
             <input
@@ -118,7 +118,8 @@ export default function SettingsPanel({
               step="0.0001"
               value={startLat}
               onChange={(e) => setStartLat(parseFloat(e.target.value))}
-              placeholder="Latitude"
+              placeholder="緯度"
+              aria-label="始点 緯度"
               className="w-full px-3 py-2 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
             />
             <input
@@ -126,7 +127,8 @@ export default function SettingsPanel({
               step="0.0001"
               value={startLon}
               onChange={(e) => setStartLon(parseFloat(e.target.value))}
-              placeholder="Longitude"
+              placeholder="経度"
+              aria-label="始点 経度"
               className="w-full px-3 py-2 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
             />
           </div>
@@ -134,8 +136,8 @@ export default function SettingsPanel({
 
         {/* End coordinates */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">
-            End Point
+          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-3">
+            終点
           </label>
           <div className="space-y-2">
             <input
@@ -143,7 +145,8 @@ export default function SettingsPanel({
               step="0.0001"
               value={endLat}
               onChange={(e) => setEndLat(parseFloat(e.target.value))}
-              placeholder="Latitude"
+              placeholder="緯度"
+              aria-label="終点 緯度"
               className="w-full px-3 py-2 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
             />
             <input
@@ -151,7 +154,8 @@ export default function SettingsPanel({
               step="0.0001"
               value={endLon}
               onChange={(e) => setEndLon(parseFloat(e.target.value))}
-              placeholder="Longitude"
+              placeholder="経度"
+              aria-label="終点 経度"
               className="w-full px-3 py-2 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
             />
           </div>
@@ -159,42 +163,47 @@ export default function SettingsPanel({
 
         {/* AGL altitude */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">
-            AGL Altitude (m)
+          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-2">
+            飛行高度（AGL・地上高、m）
           </label>
           <input
             type="number"
             step="1"
             value={aglM}
             onChange={(e) => setAglM(parseFloat(e.target.value))}
+            aria-label="飛行高度（AGL・地上高、m）"
             className="w-full px-3 py-2 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
           />
+          {/* 入力値と150mの単純比較のみ。飛行可否を示すものではないため
+              「適合」等の断定表現は使わず、未確認の範囲を必ず併記する（仕様書§2-2）。 */}
           <div className="mt-2 p-2 bg-bg-app rounded text-xs text-text-secondary">
             {aglM < 150 ? (
-              <span className="text-status-ok">✓ Within 150m legal limit</span>
+              <span className="text-status-ok">150m未満（ほかの要件は未確認）</span>
             ) : (
-              <span className="text-status-warn">⚠ Exceeds 150m legal limit</span>
+              <span className="text-status-warn">
+                150m以上（許可・承認が必要な可能性。ほかの要件も未確認）
+              </span>
             )}
           </div>
         </div>
 
         {/* Layer visibility */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">
-            Layers
+          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-3">
+            レイヤ
           </label>
           <div className="space-y-2">
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" defaultChecked className="w-4 h-4" />
-              <span className="text-sm text-text-primary">Buildings</span>
+              <span className="text-sm text-text-primary">建物</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" defaultChecked className="w-4 h-4" />
-              <span className="text-sm text-text-primary">DID Zones</span>
+              <span className="text-sm text-text-primary">DID地区</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" defaultChecked className="w-4 h-4" />
-              <span className="text-sm text-text-primary">Route</span>
+              <span className="text-sm text-text-primary">航路</span>
             </label>
           </div>
         </div>
@@ -205,7 +214,7 @@ export default function SettingsPanel({
           disabled={isLoading}
           className="w-full px-4 py-3 bg-action-primary text-white font-semibold rounded transition-colors hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
-          {isLoading ? 'Loading...' : 'Query & Register'}
+          {isLoading ? '実行中…' : '航路を登録して周辺データを照会'}
         </button>
       </div>
     </div>
