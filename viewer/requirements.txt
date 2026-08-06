@@ -3,7 +3,7 @@
 # 解決され、streamlit/starlette間の非互換（GZipResponder.__init__のシグネチャ不一致）
 # のような環境差分バグを踏む（2026-08-05に実際発生）。
 altair==6.2.2
-anyio==4.14.2
+anyio==3.7.1
 attrs==26.1.0
 blinker==1.9.0
 branca==0.8.2
