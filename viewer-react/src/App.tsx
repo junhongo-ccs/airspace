@@ -81,7 +81,18 @@ function App() {
 
         {/* Map area */}
         <div className="flex-1 flex flex-col">
-          <MapContainer />
+          <MapContainer
+            routeData={
+              queryResult.status === 'success'
+                ? {
+                    startLat,
+                    startLon,
+                    endLat,
+                    endLon,
+                  }
+                : null
+            }
+          />
 
           {/* Bottom results panel */}
           <ResultsPanel queryResult={queryResult} />
