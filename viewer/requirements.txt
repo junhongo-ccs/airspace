@@ -44,7 +44,6 @@ toml==0.10.2
 typing_extensions==4.16.0
 tzdata==2026.3
 urllib3==2.7.0
-uvicorn==0.52.1
 watchdog==6.0.0
 websockets==16.1.1
 xyzservices==2026.3.0
