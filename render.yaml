@@ -8,6 +8,7 @@
 #                       ※ Phase B以降のメインフロントエンド。Streamlitの制約を回避。
 #   airspace-drone-web  Drone-web（Laravel、junhongo-ccs/airway-digitaltwin-db フォークの
 #                        Dockerfileでビルド）。Private Serviceとし外部から直接到達させない。
+#                        React からのアクセスは Streamlit（BFF）経由。
 #   airspace-mysql      MySQL 8（公式イメージ）。Private Service＋永続ディスク。
 #                        仕様書§10-2は「永続ディスクだけで代用しない」＝本番はマネージドDB
 #                        推奨としているが、本PoCでは割り切ってこの構成を採用する。
@@ -37,7 +38,7 @@ services:
     region: singapore
     branch: main
     buildCommand: pip install -r viewer/requirements.txt
-    startCommand: streamlit run viewer/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    startCommand: bash viewer/entrypoint.sh
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.10
@@ -79,7 +80,7 @@ services:
       - key: MYSQL_ROOT_PASSWORD
         sync: false
 
-  - type: web
+  - type: pserv
     name: airspace-drone-web
     runtime: docker
     repo: https://github.com/junhongo-ccs/airway-digitaltwin-db
