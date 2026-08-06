@@ -3,6 +3,9 @@
 #
 # 構成:
 #   airspace-viewer     Streamlit Viewer（公開Web Service。Docker不要のネイティブPython）
+#                       ※ 実装済みだが、React版への段階的移行中。
+#   airspace-viewer-react React + Vite + Tailwind CSS フロントエンド（公開Web Service）
+#                       ※ Phase B以降のメインフロントエンド。Streamlitの制約を回避。
 #   airspace-drone-web  Drone-web（Laravel、junhongo-ccs/airway-digitaltwin-db フォークの
 #                        Dockerfileでビルド）。Private Serviceとし外部から直接到達させない。
 #   airspace-mysql      MySQL 8（公式イメージ）。Private Service＋永続ディスク。
@@ -15,6 +18,18 @@
 #   - fromService／dockerfilePath等のフィールド名はRender側の検証で弾かれる場合がある。
 #     エラーが出たら、そのメッセージをそのまま開発者に共有すること。
 services:
+  - type: web
+    name: airspace-viewer-react
+    runtime: node
+    plan: starter
+    region: singapore
+    branch: main
+    buildCommand: cd viewer-react && npm install && npm run build
+    startCommand: cd viewer-react && npm run preview -- --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: NODE_VERSION
+        value: 20.11.1
+
   - type: web
     name: airspace-viewer
     runtime: python
