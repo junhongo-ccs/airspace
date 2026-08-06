@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker --version)",
+      "Bash(docker compose *)",
+      "Bash(git --version)",
+      "Bash(python -m pip --version)",
+      "Bash(python -m venv viewer/.venv)",
+      "Bash(./.venv/Scripts/python.exe -m pip install --disable-pip-version-check streamlit streamlit-folium folium pandas)",
+      "Bash(./.venv/Scripts/python.exe -m pip freeze)",
+      "Bash(gh auth *)",
+      "Bash(gh --version)",
+      "Bash(gh repo *)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git restore *)",
+      "Bash(git rm *)",
+      "Bash(git config *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 8501 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -Confirm:$false }; \"done\")",
+      "Read(//c/github/airway-digitaltwin-db/**)",
+      "Read(//c/github/airway-digitaltwin-db/drone-web/laravel/**)",
+      "Bash(./viewer/.venv/Scripts/python.exe -c \"import ast; ast.parse\\(open\\('viewer/src/api_client.py', encoding='utf-8'\\).read\\(\\)\\)\")",
+      "Bash(./viewer/.venv/Scripts/python.exe -c ' *)",
+      "Bash(./viewer/.venv/Scripts/python.exe -m pip show starlette uvicorn)",
+      "Bash(./viewer/.venv/Scripts/python.exe -m pip freeze)",
+      "Bash(powershell -NoProfile -Command \"Get-NetTCPConnection -LocalPort 8501 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1 OwningProcess\")"
+    ]
+  }
+}
