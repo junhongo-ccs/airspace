@@ -117,6 +117,14 @@ def build_result_rows(query_result: dict | None) -> list[dict]:
             return "要確認（水平方向・簡易判定）"
         return "交差なし（水平方向・簡易判定）"
 
+    # object_cdの割り当て（api_client.py OBJECT_CD_LAYERSと対応）に基づく表示ラベル
+    voxel_layer_labels = {
+        "building": "建物",
+        "road": "道路",
+        "landslide": "土砂災害",
+        "flood": "洪水浸水",
+    }
+
     for voxel in query_result["voxels"]:
         is_placeholder = "mock" in str(voxel.get("source", ""))
         if is_placeholder:
@@ -129,7 +137,7 @@ def build_result_rows(query_result: dict | None) -> list[dict]:
             {
                 "取得日時": responded_at,
                 "データ出典": voxel.get("source", "-"),
-                "レイヤ種別": "建物",
+                "レイヤ種別": voxel_layer_labels.get(voxel.get("layer"), voxel.get("layer", "地物")),
                 "区分": "PoC" if voxel.get("is_poc") else "実データ",
                 "座標参照系／高度基準": "未検証（仕様書§5-3）",
                 "交差判定": intersect,

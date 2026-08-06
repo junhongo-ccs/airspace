@@ -23,6 +23,16 @@ import streamlit as st
 from .config import API_PREFIX, CREATED_BY, ENVIRONMENT, IS_POC, POC_PREFIX
 from .spatial_id import DEFAULT_ZOOM_LEVEL, compute_real_spatial_id
 
+# object_cdの割り当て（実コードに定義が無いため、Phase B投入時に本PoCで独自に定めた規約。
+# airway-digitaltwin-db/drone-web/laravel/app/Console/Commands/ImportPlateauFeatures.php
+# と一致させること）。
+OBJECT_CD_LAYERS = {
+    1: "building",
+    2: "road",
+    3: "landslide",
+    4: "flood",
+}
+
 
 class ApiError(Exception):
     def __init__(self, message: str, status_code: int | None = None, endpoint: str | None = None):
@@ -206,23 +216,26 @@ class DigitalTwinApiClient:
             return self._mock_buildings(bbox)
 
         identification = _center_spatial_id(bbox)
-        params = {
-            "other[typeCd]": 1,
-            "identification": identification,
-            "timing": _now_mysql_datetime(),
-        }
-        data = self._get("/ground_feature_voxel", params=params)
-        objects = data.get("objects", []) if isinstance(data, dict) else []
-        return [
-            {
-                "id": obj.get("spatialId"),
-                "layer": "building",
-                "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
-                "is_poc": False,
-                "raw": obj,
+        results = []
+        for type_cd, layer_label in OBJECT_CD_LAYERS.items():
+            params = {
+                "other[typeCd]": type_cd,
+                "identification": identification,
+                "timing": _now_mysql_datetime(),
             }
-            for obj in objects
-        ]
+            data = self._get("/ground_feature_voxel", params=params)
+            objects = data.get("objects", []) if isinstance(data, dict) else []
+            results.extend(
+                {
+                    "id": obj.get("spatialId"),
+                    "layer": layer_label,
+                    "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
+                    "is_poc": False,
+                    "raw": obj,
+                }
+                for obj in objects
+            )
+        return results
 
     # --- エリア（注意区域）：POST /airDtw/api/area、GET汎用オブジェクト --
     def register_area(self, name: str, polygon: list[tuple], category: str = "caution") -> dict:
