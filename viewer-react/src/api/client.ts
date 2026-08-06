@@ -1,8 +1,8 @@
-// Drone-web API クライアント
-// 参照: 仕様書§6-2、実装タスク 3-2-2・3-2-3
+// BFF（Streamlit + FastAPI）経由で Laravel API にアクセス
+// 設計: React → Streamlit BFF (/api) → Laravel API (/airDtw/api)
+// 参照: 仕様書§5-5、実装タスク 3-2-2・3-2-3
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/airDtw/api';
-const API_KEY = import.meta.env.VITE_API_KEY || 'poc-key';
+const BFF_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
 
 export interface DroneRoute {
   drone_route_id: string;
@@ -30,7 +30,7 @@ export interface ApiResponse<T> {
   timestamp: string;
 }
 
-// 航路を登録
+// 航路を登録（BFF 経由）
 export async function registerRoute(
   startLat: number,
   startLon: number,
@@ -39,11 +39,10 @@ export async function registerRoute(
   altitudeM: number
 ): Promise<DroneRoute | null> {
   try {
-    const response = await fetch(`${API_BASE}/drone_route`, {
+    const response = await fetch(`${BFF_BASE}/register_route`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': API_KEY,
       },
       body: JSON.stringify({
         start_latitude: startLat,
@@ -55,41 +54,43 @@ export async function registerRoute(
     });
 
     if (!response.ok) {
-      console.error(`API error: ${response.status}`);
+      console.error(`BFF error: ${response.status}`);
       return null;
     }
 
-    const data: ApiResponse<DroneRoute> = await response.json();
-    return data.data?.[0] || null;
+    const data = await response.json();
+    return data.data || null;
   } catch (error) {
     console.error('Failed to register route:', error);
     return null;
   }
 }
 
-// 航路周辺の地物ボクセルを取得
+// 航路周辺の地物ボクセルを取得（BFF 経由）
 export async function getGroundFeatures(
   latitude: number,
   longitude: number,
   radiusDegrees: number = 0.01
 ): Promise<GroundFeature[]> {
   try {
-    const response = await fetch(
-      `${API_BASE}/ground_feature_voxel?` +
-        `latitude=${latitude}&longitude=${longitude}&radius=${radiusDegrees}`,
-      {
-        headers: {
-          'X-API-Key': API_KEY,
-        },
-      }
-    );
+    const response = await fetch(`${BFF_BASE}/query_features`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        latitude,
+        longitude,
+        radius_degrees: radiusDegrees,
+      }),
+    });
 
     if (!response.ok) {
-      console.error(`API error: ${response.status}`);
+      console.error(`BFF error: ${response.status}`);
       return [];
     }
 
-    const data: ApiResponse<GroundFeature> = await response.json();
+    const data = await response.json();
     return data.data || [];
   } catch (error) {
     console.error('Failed to fetch ground features:', error);
@@ -97,25 +98,28 @@ export async function getGroundFeatures(
   }
 }
 
-// 飛行禁止区域を取得
+// 飛行禁止区域を取得（現在未使用、将来の機能拡張用）
 export async function getFlightProhibitedAreas(
   latitude: number,
   longitude: number,
   radiusDegrees: number = 0.01
 ) {
   try {
-    const response = await fetch(
-      `${API_BASE}/flight_prohibited_area?` +
-        `latitude=${latitude}&longitude=${longitude}&radius=${radiusDegrees}`,
-      {
-        headers: {
-          'X-API-Key': API_KEY,
-        },
-      }
-    );
+    // BFF でこのエンドポイントが実装されたら使用
+    const response = await fetch(`${BFF_BASE}/query_prohibited_areas`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        latitude,
+        longitude,
+        radius_degrees: radiusDegrees,
+      }),
+    });
 
     if (!response.ok) {
-      console.error(`API error: ${response.status}`);
+      console.error(`BFF error: ${response.status}`);
       return [];
     }
 
@@ -127,14 +131,10 @@ export async function getFlightProhibitedAreas(
   }
 }
 
-// API接続状態を確認
+// API接続状態を確認（BFF 経由）
 export async function checkApiHealth(): Promise<boolean> {
   try {
-    const response = await fetch(`${API_BASE}/health`, {
-      headers: {
-        'X-API-Key': API_KEY,
-      },
-    });
+    const response = await fetch(`${BFF_BASE}/connection_status`);
     return response.ok;
   } catch {
     return false;
