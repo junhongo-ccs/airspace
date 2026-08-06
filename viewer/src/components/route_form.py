@@ -9,9 +9,11 @@ import streamlit as st
 from ..api_client import ApiError, DigitalTwinApiClient
 from . import status_panel
 
-# 仕様書§5-1: 秩父市PLATEAU 2025整備範囲内の仮想1〜3km航路（デモ用の初期値）
-DEFAULT_START = (35.9906, 139.0800)
-DEFAULT_END = (35.9950, 139.0870)
+# 仕様書§5-1: 秩父市PLATEAU 2025整備範囲内の仮想1〜3km航路（デモ用の初期値）。
+# Phase Bで実際に投入した建物データ（3次メッシュ53397062、29件）の中心付近を通るよう、
+# bboxの中心が空間ID 17/0/116156/51483（建物データの空間ID）に一致するよう選定している。
+DEFAULT_START = (35.9683357, 139.0313939)
+DEFAULT_END = (35.9699357, 139.0333939)
 # design.md §8-1 初期表示レイヤ
 DEFAULT_LAYERS = ["地理院地図", "航路", "建物", "注意区域"]
 
