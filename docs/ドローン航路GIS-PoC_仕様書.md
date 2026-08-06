@@ -1,11 +1,12 @@
 # 空域デジタルツイン活用・ドローン航路GIS-PoC 仕様書
 
-版：0.5（Phase A検証完了版）  
+版：0.6（Phase B着手版）  
 作成日：2026年8月6日  
-ステータス：Phase A受入基準達成、Phase B未着手  
+ステータス：Phase A受入基準達成、Phase B建物のみ部分達成  
 
 | 版 | 日付 | 変更内容 | 対応レビュー |
 |---|---|---|---|
+| 0.6 | 2026年8月6日 | Phase Bに着手し、PLATEAU秩父市2025の実建物データ（3次メッシュ`53397062`、29件）をground_feature_objectsへ投入し、APIから取得できることを実際に確認した。`SpaceInfra-cpp`がWindows専用プロジェクトでRenderでは動かせないこと、Laravel側にも地物ボクセルの登録APIが存在しないことが判明したため、自前のPython変換＋Artisanコマンドによる直接DB投入で代替する方針とした。§7-2・§11・§12・§14-2を更新。 | 実装セッション（2026-08-06、[進捗ログ](進捗ログ.md)参照） |
 | 0.5 | 2026年8月6日 | `drone_route_id`不一致バグの修正（fork）を実際にデプロイ・動作確認し、Phase A受入基準#2（航路の登録・取得）を達成。`ground_feature_voxel`の`$request`型ヒント欠落による500エラーを修正。注意区域の登録・取得を、tinkerでのDB手動投入（ネイティブ変換処理の代替）により実際に確認し、受入基準#3を達成。`area`/`flight_prohibited_area`取得結果のPoC判定を接頭辞ベースに修正し、受入基準#8を達成。§11の各項目の充足状況を更新し、§6-2・§7-4・§14-2に追記。 | 実装セッション（2026-08-06、[進捗ログ](進捗ログ.md)参照） |
 | 0.4 | 2026年8月5日 | Streamlit ViewerおよびDrone-webの実装・Render配備を実施し判明した事実を反映。API各エンドポイントの実際の必須パラメータ・レスポンス形式（§6-2）、空間IDの実仕様（ズーム17固定・Web Mercatorタイル形式）、drone_route取得が主キー`drone_route_info_id`とクライアント採番`drone_route_id`の不一致により機能しない点、area/flight_prohibited_area登録がネイティブ変換処理に依存し取得側が機能しない可能性がある点、Render配備の実際の構成（MySQLはPrivate Service＋永続ディスクで代替、ローカルDockerではなくRenderのPrivate Serviceで検証）を追加。§6冒頭・§7-1・§10-3の前提を「ローカルまたはRender Private Service」に統一。§14に実コード確認根拠（§14-2、forkのパス起点ルールを明記）を追加。 | 実装セッション（2026-08-05、[進捗ログ](進捗ログ.md)参照。レビュー指摘を反映） |
 | 0.3 | 2026年8月5日 | 実コード確認の根拠、PLATEAU秩父市2025を正データとする方針、高度基準、PoC識別、ライセンス、撤退基準、実行環境上の注意を追加。フェーズ呼称をA/B/Cへ統一。 | 仕様レビュー指摘（第2回・第3回） |
@@ -233,12 +234,12 @@ junhongo-ccs/airspace の Streamlit Viewer から junhongo-ccs/airway-digitaltwi
 
 ### 7-2. Phase B：PLATEAU静的GISの投入
 
-1. 秩父市PLATEAU 2025の索引図から、対象の一三次メッシュ相当を選ぶ。
-2. 同データセットの建物、地形、洪水浸水、土砂災害、土地利用、道路の各レイヤを取得する。
-3. 建物と地形を `SpaceInfra-cpp` により変換できるか確認し、変換結果を地物ボクセルとして登録する。
-4. 洪水浸水、土砂災害、土地利用、道路を、エリアまたは汎用オブジェクトとして登録する。
-5. 航路周辺の地物・エリアをAPIで取得できることを確認する。
-6. データセット・出典・変換履歴をDBまたは付属メタデータに保存する。
+1. 秩父市PLATEAU 2025の索引図から、対象の一三次メッシュ相当を選ぶ。**実績（2026年8月6日）**：3次メッシュ`53397062`を選定（索引図と厳密に照合したものではなく、CityGML ZIP内の建物ファイルサイズから実際に建物が一定数含まれるメッシュを選んだ）。
+2. 同データセットの建物、地形、洪水浸水、土砂災害、土地利用、道路の各レイヤを取得する。**実績**：建物（`udx/bldg/`配下のCityGML）のみ取得。ZIP全体（580MB）はダウンロードせず、HTTP RangeリクエストでZIP中央ディレクトリと対象メッシュのファイルだけを部分取得した（§14-3）。地形・洪水浸水・土砂災害・土地利用・道路は未取得。
+3. 建物と地形を `SpaceInfra-cpp` により変換できるか確認し、変換結果を地物ボクセルとして登録する。**実績：`SpaceInfra-cpp`は使用不可と判断（§10-3参照）**。Windows専用のVisual Studioプロジェクト（VS2022＋vcpkgの手動セットアップが必要、CMake等の自動ビルドは無し）であり、Renderでは動かせない。加えて、Laravel側にも地物ボクセルを登録するAPIが存在しない（`GroundFeatureVoxelController`等は取得専用、`UserApiController`の"voxel"系メソッドも取得・ダウンロード専用）ことが判明した。代替として、CityGMLをPython（`parse_bldg.py`）でLOD0フットプリント・LOD1高さ・空間ID（ズーム17）を抽出したJSONに変換し、fork側に追加したArtisanコマンド（`plateau:import-buildings`）で`ground_feature_objects`へ直接登録した。建物29件を登録。
+4. 洪水浸水、土砂災害、土地利用、道路を、エリアまたは汎用オブジェクトとして登録する。**未実施**。
+5. 航路周辺の地物・エリアをAPIで取得できることを確認する。**建物のみ実績あり**：`GET /ground_feature_voxel`で実際に登録した建物1件を取得できることを確認した（同APIは`->first()`で1件のみ返す設計のため、この件数が正しい）。地形・洪水浸水等は未実施につき確認していない。
+6. データセット・出典・変換履歴をDBまたは付属メタデータに保存する。**実績**：`data_sources`テーブルへ、データセット名・出典URL・取得日・座標参照系（EPSG:6697）を登録した。個々の建物には`update_memo`へ元の建物ID・高さ・中心座標を記録した。
 
 ### 7-3. Phase C：Streamlit Viewer
 
@@ -353,7 +354,7 @@ Docker Desktop有無に関わらず実施できることを確認した（§10-2
 | 段階 | タイムボックス | 成功条件 | 未達時の判断 |
 |---|---|---|---|
 | Phase A: 起動・API登録検証 | 10営業日 | `Drone-web`、MySQL、マイグレーション、最小APIがローカルまたはRender Private Serviceで動作し、仮想航路とPoC注意区域を登録・取得できる。 | 原因をランタイム、依存関係、ネットワーク、コード不整合に分類する。大規模改修が必要または解消見込みがない場合、空域デジタルツインの直接利用は停止する。 |
-| Phase B: PLATEAU静的GISの投入 | 10営業日 | 小範囲のLOD1建物を変換・登録・照会できる。 | `SpaceInfra-cpp`を使えない場合は、LOD1建物のフットプリントと高さから自前でボクセル化し、同一の登録インターフェースへ投入する代替案を評価する。 |
+| Phase B: PLATEAU静的GISの投入 | 10営業日 | 小範囲のLOD1建物を変換・登録・照会できる。 | `SpaceInfra-cpp`を使えない場合は、LOD1建物のフットプリントと高さから自前でボクセル化し、同一の登録インターフェースへ投入する代替案を評価する。**実績（2026年8月6日）**：`SpaceInfra-cpp`はWindows専用でRenderでは使用不可と判断し、この代替案を実行した（自前Python変換＋Artisanコマンドで`ground_feature_objects`へ直接投入）。建物29件（1メッシュ）で登録・照会を確認。地形・洪水浸水・土砂災害・土地利用・道路は未実施。 |
 | Phase C: Streamlit Viewer | 5営業日 | StreamlitがAPIから航路・空域レイヤを取得し、接続状態・PoC識別・地図・結果を表示できる。 | APIまたはUIの最小限の補正で解決可能かを判断する。解決不能なら、Viewerを単独の照会ツールに限定し、統合PoC完了とはしない。 |
 
 Phase AまたはBで直接利用を停止した場合は、前版の構成へ戻す。すなわちStreamlit＋PostGIS等の独立GIS基盤で、同じデータメタデータ、PoC識別、高度基準の統一、出典表示を維持してPoCを継続する。
@@ -374,9 +375,9 @@ Phase AまたはBで直接利用を停止した場合は、前版の構成へ戻
 8. PoCレコードが、接頭辞およびメタデータにより実データと機械的に区別できる。**充足（2026年8月6日）**：`area`/`flight_prohibited_area`の取得結果で常に「実データ」表示になっていたバグ（実APIレスポンスにis_poc等のメタデータが無いため）を、`POC-CHICHIBU-`接頭辞での判定に修正（コミット`e65d0d6`）し、Renderで実際に「PoC」表示になることを確認した。
 9. 高度基準の統一が完了していない状態では「高度比較未検証」と表示され、垂直方向の交差・離隔判定が出力されない。**充足**（未着手のため常時「未検証」表示）。
 
-PLATEAUの建物を `SpaceInfra-cpp` 経由で登録・照会できた場合を、**Phase B**の完了基準とする。
+PLATEAUの建物を `SpaceInfra-cpp` 経由で登録・照会できた場合を、**Phase B**の完了基準とする。**実績（2026年8月6日）**：`SpaceInfra-cpp`はRenderで使用できないと判断し、§10-3が定める代替案（自前でのボクセル化）を採用した。この代替案によりPLATEAU秩父市2025の実建物（1メッシュ、29件）を登録し、APIから取得できることを確認した。ただし地形・洪水浸水・土砂災害・土地利用・道路は未実施であり、Phase Bは建物のみの部分達成にとどまる。
 
-2026年8月6日時点で、Phase Aの受入基準（#1〜#3、#7〜#9）はいずれも充足した。#5は地図描画の範囲が航路のみという制約付きで一部充足。Phase Cとしての完全なMVP完了は、Phase B（PLATEAUデータ投入）が未着手のため引き続き未達。詳細経緯は[進捗ログ.md](進捗ログ.md)の該当日エントリを参照。
+2026年8月6日時点で、Phase Aの受入基準（#1〜#3、#7〜#9）はいずれも充足した。#5は地図描画の範囲が航路のみという制約付きで一部充足。Phase Bは建物データの登録・照会のみ部分達成（地形・災害リスク・土地利用・道路は未実施）。Phase Cとしての完全なMVP完了は、Phase Bの残り作業が未完のため引き続き未達。詳細経緯は[進捗ログ.md](進捗ログ.md)の該当日エントリを参照。
 
 ---
 
@@ -388,7 +389,7 @@ PLATEAUの建物を `SpaceInfra-cpp` 経由で登録・照会できた場合を�
 | MySQLの配備先 | **暫定決定済み（2026年8月5日）**：RenderにネイティブMySQLが無いため、公式イメージ＋永続ディスクのPrivate Serviceで代替（§10-2）。長期運用時は外部マネージドDBへの移行を再検討する。 |
 | API認証 | **暫定決定済み（2026年8月5日）**：本格的なSanctum導入までの間、簡易APIキー認証（`X-API-Key`）＋Render Private Serviceによるネットワーク制限を組み合わせる（§10-2）。Sanctum本格導入は引き続き未着手。 |
 | APIペイロード | **判明済み（2026年8月5日）**：`drone_route`・`ground_feature_voxel`・`area`・`flight_prohibited_area`（`general_purpose`経由含む）の必須パラメータを実コードから確認（§6-2）。ただしarea／flight_prohibited_areaの取得側はネイティブ変換処理依存の制約が残る。 |
-| 変換経路 | PLATEAU CityGMLを`SpaceInfra-cpp`のどの実行ファイル・引数で変換し、どのAPI／DBへ投入するか。 |
+| 変換経路 | **決定済み（2026年8月6日）**：`SpaceInfra-cpp`は不使用。PLATEAU CityGMLをPython（`parse_bldg.py`、junhongo-ccs/airspace）でJSONへ変換し、Laravelのartisanコマンド（`plateau:import-buildings`、junhongo-ccs/airway-digitaltwin-db）で`ground_feature_objects`へ直接投入する。登録用APIが存在しないため、DBへの直接投入以外の経路は無い（§7-2、§14-4）。 |
 | 空間ID・ボクセル | **水平方向のID形式は2026年8月5日に判明済み**（§6-2：ズーム17固定のWeb Mercatorタイル形式`"z/0/x/y"`、`ApiFunction::get_spatial_xy_on_point`）。座標系（EPSG）、単位、**高度基準・鉛直方向のボクセル分割**、解像度は引き続き未確認。 |
 | データ量 | CityGML・点群をRenderで扱えるか。必要なら変換はローカルまたは別バッチ基盤へ分離する。 |
 | 気象 | 無償データを取り込む場合の遅延・利用条件・格納形式を確認する。 |
@@ -470,3 +471,14 @@ junhongo-ccs/airspaceのStreamlit Viewerからjunhongo-ccs/airway-digitaltwin-db
 | `GET /ground_feature_voxel`が引数ゼロで呼ばれてTypeErrorになっていた（`$request`に型ヒントが無いためLaravelのDIが解決できない） | Renderのアクセスログのスタックトレース：`Controller.php(54): App\Http\Controllers\Api\GroundFeatureVoxelController::get_ground_feature_voxel()`（引数無し） |
 | `AreaDetailObject`モデルに`$fillable`/`$guarded`が設定されておらず、`create()`による一括代入が`MassAssignmentException`になる | `airway-digitaltwin-db/drone-web/laravel/app/Models/AreaDetailObject.php`（Renderの`php artisan tinker`で実際にエラーを確認） |
 | ネイティブ変換処理が本来作る`area_detail_objects`の行を手動投入すれば、`GET /general_purpose?requestType=area`が該当エリアを返す | Renderの`airspace-drone-web`のWeb Shellから`php artisan tinker`で`area_detail_objects`へ行を追加し、Streamlitの照会結果に反映されることを確認（[進捗ログ.md](進捗ログ.md) 2026-08-06） |
+
+### 14-4. Phase B着手による根拠（2026年8月6日、v0.6で追加）
+
+| 仕様で用いる事実 | 根拠 |
+|---|---|
+| `SpaceInfra-cpp`はCMake/Makefileを持たない、Visual Studio専用（`.sln`/`.vcxproj`）のC++プロジェクトである | `airway-digitaltwin-db/spaceInfra-cpp/`配下に`.sln`ファイルが14件存在し、CMakeLists.txt・Makefileは存在しない（再帰検索で確認）。ビルド手順は`airway-digitaltwin-db/spaceInfra-cpp/README.md`（VS2022インストール、vcpkgへの`libcitygml`手動配置、MySQL Connector/C++の手動ダウンロード・配置を要求） |
+| 地物ボクセルを登録するAPIが存在しない | `airway-digitaltwin-db/drone-web/laravel/app/Http/Controllers/Api/UserApiController.php`の`spatial_voxel`・`point_cloud_file`等は全て取得・ZIPダウンロード専用（`SpaceObject::where(...)->first()`で既存データを検索するのみ）。`GroundFeatureVoxelController`も同様に取得専用 |
+| `ground_feature_objects`テーブルの主キーは`ground_feature_object_id`（自動採番）、`data_sources`の主キーは`data_source_id`（クライアント採番、自動採番ではない） | `airway-digitaltwin-db/drone-web/laravel/database/migrations/2024_11_22_105259_create_ground_feature_objects_table.php`、`.../2023_10_13_201539_create_data_sources.php` |
+| `GroundFeatureObject`モデルも`$fillable`/`$guarded`が未設定（コメントアウトされている） | `airway-digitaltwin-db/drone-web/laravel/app/Models/GroundFeatureObject.php:17`（`#protected $guarded = [];`） |
+| Laravelアプリのタイムゾーンは`Asia/Tokyo`である。サーバー側`now()`で生成した日時と、UTCで送られるクライアントの`timing`パラメータとの比較が9時間ずれ、`GET /ground_feature_voxel`が該当データを取得できない不具合の原因になった | `airway-digitaltwin-db/drone-web/laravel/config/app.php:73`（`'timezone' => 'Asia/Tokyo'`）。実際に`now()`使用時は0件、`now('UTC')`修正後は取得成功したことをRenderで確認（[進捗ログ.md](進捗ログ.md) 2026-08-06） |
+| PLATEAU秩父市2025のCityGML ZIP（580MB）は、HTTP RangeリクエストでZIP中央ディレクトリと個別エントリを部分取得できる（ZIP形式が末尾に中央ディレクトリを持つ構造であるため） | 実際にPythonの`zipfile`とHTTP Range対応の疑似ファイルオブジェクトで、約96KBの通信量のみで対象メッシュの建物CityGML（15〜217KB）を取得できることを確認（[進捗ログ.md](進捗ログ.md) 2026-08-06） |
