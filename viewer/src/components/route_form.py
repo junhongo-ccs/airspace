@@ -61,7 +61,11 @@ def render_settings_panel() -> dict:
             "OFFにすると API接続先へ実際に接続を試みる。",
         )
 
-        client = DigitalTwinApiClient(base_url, mock=mock_mode, api_key=api_key or None)
+        # state に st.session_state を渡すことで、モックストアと航路キャッシュが
+        # Streamlitの再実行をまたいで保持される（api_client.py は Streamlit 非依存）。
+        client = DigitalTwinApiClient(
+            base_url, mock=mock_mode, api_key=api_key or None, state=st.session_state
+        )
         connection_state = client.check_connection()
         status_panel.render_connection_status(connection_state, mock_mode)
 

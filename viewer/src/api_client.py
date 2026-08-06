@@ -15,10 +15,10 @@ from __future__ import annotations
 import random
 import time
 import uuid
+from collections.abc import MutableMapping
 from datetime import datetime, timezone
 
 import requests
-import streamlit as st
 
 from .altitude import extract_building_id, lookup_building_height
 from .config import API_PREFIX, CREATED_BY, ENVIRONMENT, IS_POC, POC_PREFIX
@@ -90,15 +90,29 @@ def poc_metadata() -> dict:
 
 class DigitalTwinApiClient:
     """api_key を指定すると、Drone-web側の簡易APIキー認証（junhongo-ccs/airway-digitaltwin-db
-    の VerifyApiKey ミドルウェア）向けに X-API-Key ヘッダーを全リクエストへ付与する。"""
+    の VerifyApiKey ミドルウェア）向けに X-API-Key ヘッダーを全リクエストへ付与する。
 
-    def __init__(self, base_url: str, mock: bool = True, api_key: str | None = None, timeout: float = 5.0):
+    このクラスは Streamlit に依存しない。Streamlit の再実行をまたいで状態を保持したい
+    場合は state に st.session_state を渡す（viewer/src/components/route_form.py）。
+    FastAPI BFF（viewer_api/app.py）のように Streamlit が無いプロセスから使う場合は
+    state を省略し、インスタンスごとの一時辞書で動作させる。
+    """
+
+    def __init__(
+        self,
+        base_url: str,
+        mock: bool = True,
+        api_key: str | None = None,
+        timeout: float = 5.0,
+        state: MutableMapping | None = None,
+    ):
         self.base_url = base_url.rstrip("/")
         self.mock = mock
         self.api_key = api_key
         self.timeout = timeout
+        store: MutableMapping = {} if state is None else state
         if mock:
-            self._store = st.session_state.setdefault(
+            self._store = store.setdefault(
                 "_mock_digital_twin_store",
                 {"routes": [], "areas": [], "prohibited_areas": [], "voxels": None},
             )
@@ -108,7 +122,7 @@ class DigitalTwinApiClient:
             # そのため「このセッションで登録したid」と「登録時に送った表示用の座標等」を
             # クライアント側で覚えておき、list_routes()ではidごとにGETして存在確認しつつ、
             # 表示にはこのキャッシュを使う。
-            self._real_route_cache = st.session_state.setdefault("_real_digital_twin_route_cache", {})
+            self._real_route_cache = store.setdefault("_real_digital_twin_route_cache", {})
 
     def _headers(self) -> dict:
         return {"X-API-Key": self.api_key} if self.api_key else {}

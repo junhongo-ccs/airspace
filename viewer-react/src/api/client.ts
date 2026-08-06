@@ -4,23 +4,25 @@
 
 const BFF_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
 
+// BFF が返す航路レコード（viewer/src/api_client.py の register_route の戻り値）。
+// 識別子は id に統一する（実APIでは数値、モックではUUIDだがBFFで文字列へ揃えている）。
 export interface DroneRoute {
-  drone_route_id: string;
-  start_latitude: number;
-  start_longitude: number;
-  end_latitude: number;
-  end_longitude: number;
-  altitude_m: number;
+  id: string;
+  name: string;
+  start: { lat: number; lon: number };
+  end: { lat: number; lon: number };
+  agl_m: number;
   created_at: string;
 }
 
+// BFF が返す地物ボクセル。実APIはボクセル参照を返すため footprint は含まれない。
 export interface GroundFeature {
-  ground_feature_object_id: string;
-  object_cd: number; // 1=建物、2=道路、3=土砂災害、4=洪水浸水、5=土地利用
-  latitude: number;
-  longitude: number;
-  height_m?: number;
-  created_at: string;
+  id: string;
+  layer: string; // building / road / landslide / flood / landuse
+  source: string;
+  is_poc: boolean;
+  height_m?: number | null;
+  raw?: unknown;
 }
 
 export interface ApiResponse<T> {
@@ -28,6 +30,17 @@ export interface ApiResponse<T> {
   message?: string;
   status: number;
   timestamp: string;
+}
+
+// FastAPI は失敗時に {"detail": "..."} を返す。表示用の文字列へ整形する。
+async function describeError(response: Response): Promise<string> {
+  try {
+    const body = await response.json();
+    if (body?.detail) return `HTTP ${response.status}: ${body.detail}`;
+  } catch {
+    // JSON でない場合は下のフォールバックへ
+  }
+  return `HTTP ${response.status} from BFF`;
 }
 
 // 航路を登録（BFF 経由）
@@ -54,15 +67,16 @@ export async function registerRoute(
     });
 
     if (!response.ok) {
-      console.error(`BFF error: ${response.status}`);
-      return null;
+      // BFF は失敗理由を detail に入れて返す。握りつぶすと画面上は
+      // 「Failed to register route」としか出ず原因が追えないため、そのまま投げる。
+      throw new Error(await describeError(response));
     }
 
     const data = await response.json();
     return data.data || null;
   } catch (error) {
     console.error('Failed to register route:', error);
-    return null;
+    throw error;
   }
 }
 
@@ -131,11 +145,14 @@ export async function getFlightProhibitedAreas(
   }
 }
 
-// API接続状態を確認（BFF 経由）
+// Laravel API への到達可否を確認（BFF 経由）。
+// BFF は到達できない場合も 200 で {connected: false} を返すため、本文まで見る。
 export async function checkApiHealth(): Promise<boolean> {
   try {
     const response = await fetch(`${BFF_BASE}/connection_status`);
-    return response.ok;
+    if (!response.ok) return false;
+    const data = await response.json();
+    return data.connected === true;
   } catch {
     return false;
   }

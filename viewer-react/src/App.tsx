@@ -42,7 +42,7 @@ function App() {
 
       setQueryResult({
         status: 'success',
-        routeId: route.drone_route_id,
+        routeId: route.id,
         features,
         timestamp: new Date().toISOString(),
       });
