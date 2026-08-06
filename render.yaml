@@ -30,6 +30,8 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.10
+      - key: PYTHONPATH
+        value: /opt/render/project/src
       # airspace-drone-web（Private Service）への接続情報。
       - key: DIGITAL_TWIN_HOST
         fromService:
