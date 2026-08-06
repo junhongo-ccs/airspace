@@ -128,16 +128,20 @@ class DigitalTwinApiClient:
         return {"X-API-Key": self.api_key} if self.api_key else {}
 
     # --- 接続状態（design.md §9-1） -----------------------------------
-    def check_connection(self) -> str:
-        """'connected' / 'disconnected' / 'error' のいずれかを返す。
+    def check_connection_detail(self) -> tuple[str, str | None]:
+        """('connected' / 'disconnected' / 'error', 理由) を返す。
 
         実コード確認済み: GET /drone_route は drone_route_id が無いと400、
         存在しないidでも400（"is not exist"）を返す。400は「サーバへは到達し
         認証も通ったが、該当データが無いだけ」なので接続確認としては成功扱いにする。
         401/403（認証失敗）と5xx（サーバ側エラー）だけを"error"とする。
+
+        理由の文字列は、状態表示だけを見て原因を判断できるようにするためのもの。
+        到達性とAPIキーは切り分けが紛らわしく、実際に401でつまずいたため
+        （2026-08-06）、401/403では確認すべき環境変数まで名指しする。
         """
         if self.mock:
-            return "connected"
+            return "connected", None
         try:
             resp = requests.get(
                 f"{self.base_url}{API_PREFIX}/drone_route",
@@ -145,11 +149,22 @@ class DigitalTwinApiClient:
                 headers=self._headers(),
                 timeout=self.timeout,
             )
-        except requests.exceptions.RequestException:
-            return "disconnected"
-        if resp.status_code in (401, 403) or resp.status_code >= 500:
-            return "error"
-        return "connected"
+        except requests.exceptions.RequestException as exc:
+            return "disconnected", f"接続できません: {exc}"
+        if resp.status_code in (401, 403):
+            hint = (
+                "APIキーが未設定です"
+                if not self.api_key
+                else "DIGITAL_TWIN_API_KEY が Drone-web 側の API_KEY と一致しているか確認してください"
+            )
+            return "error", f"HTTP {resp.status_code} {resp.reason}（{hint}）"
+        if resp.status_code >= 500:
+            return "error", f"HTTP {resp.status_code} {resp.reason}: {resp.text[:200]}"
+        return "connected", None
+
+    def check_connection(self) -> str:
+        """'connected' / 'disconnected' / 'error' のいずれかを返す。"""
+        return self.check_connection_detail()[0]
 
     # --- 航路：POST/GET /airDtw/api/drone_route -----------------------
     def register_route(self, name: str, start: tuple, end: tuple, agl_m: float, layers: list[str]) -> dict:

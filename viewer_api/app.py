@@ -126,7 +126,7 @@ async def connection_status_endpoint():
     mock = mock_mode()
     base = _base_url()
     try:
-        state = _client().check_connection()
+        state, detail = _client().check_connection_detail()
     except Exception as exc:  # 設定不備などで生成自体に失敗した場合
         return {
             "status": "error",
@@ -136,12 +136,15 @@ async def connection_status_endpoint():
             "base_url": base,
             "message": str(exc),
         }
+    # message は失敗理由（例: HTTP 401 Unauthorized）。到達性とAPIキーの
+    # 切り分けをこのエンドポイントだけで完結させるために返す。
     return {
         "status": "success",
         "connected": state == "connected",
         "state": state,
         "mock": mock,
         "base_url": base,
+        "message": detail,
     }
 
 

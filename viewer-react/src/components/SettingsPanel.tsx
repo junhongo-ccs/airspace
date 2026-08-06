@@ -39,10 +39,12 @@ function describeConnection(connection: ConnectionStatus | null): {
   if (connection.connected) {
     return { label: '接続済み', dotClass: 'bg-status-ok', detail: connection.baseUrl };
   }
+  // 失敗時は理由と接続先の両方を出す。どちらか一方だと「URLが違うのか、
+  // 認証で弾かれているのか」が画面から判断できない。
   return {
     label: connection.state === 'error' ? 'エラー' : '未接続',
     dotClass: 'bg-status-error',
-    detail: connection.message ?? connection.baseUrl,
+    detail: [connection.message, connection.baseUrl].filter(Boolean).join(' / ') || undefined,
   };
 }
 
