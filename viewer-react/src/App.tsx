@@ -29,6 +29,7 @@ function App() {
   const [endLat, setEndLat] = useState(35.9699357);
   const [endLon, setEndLon] = useState(139.0333939);
   const [aglM, setAglM] = useState(100.0);
+  const [showRoute, setShowRoute] = useState(true);
   const [queryResult, setQueryResult] = useState<QueryResult>({ status: 'idle' });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -110,6 +111,8 @@ function App() {
           setEndLon={setEndLon}
           aglM={aglM}
           setAglM={setAglM}
+          showRoute={showRoute}
+          setShowRoute={setShowRoute}
           onQuery={handleQuery}
           isLoading={isLoading}
         />
@@ -120,6 +123,7 @@ function App() {
             routeData={
               routeRegistered ? { startLat, startLon, endLat, endLon } : null
             }
+            showRoute={showRoute}
           />
 
           {/* Bottom results panel */}

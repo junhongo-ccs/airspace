@@ -11,9 +11,24 @@ interface RouteData {
 
 interface MapContainerProps {
   routeData?: RouteData | null;
+  // 左パネルの「航路」レイヤ切り替え。false のときは描画しない。
+  showRoute?: boolean;
 }
 
-export default function MapContainer({ routeData }: MapContainerProps) {
+const ROUTE_LAYER_IDS = ['route-line', 'route-start', 'route-end'];
+const ROUTE_SOURCE_IDS = ['route', 'route-points'];
+
+// 航路のレイヤとソースを取り除く。レイヤはソースより先に消す必要がある。
+function removeRouteLayers(map: maplibregl.Map) {
+  for (const id of ROUTE_LAYER_IDS) {
+    if (map.getLayer(id)) map.removeLayer(id);
+  }
+  for (const id of ROUTE_SOURCE_IDS) {
+    if (map.getSource(id)) map.removeSource(id);
+  }
+}
+
+export default function MapContainer({ routeData, showRoute = true }: MapContainerProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   // スタイル読み込み完了前に addSource/addLayer を呼ぶと MapLibre が
@@ -57,7 +72,13 @@ export default function MapContainer({ routeData }: MapContainerProps) {
       },
     });
 
-    map.current.on('load', () => setStyleReady(true));
+    // 'style.load' はスタイルの解析完了時、'load' はタイル取得を含む初回描画完了時に
+    // 発火する。addSource/addLayer に必要なのは前者だけなので、'load' だけを待つと
+    // タイル配信が遅い・到達できない環境で航路が永久に描かれない。両方を購読し、
+    // 先に来たほうで準備完了とする（setState は同値なので二重発火は無害）。
+    const markStyleReady = () => setStyleReady(true);
+    map.current.on('style.load', markStyleReady);
+    map.current.on('load', markStyleReady);
 
     return () => {
       setStyleReady(false);
@@ -67,17 +88,15 @@ export default function MapContainer({ routeData }: MapContainerProps) {
 
   // 航路ラインを描画
   useEffect(() => {
-    if (!map.current || !styleReady || !routeData) return;
+    if (!map.current || !styleReady) return;
 
     const mapInstance = map.current;
 
-    // 既存のルートレイヤーを削除
-    if (mapInstance.getSource('route')) {
-      if (mapInstance.getLayer('route-line')) {
-        mapInstance.removeLayer('route-line');
-      }
-      mapInstance.removeSource('route');
-    }
+    // 何を描くかに関わらず、まず前回の描画を消す。こうしないと登録失敗後
+    // （routeData=null）やレイヤ非表示時に古い航路が残り、現在の入力に対する
+    // 結果だと誤認される。
+    removeRouteLayers(mapInstance);
+    if (!routeData || !showRoute) return;
 
     // ルートラインのGeoJSON
     const routeGeoJSON = {
@@ -116,16 +135,6 @@ export default function MapContainer({ routeData }: MapContainerProps) {
     });
 
     // 始点・終点のマーカー
-    if (mapInstance.getSource('route-points')) {
-      if (mapInstance.getLayer('route-start')) {
-        mapInstance.removeLayer('route-start');
-      }
-      if (mapInstance.getLayer('route-end')) {
-        mapInstance.removeLayer('route-end');
-      }
-      mapInstance.removeSource('route-points');
-    }
-
     const pointsGeoJSON = {
       type: 'FeatureCollection',
       features: [
@@ -178,7 +187,7 @@ export default function MapContainer({ routeData }: MapContainerProps) {
         'circle-opacity': 0.9,
       },
     });
-  }, [routeData, styleReady]);
+  }, [routeData, showRoute, styleReady]);
 
   return (
     <div className="flex-1 relative bg-bg-app">

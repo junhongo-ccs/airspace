@@ -13,6 +13,8 @@ interface SettingsPanelProps {
   setEndLon: (val: number) => void;
   aglM: number;
   setAglM: (val: number) => void;
+  showRoute: boolean;
+  setShowRoute: (val: boolean) => void;
   onQuery: () => void;
   isLoading: boolean;
 }
@@ -56,6 +58,8 @@ export default function SettingsPanel({
   setEndLon,
   aglM,
   setAglM,
+  showRoute,
+  setShowRoute,
   onQuery,
   isLoading,
 }: SettingsPanelProps) {
@@ -193,16 +197,26 @@ export default function SettingsPanel({
             レイヤ
           </label>
           <div className="space-y-2">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" defaultChecked className="w-4 h-4" />
-              <span className="text-sm text-text-primary">建物</span>
+            {/* 建物・DID地区は地図描画そのものが未実装（BFFはボクセル参照を返すのみで
+                ポリゴンを持たない）。操作できるように見せると「非表示にしたのに結果が
+                変わらない」という誤解を生むため、無効化して準備中と明示する。 */}
+            <label className="flex items-center gap-2 cursor-not-allowed opacity-60">
+              <input type="checkbox" checked={false} disabled readOnly className="w-4 h-4" />
+              <span className="text-sm text-text-secondary">建物</span>
+              <span className="text-xs text-text-secondary">（準備中）</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-not-allowed opacity-60">
+              <input type="checkbox" checked={false} disabled readOnly className="w-4 h-4" />
+              <span className="text-sm text-text-secondary">DID地区</span>
+              <span className="text-xs text-text-secondary">（準備中）</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" defaultChecked className="w-4 h-4" />
-              <span className="text-sm text-text-primary">DID地区</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" defaultChecked className="w-4 h-4" />
+              <input
+                type="checkbox"
+                checked={showRoute}
+                onChange={(e) => setShowRoute(e.target.checked)}
+                className="w-4 h-4"
+              />
               <span className="text-sm text-text-primary">航路</span>
             </label>
           </div>
