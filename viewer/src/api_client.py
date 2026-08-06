@@ -293,16 +293,22 @@ class DigitalTwinApiClient:
         }
         data = self._get("/general_purpose", params=params)
         objects = (data.get("result") or {}).get("objects", []) if isinstance(data, dict) else []
-        return [
-            {
-                "id": obj.get("spatialId"),
-                "name": (obj.get("other") or {}).get("area"),
-                "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
-                "is_poc": False,
-                "raw": obj,
-            }
-            for obj in objects
-        ]
+        results = []
+        for obj in objects:
+            name = (obj.get("other") or {}).get("area")
+            results.append(
+                {
+                    "id": obj.get("spatialId"),
+                    "name": name,
+                    "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
+                    # 実APIのレスポンスにis_poc等のメタデータは含まれないため、
+                    # 唯一返ってくる識別子（area_id、properties.areaに設定した値）の
+                    # 接頭辞で判定する（仕様書§6-1・受入基準§11-8対応）。
+                    "is_poc": bool(name) and str(name).startswith(POC_PREFIX),
+                    "raw": obj,
+                }
+            )
+        return results
 
     # --- 飛行禁止区域：POST /airDtw/api/flight_prohibited_area --------
     def register_flight_prohibited_area(self, name: str, polygon: list[tuple]) -> dict:
@@ -334,16 +340,19 @@ class DigitalTwinApiClient:
         }
         data = self._get("/general_purpose", params=params)
         objects = (data.get("result") or {}).get("objects", []) if isinstance(data, dict) else []
-        return [
-            {
-                "id": obj.get("spatialId"),
-                "name": (obj.get("other") or {}).get("name"),
-                "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
-                "is_poc": False,
-                "raw": obj,
-            }
-            for obj in objects
-        ]
+        results = []
+        for obj in objects:
+            name = (obj.get("other") or {}).get("name")
+            results.append(
+                {
+                    "id": obj.get("spatialId"),
+                    "name": name,
+                    "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
+                    "is_poc": bool(name) and str(name).startswith(POC_PREFIX),
+                    "raw": obj,
+                }
+            )
+        return results
 
     # --- HTTPヘルパー（mock=False、実API疎通用） -----------------------
     def _get(self, path: str, params: dict | None = None):
