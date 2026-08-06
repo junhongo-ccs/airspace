@@ -1,11 +1,12 @@
 # 空域デジタルツイン活用・ドローン航路GIS-PoC 仕様書
 
-版：0.4（実装反映版）  
-作成日：2026年8月5日  
-ステータス：Phase A実装検証中  
+版：0.5（Phase A検証完了版）  
+作成日：2026年8月6日  
+ステータス：Phase A受入基準達成、Phase B未着手  
 
 | 版 | 日付 | 変更内容 | 対応レビュー |
 |---|---|---|---|
+| 0.5 | 2026年8月6日 | `drone_route_id`不一致バグの修正（fork）を実際にデプロイ・動作確認し、Phase A受入基準#2（航路の登録・取得）を達成。`ground_feature_voxel`の`$request`型ヒント欠落による500エラーを修正。注意区域の登録・取得を、tinkerでのDB手動投入（ネイティブ変換処理の代替）により実際に確認し、受入基準#3を達成。`area`/`flight_prohibited_area`取得結果のPoC判定を接頭辞ベースに修正し、受入基準#8を達成。§11の各項目の充足状況を更新し、§6-2・§7-4・§14-2に追記。 | 実装セッション（2026-08-06、[進捗ログ](進捗ログ.md)参照） |
 | 0.4 | 2026年8月5日 | Streamlit ViewerおよびDrone-webの実装・Render配備を実施し判明した事実を反映。API各エンドポイントの実際の必須パラメータ・レスポンス形式（§6-2）、空間IDの実仕様（ズーム17固定・Web Mercatorタイル形式）、drone_route取得が主キー`drone_route_info_id`とクライアント採番`drone_route_id`の不一致により機能しない点、area/flight_prohibited_area登録がネイティブ変換処理に依存し取得側が機能しない可能性がある点、Render配備の実際の構成（MySQLはPrivate Service＋永続ディスクで代替、ローカルDockerではなくRenderのPrivate Serviceで検証）を追加。§6冒頭・§7-1・§10-3の前提を「ローカルまたはRender Private Service」に統一。§14に実コード確認根拠（§14-2、forkのパス起点ルールを明記）を追加。 | 実装セッション（2026-08-05、[進捗ログ](進捗ログ.md)参照。レビュー指摘を反映） |
 | 0.3 | 2026年8月5日 | 実コード確認の根拠、PLATEAU秩父市2025を正データとする方針、高度基準、PoC識別、ライセンス、撤退基準、実行環境上の注意を追加。フェーズ呼称をA/B/Cへ統一。 | 仕様レビュー指摘（第2回・第3回） |
 | 0.2 | 2026年8月5日 | Streamlit単体GIS評価から、空域デジタルツインをデータ基盤として直接起動・活用する構成へ変更。 | 仕様レビュー指摘（第1回） |
@@ -255,17 +256,22 @@ junhongo-ccs/airspace の Streamlit Viewer から junhongo-ccs/airway-digitaltwi
 - DEM・建物の精度、変換誤差、更新時点、ボクセル解像度を別途表示する。
 - AGL、絶対高度、建物高さ、地形高の比較式は、格納形式を実測してから確定する。
 - §5-3の高度基準の統一が完了するまで、垂直方向の交差・離隔判定を表示しない。
-- **§6-2で判明した既知のリスク（drone_route）**：`GET /drone_route`は主キー
-  `drone_route_info_id`で検索する実装になっており、クライアントが送る
-  `drone_route_id`とは一致しない。POST側のレスポンスも空で`drone_route_info_id`を
-  返さないため、現状のAPI・クライアント実装のままではPhase Aの受入基準（§11-2）
-  「GETで同じ航路を取得できる」を満たせない。API側の修正（`drone_route_id`列での
-  検索への変更）か、代替の存在確認手段が必要。
-- **§6-2で判明した既知のリスク（area・flight_prohibited_area）**：登録（POST）が
-  成功しても、空間ID紐付け用のネイティブ変換処理が未配備のため、一覧取得（GET）が
-  恒久的に空を返す可能性がある。Phase Aの受入基準（§11-3）「登録し、APIから照会
-  できることを確認する」のうち、照会側の充足はこの制約の解消（ネイティブ処理の
-  代替実装、またはDBへの直接検証）に依存する。
+- **drone_routeの主キー不一致（2026年8月6日 解消済み）**：`GET /drone_route`が
+  主キー`drone_route_info_id`で検索しておりクライアント採番の`drone_route_id`と
+  一致しない問題があったが、fork側で`drone_route_id`列を検索するよう修正し
+  （コミット`b60544e`）、Render上で登録・取得の往復を確認した（§11-2、§14-2）。
+- **ground_feature_voxelの型ヒント欠落（2026年8月6日 解消済み）**：直接ルートとして
+  呼ぶとLaravelのDIが解決できず500になる問題があったが、型ヒントを追加して修正
+  （コミット`1ebf957`）。Phase Bのデータが無いため、修正後は0件が正しい結果となる。
+- **area・flight_prohibited_areaの取得（未解消、運用時の課題として残存）**：登録
+  （POST）は成功するが、空間ID紐付け用のネイティブ変換処理が未配備のため、通常の
+  運用フローでは一覧取得（GET）が恒久的に空を返す。2026年8月6日、Renderの
+  `airspace-drone-web`でtinkerによりDBへ手動投入し、API自体の登録・照会ロジックが
+  正しく機能することは確認できた（§11-3）が、これは検証目的の代替手段であり、
+  ネイティブ変換処理そのものは依然として未実装・未配備のままである。
+- **PoC識別の欠落（2026年8月6日 解消済み）**：`area`/`flight_prohibited_area`の
+  取得結果が実APIにis_poc等のメタデータが無いため常に「実データ」表示になって
+  いたが、`POC-CHICHIBU-`接頭辞での判定に修正した（コミット`e65d0d6`、§11-8）。
 
 ---
 
@@ -358,19 +364,19 @@ Phase AまたはBで直接利用を停止した場合は、前版の構成へ戻
 
 以下をすべて満たせば、空域デジタルツイン活用PoCの**Phase C（MVP）**を完了とする。
 
-1. `Drone-web` とMySQLをローカルまたはRender Private Serviceで起動し、マイグレーションを完了できる。
-2. `POST /airDtw/api/drone_route` でサンプル航路を登録し、`GET`で同じ航路を取得できる（§6-2・§7-4のとおり、`GET /drone_route`は主キー`drone_route_info_id`で検索するためクライアント採番の`drone_route_id`では引けず、API側の修正または代替の存在確認手段が無い限り現時点で未充足）。
-3. サンプルの注意区域をエリアまたは禁止区域として登録し、APIから照会できる（§6-2・§7-4のとおり、照会側はネイティブ変換処理未配備のため現時点で未充足の可能性がある）。
-4. StreamlitがデジタルツインAPIの接続状態と取得結果を表示できる。
-5. Streamlit上で、登録済み航路・注意区域・背景地図を重ねて表示できる。
-6. 出力に、入力値、API応答時刻、データ出典、変換履歴、注意文を含められる。
-7. APIがインターネットへ無認証公開されない構成である。
-8. PoCレコードが、接頭辞およびメタデータにより実データと機械的に区別できる。
-9. 高度基準の統一が完了していない状態では「高度比較未検証」と表示され、垂直方向の交差・離隔判定が出力されない。
+1. `Drone-web` とMySQLをローカルまたはRender Private Serviceで起動し、マイグレーションを完了できる。**充足（2026年8月5日）**。
+2. `POST /airDtw/api/drone_route` でサンプル航路を登録し、`GET`で同じ航路を取得できる。**充足（2026年8月6日）**：`GET /drone_route`が主キー`drone_route_info_id`で検索していたバグ（§6-2）を修正し（fork、コミット`b60544e`）、Render上で実際に登録→取得の往復を確認した。
+3. サンプルの注意区域をエリアまたは禁止区域として登録し、APIから照会できる。**充足（2026年8月6日、条件付き）**：登録（POST）は問題なく動作する。取得（GET）はネイティブ変換処理（§6-2）が未配備のため、Renderの`airspace-drone-web`のWeb Shellから`php artisan tinker`で空間ID紐付けテーブル（`area_detail_objects`）へ手動投入し、API自体の登録・照会ロジックが正しく機能することを確認した。**運用でこの基準を恒久的に満たすには、ネイティブ変換処理の実装または代替手段が別途必要**（§7-4参照）。
+4. StreamlitがデジタルツインAPIの接続状態と取得結果を表示できる。**充足**。
+5. Streamlit上で、登録済み航路・注意区域・背景地図を重ねて表示できる。**一部充足**：航路は地図に表示される。地物ボクセル・注意区域・禁止区域は実APIのレスポンスに緯度経度ポリゴンが含まれないため（§6-2）、結果テーブルには表示されるが地図描画は未対応。
+6. 出力に、入力値、API応答時刻、データ出典、変換履歴、注意文を含められる。**充足**（CSV／GeoJSON出力、免責文言含む）。
+7. APIがインターネットへ無認証公開されない構成である。**充足**：簡易APIキー認証＋Render Private Service化（§10-2）。
+8. PoCレコードが、接頭辞およびメタデータにより実データと機械的に区別できる。**充足（2026年8月6日）**：`area`/`flight_prohibited_area`の取得結果で常に「実データ」表示になっていたバグ（実APIレスポンスにis_poc等のメタデータが無いため）を、`POC-CHICHIBU-`接頭辞での判定に修正（コミット`e65d0d6`）し、Renderで実際に「PoC」表示になることを確認した。
+9. 高度基準の統一が完了していない状態では「高度比較未検証」と表示され、垂直方向の交差・離隔判定が出力されない。**充足**（未着手のため常時「未検証」表示）。
 
 PLATEAUの建物を `SpaceInfra-cpp` 経由で登録・照会できた場合を、**Phase B**の完了基準とする。
 
-現時点（2026年8月5日）の充足状況は[進捗ログ.md](進捗ログ.md)の該当日エントリを参照。本節の基準自体はここでは変更しない。
+2026年8月6日時点で、Phase Aの受入基準（#1〜#3、#7〜#9）はいずれも充足した。#5は地図描画の範囲が航路のみという制約付きで一部充足。Phase Cとしての完全なMVP完了は、Phase B（PLATEAUデータ投入）が未着手のため引き続き未達。詳細経緯は[進捗ログ.md](進捗ログ.md)の該当日エントリを参照。
 
 ---
 
@@ -455,3 +461,12 @@ junhongo-ccs/airspaceのStreamlit Viewerからjunhongo-ccs/airway-digitaltwin-db
 | Sanctum認証は実際にコメントアウトされたままであり、書き込み系エンドポイントが無認証で到達可能だった | `airway-digitaltwin-db/drone-web/laravel/routes/api.php:46, 82`（v0.3時点の記述どおり。fork後、簡易APIキー認証へ置き換え済み） |
 
 実行時の必須ペイロード・認証動作・DBスキーマ適合は上記のとおり検証済み。ただし、area／flight_prohibited_areaの取得側（ネイティブ変換処理依存）とPLATEAUデータでの変換ツール（`SpaceInfra-cpp`）の実用性は、Phase Bの範囲としてなお未検証である。
+
+### 14-3. Phase A受入基準の達成確認による根拠（2026年8月6日、v0.5で追加）
+
+| 仕様で用いる事実 | 根拠 |
+|---|---|
+| `drone_route_id`修正後、航路の登録・取得が実際に往復することを確認した | Renderの`airspace-viewer`で登録→照会を実行し、「登録済み航路数」が0→1件になることを確認（[進捗ログ.md](進捗ログ.md) 2026-08-06） |
+| `GET /ground_feature_voxel`が引数ゼロで呼ばれてTypeErrorになっていた（`$request`に型ヒントが無いためLaravelのDIが解決できない） | Renderのアクセスログのスタックトレース：`Controller.php(54): App\Http\Controllers\Api\GroundFeatureVoxelController::get_ground_feature_voxel()`（引数無し） |
+| `AreaDetailObject`モデルに`$fillable`/`$guarded`が設定されておらず、`create()`による一括代入が`MassAssignmentException`になる | `airway-digitaltwin-db/drone-web/laravel/app/Models/AreaDetailObject.php`（Renderの`php artisan tinker`で実際にエラーを確認） |
+| ネイティブ変換処理が本来作る`area_detail_objects`の行を手動投入すれば、`GET /general_purpose?requestType=area`が該当エリアを返す | Renderの`airspace-drone-web`のWeb Shellから`php artisan tinker`で`area_detail_objects`へ行を追加し、Streamlitの照会結果に反映されることを確認（[進捗ログ.md](進捗ログ.md) 2026-08-06） |
