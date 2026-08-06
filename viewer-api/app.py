@@ -1,17 +1,21 @@
 """
-BFF（Backend for Frontend）API サーバー
+BFF（Backend for Frontend）API サーバー（独立した Web Service）
 React フロントエンドから呼び出されるエンドポイントを提供。
 バックエンド（Laravel API）への接続は、Streamlit の既存 api_client.py を流用。
 """
 
 import os
-import asyncio
+import sys
+from pathlib import Path
+
+# viewer モジュールをインポート可能にするため、親ディレクトリを sys.path に追加
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# Streamlit の既存 API クライアントを使用
-from src.api_client import (
+from viewer.api_client import (
     register_route,
     query_features,
     query_areas,
@@ -52,11 +56,7 @@ async def health_check():
 
 @app.post("/register_route")
 async def register_route_endpoint(request: RegisterRouteRequest):
-    """
-    航路を登録する
-    React: POST /api/register_route
-    → BFF: 既存の register_route 関数を呼び出す
-    """
+    """航路を登録する"""
     try:
         result = register_route(
             request.start_latitude,
@@ -74,11 +74,7 @@ async def register_route_endpoint(request: RegisterRouteRequest):
 
 @app.post("/query_features")
 async def query_features_endpoint(request: QueryFeaturesRequest):
-    """
-    航路周辺の地物を取得する
-    React: POST /api/query_features
-    → BFF: 既存の query_features 関数を呼び出す
-    """
+    """航路周辺の地物を取得する"""
     try:
         result = query_features(
             request.latitude, request.longitude, request.radius_degrees
@@ -101,5 +97,5 @@ async def connection_status_endpoint():
 if __name__ == "__main__":
     import uvicorn
 
-    port = int(os.getenv("API_PORT", 8001))
+    port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)

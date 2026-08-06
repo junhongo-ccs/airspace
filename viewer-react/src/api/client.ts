@@ -2,7 +2,7 @@
 // 設計: React → Streamlit BFF (/api) → Laravel API (/airDtw/api)
 // 参照: 仕様書§5-5、実装タスク 3-2-2・3-2-3
 
-const BFF_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
+const BFF_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
 
 export interface DroneRoute {
   drone_route_id: string;

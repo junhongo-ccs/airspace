@@ -20,6 +20,31 @@
 #     エラーが出たら、そのメッセージをそのまま開発者に共有すること。
 services:
   - type: web
+    name: airspace-viewer-api
+    runtime: python
+    plan: starter
+    region: singapore
+    branch: main
+    buildCommand: pip install -r viewer-api/requirements.txt
+    startCommand: cd viewer-api && python -m uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      # airspace-drone-web（Private Service）への接続情報。
+      - key: DIGITAL_TWIN_HOST
+        fromService:
+          name: airspace-drone-web
+          type: pserv
+          property: host
+      - key: DIGITAL_TWIN_PORT
+        fromService:
+          name: airspace-drone-web
+          type: pserv
+          property: port
+      - key: DIGITAL_TWIN_API_KEY
+        sync: false
+
+  - type: web
     name: airspace-viewer-react
     runtime: node
     plan: starter
@@ -38,7 +63,7 @@ services:
     region: singapore
     branch: main
     buildCommand: pip install -r viewer/requirements.txt
-    startCommand: bash viewer/entrypoint.sh
+    startCommand: streamlit run viewer/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.10
