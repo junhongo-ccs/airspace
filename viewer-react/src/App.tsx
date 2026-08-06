@@ -6,7 +6,7 @@ import ResultsPanel from './components/ResultsPanel';
 import Footer from './components/Footer';
 
 function App() {
-  const [apiConnected, setApiConnected] = useState(false);
+  const [apiConnected] = useState(false);
   const [startLat, setStartLat] = useState(35.9683357);
   const [startLon, setStartLon] = useState(139.0313939);
   const [endLat, setEndLat] = useState(35.9699357);
