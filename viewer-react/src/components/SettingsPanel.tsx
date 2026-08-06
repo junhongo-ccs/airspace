@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import type { ConnectionStatus } from '../api/client';
 
 interface SettingsPanelProps {
-  apiConnected: boolean;
+  connection: ConnectionStatus | null;
   startLat: number;
   setStartLat: (val: number) => void;
   startLon: number;
@@ -16,8 +17,35 @@ interface SettingsPanelProps {
   isLoading: boolean;
 }
 
+// 接続状態の見え方。mock は「BFF までは届いているが Laravel は見ていない」状態で、
+// 実データと取り違えないよう Connected とは別扱いにする。
+function describeConnection(connection: ConnectionStatus | null): {
+  label: string;
+  dotClass: string;
+  detail?: string;
+} {
+  if (connection === null) {
+    return { label: 'Checking...', dotClass: 'bg-status-idle' };
+  }
+  if (connection.mock) {
+    return {
+      label: 'Mock mode',
+      dotClass: 'bg-status-warn',
+      detail: 'BFF がモックで応答しています（Laravel 未接続）',
+    };
+  }
+  if (connection.connected) {
+    return { label: 'Connected', dotClass: 'bg-status-ok', detail: connection.baseUrl };
+  }
+  return {
+    label: connection.state === 'error' ? 'Error' : 'Disconnected',
+    dotClass: 'bg-status-error',
+    detail: connection.message ?? connection.baseUrl,
+  };
+}
+
 export default function SettingsPanel({
-  apiConnected,
+  connection,
   startLat,
   setStartLat,
   startLon,
@@ -32,6 +60,7 @@ export default function SettingsPanel({
   isLoading,
 }: SettingsPanelProps) {
   const [spatialId, setSpatialId] = useState<string | null>(null);
+  const connectionView = describeConnection(connection);
 
   useEffect(() => {
     if (startLat && startLon) {
@@ -52,11 +81,16 @@ export default function SettingsPanel({
       {/* Connection status */}
       <div className="px-6 py-4 border-b border-bg-table-head">
         <div className="flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${apiConnected ? 'bg-status-ok' : 'bg-status-idle'}`}></div>
+          <div className={`w-2 h-2 rounded-full ${connectionView.dotClass}`}></div>
           <span className="text-sm font-medium text-text-primary">
-            {apiConnected ? 'Connected' : 'Disconnected'}
+            {connectionView.label}
           </span>
         </div>
+        {connectionView.detail && (
+          <p className="mt-1 text-xs text-text-secondary break-all">
+            {connectionView.detail}
+          </p>
+        )}
       </div>
 
       {/* Settings */}

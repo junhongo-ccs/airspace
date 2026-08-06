@@ -1,20 +1,25 @@
 import { useState } from 'react';
-
-interface QueryResult {
-  status: 'idle' | 'loading' | 'success' | 'error';
-  routeId?: string;
-  features?: any[];
-  timestamp?: string;
-  message?: string;
-}
+import type { QueryResult } from '../App';
 
 interface ResultsPanelProps {
   queryResult: QueryResult;
 }
 
+// 地物をレイヤ別に集計する（BFF が返す layer は building / road / landslide /
+// flood / landuse。api_client.py の OBJECT_CD_LAYERS と対応）。
+function countByLayer(features: QueryResult['features']): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const f of features ?? []) {
+    const key = f.layer ?? 'unknown';
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+  return counts;
+}
+
 export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
   const [queryExpanded, setQueryExpanded] = useState(true);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
+  const layerCounts = countByLayer(queryResult.features);
 
   return (
     <div className="border-t border-brand-blue-light/20 bg-bg-panel flex flex-col">
@@ -55,6 +60,18 @@ export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
                 </div>
               </div>
             )}
+            {queryResult.status === 'partial' && (
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Route ID:</span>
+                  <span className="mono text-text-primary font-medium">{queryResult.routeId}</span>
+                </div>
+                <div className="text-status-warn">
+                  <p className="font-medium">Partial — 地物照会に失敗</p>
+                  <p className="text-xs">{queryResult.message}</p>
+                </div>
+              </div>
+            )}
             {queryResult.status === 'error' && (
               <div className="text-status-error">
                 <p className="font-medium">Error</p>
@@ -89,17 +106,33 @@ export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
                   </tr>
                 </thead>
                 <tbody>
+                  {/* 照会で実際に返ってきた地物のみを件数で表示する。
+                      交差判定そのものは React 版では未実装（Streamlit 版のみ）。 */}
                   <tr className="border-b border-bg-table-head">
-                    <td className="py-2">Buildings (PLATEAU)</td>
-                    <td className="py-2"><span className="text-status-ok">Checked</span></td>
+                    <td className="py-2">Ground features (BFF 照会)</td>
+                    <td className="py-2">
+                      {queryResult.status === 'success' ? (
+                        Object.keys(layerCounts).length > 0 ? (
+                          <span className="text-text-primary">
+                            {Object.entries(layerCounts)
+                              .map(([layer, n]) => `${layer}: ${n}`)
+                              .join(' / ')}
+                          </span>
+                        ) : (
+                          <span className="text-text-secondary">0 件</span>
+                        )
+                      ) : (
+                        <span className="text-text-secondary">未照会</span>
+                      )}
+                    </td>
                   </tr>
                   <tr className="border-b border-bg-table-head">
-                    <td className="py-2">DID Districts</td>
-                    <td className="py-2"><span className="text-status-warn">Intersects</span></td>
+                    <td className="py-2">DID 交差判定</td>
+                    <td className="py-2"><span className="text-text-secondary">未実装（React版）</span></td>
                   </tr>
                   <tr>
-                    <td className="py-2">150m AGL Rule</td>
-                    <td className="py-2"><span className="text-status-ok">Compliant</span></td>
+                    <td className="py-2">150m AGL ルール</td>
+                    <td className="py-2"><span className="text-text-secondary">未実装（React版）</span></td>
                   </tr>
                 </tbody>
               </table>

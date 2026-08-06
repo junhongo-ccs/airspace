@@ -32,6 +32,10 @@ services:
         value: 3.12.10
       - key: PYTHONPATH
         value: /opt/render/project/src
+      # 本番BFFは必ず実Laravelを叩く。接続先の設定漏れで黙ってモックへ落ちると
+      # 「疎通できているように見えるが実データではない」状態になるため明示する。
+      - key: MOCK_MODE
+        value: "false"
       # airspace-drone-web（Private Service）への接続情報。
       - key: DIGITAL_TWIN_HOST
         fromService:

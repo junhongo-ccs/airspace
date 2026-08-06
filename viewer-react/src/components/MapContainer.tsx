@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -16,6 +16,10 @@ interface MapContainerProps {
 export default function MapContainer({ routeData }: MapContainerProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
+  // スタイル読み込み完了前に addSource/addLayer を呼ぶと MapLibre が
+  // "Style is not done loading." を投げ、未捕捉例外で画面全体が白くなる。
+  // 準備完了を state で持ち、描画side effectの依存に入れて待ち合わせる。
+  const [styleReady, setStyleReady] = useState(false);
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -46,14 +50,17 @@ export default function MapContainer({ routeData }: MapContainerProps) {
       zoom: 15,
     });
 
+    map.current.on('load', () => setStyleReady(true));
+
     return () => {
+      setStyleReady(false);
       if (map.current) map.current.remove();
     };
   }, []);
 
   // 航路ラインを描画
   useEffect(() => {
-    if (!map.current || !routeData) return;
+    if (!map.current || !styleReady || !routeData) return;
 
     const mapInstance = map.current;
 
@@ -164,7 +171,7 @@ export default function MapContainer({ routeData }: MapContainerProps) {
         'circle-opacity': 0.9,
       },
     });
-  }, [routeData]);
+  }, [routeData, styleReady]);
 
   return (
     <div className="flex-1 relative bg-bg-app">

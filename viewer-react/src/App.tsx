@@ -1,21 +1,29 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './index.css';
 import SettingsPanel from './components/SettingsPanel';
 import MapContainer from './components/MapContainer';
 import ResultsPanel from './components/ResultsPanel';
 import Footer from './components/Footer';
-import { registerRoute, getGroundFeatures } from './api/client';
+import {
+  registerRoute,
+  getGroundFeatures,
+  getConnectionStatus,
+  type ConnectionStatus,
+  type GroundFeature,
+} from './api/client';
 
-interface QueryResult {
-  status: 'idle' | 'loading' | 'success' | 'error';
+// partial = 航路登録は成功したが地物照会が失敗した状態。
+// これを success に含めると「0件」と「照会失敗」が見分けられなくなる。
+export interface QueryResult {
+  status: 'idle' | 'loading' | 'success' | 'partial' | 'error';
   routeId?: string;
-  features?: any[];
+  features?: GroundFeature[];
   timestamp?: string;
   message?: string;
 }
 
 function App() {
-  const [apiConnected, setApiConnected] = useState(false);
+  const [connection, setConnection] = useState<ConnectionStatus | null>(null);
   const [startLat, setStartLat] = useState(35.9683357);
   const [startLon, setStartLon] = useState(139.0313939);
   const [endLat, setEndLat] = useState(35.9699357);
@@ -24,39 +32,66 @@ function App() {
   const [queryResult, setQueryResult] = useState<QueryResult>({ status: 'idle' });
   const [isLoading, setIsLoading] = useState(false);
 
+  const refreshConnection = useCallback(async () => {
+    setConnection(await getConnectionStatus());
+  }, []);
+
+  // 起動時に接続状態を確認する。これが無いと、登録と照会の両方が成功するまで
+  // 画面は Disconnected のままになり、接続の問題か入力の問題か切り分けられない。
+  useEffect(() => {
+    void refreshConnection();
+  }, [refreshConnection]);
+
   const handleQuery = async () => {
     setIsLoading(true);
     setQueryResult({ status: 'loading' });
 
     try {
-      const route = await registerRoute(startLat, startLon, endLat, endLon, aglM);
-      if (!route) {
+      let routeId: string;
+      try {
+        const route = await registerRoute(startLat, startLon, endLat, endLon, aglM);
+        if (!route) {
+          setQueryResult({ status: 'error', message: 'BFF が航路データを返しませんでした' });
+          return;
+        }
+        routeId = route.id;
+      } catch (error) {
         setQueryResult({
           status: 'error',
-          message: 'Failed to register route',
+          message: error instanceof Error ? error.message : '航路登録に失敗しました',
         });
         return;
       }
 
-      const features = await getGroundFeatures(startLat, startLon);
-
-      setQueryResult({
-        status: 'success',
-        routeId: route.id,
-        features,
-        timestamp: new Date().toISOString(),
-      });
-      setApiConnected(true);
-    } catch (error) {
-      setQueryResult({
-        status: 'error',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      });
-      setApiConnected(false);
+      // 航路はすでに登録済み。ここで失敗しても登録自体は取り消されないので、
+      // 「登録は成功・照会は失敗」を partial として区別して表示する。
+      try {
+        const features = await getGroundFeatures(startLat, startLon);
+        setQueryResult({
+          status: 'success',
+          routeId,
+          features,
+          timestamp: new Date().toISOString(),
+        });
+      } catch (error) {
+        setQueryResult({
+          status: 'partial',
+          routeId,
+          timestamp: new Date().toISOString(),
+          message: `航路は登録できましたが、地物照会に失敗しました: ${
+            error instanceof Error ? error.message : '不明なエラー'
+          }`,
+        });
+      }
     } finally {
       setIsLoading(false);
+      void refreshConnection();
     }
   };
+
+  // 航路が登録できていれば（partial でも）地図には描画する。
+  const routeRegistered =
+    queryResult.status === 'success' || queryResult.status === 'partial';
 
   return (
     <div className="flex flex-col h-screen bg-bg-app">
@@ -64,7 +99,7 @@ function App() {
       <div className="flex flex-1 overflow-hidden">
         {/* Left settings panel */}
         <SettingsPanel
-          apiConnected={apiConnected}
+          connection={connection}
           startLat={startLat}
           setStartLat={setStartLat}
           startLon={startLon}
@@ -83,14 +118,7 @@ function App() {
         <div className="flex-1 flex flex-col">
           <MapContainer
             routeData={
-              queryResult.status === 'success'
-                ? {
-                    startLat,
-                    startLon,
-                    endLat,
-                    endLon,
-                  }
-                : null
+              routeRegistered ? { startLat, startLon, endLat, endLon } : null
             }
           />
 

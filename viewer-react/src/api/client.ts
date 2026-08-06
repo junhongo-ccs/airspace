@@ -2,7 +2,8 @@
 // 設計: React → Streamlit BFF (/api) → Laravel API (/airDtw/api)
 // 参照: 仕様書§5-5、実装タスク 3-2-2・3-2-3
 
-const BFF_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
+// 既定はローカルの BFF。8000 は Laravel が使うため BFF は 8001。
+const BFF_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8001';
 
 // BFF が返す航路レコード（viewer/src/api_client.py の register_route の戻り値）。
 // 識別子は id に統一する（実APIでは数値、モックではUUIDだがBFFで文字列へ揃えている）。
@@ -100,15 +101,16 @@ export async function getGroundFeatures(
     });
 
     if (!response.ok) {
-      console.error(`BFF error: ${response.status}`);
-      return [];
+      // 空配列を返すと「照会成功・0件」と区別が付かず、Laravel照会の失敗が
+      // 正常な結果として画面に出てしまう。登録と同様に失敗として扱う。
+      throw new Error(await describeError(response));
     }
 
     const data = await response.json();
     return data.data || [];
   } catch (error) {
     console.error('Failed to fetch ground features:', error);
-    return [];
+    throw error;
   }
 }
 
@@ -145,15 +147,44 @@ export async function getFlightProhibitedAreas(
   }
 }
 
+export interface ConnectionStatus {
+  connected: boolean;
+  state: 'connected' | 'disconnected' | 'error' | 'unknown';
+  // BFF がモックで動いている場合 connected=true でも Laravel には届いていない。
+  // 画面上でも区別できるようにこのフラグを持つ。
+  mock: boolean;
+  baseUrl?: string;
+  message?: string;
+}
+
 // Laravel API への到達可否を確認（BFF 経由）。
-// BFF は到達できない場合も 200 で {connected: false} を返すため、本文まで見る。
-export async function checkApiHealth(): Promise<boolean> {
+// 状態を知るための関数なので、失敗時も throw せず状態として返す。
+export async function getConnectionStatus(): Promise<ConnectionStatus> {
   try {
     const response = await fetch(`${BFF_BASE}/connection_status`);
-    if (!response.ok) return false;
+    if (!response.ok) {
+      return {
+        connected: false,
+        state: 'error',
+        mock: false,
+        message: await describeError(response),
+      };
+    }
     const data = await response.json();
-    return data.connected === true;
-  } catch {
-    return false;
+    return {
+      connected: data.connected === true,
+      state: data.state ?? 'unknown',
+      mock: data.mock === true,
+      baseUrl: data.base_url,
+      message: data.message,
+    };
+  } catch (error) {
+    // BFF 自体に届いていない（URL 誤り・CORS・サービス停止など）
+    return {
+      connected: false,
+      state: 'disconnected',
+      mock: false,
+      message: error instanceof Error ? error.message : 'BFF unreachable',
+    };
   }
 }
