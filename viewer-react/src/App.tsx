@@ -18,6 +18,8 @@ export interface QueryResult {
   status: 'idle' | 'loading' | 'success' | 'partial' | 'error';
   routeId?: string;
   features?: GroundFeature[];
+  // 航路AGLの150m高度制限判定（viewer/src/altitude.pyをBFF経由で適用）。
+  routeJudgment?: string;
   timestamp?: string;
   message?: string;
 }
@@ -67,11 +69,18 @@ function App() {
       // 航路はすでに登録済み。ここで失敗しても登録自体は取り消されないので、
       // 「登録は成功・照会は失敗」を partial として区別して表示する。
       try {
-        const features = await getGroundFeatures(startLat, startLon);
+        const { features, routeJudgment } = await getGroundFeatures(
+          startLat,
+          startLon,
+          endLat,
+          endLon,
+          aglM
+        );
         setQueryResult({
           status: 'success',
           routeId,
           features,
+          routeJudgment,
           timestamp: new Date().toISOString(),
         });
       } catch (error) {

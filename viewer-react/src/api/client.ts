@@ -23,7 +23,16 @@ export interface GroundFeature {
   source: string;
   is_poc: boolean;
   height_m?: number | null;
+  // 交差判定文言（viewer/src/altitude.pyの判定をBFFが付与）。建物は高さ方向、
+  // それ以外はジオメトリ未提供のため簡易表現になる。
+  intersect?: string;
   raw?: unknown;
+}
+
+export interface GroundFeatureResult {
+  features: GroundFeature[];
+  // 航路のAGLが航空法上の150m高度制限に抵触するかの判定文言。
+  routeJudgment?: string;
 }
 
 export interface ApiResponse<T> {
@@ -82,11 +91,16 @@ export async function registerRoute(
 }
 
 // 航路周辺の地物ボクセルを取得（BFF 経由）
+// 始点のみだとStreamlit版（航路全体の中点基準）と空間IDが1タイルずれて0件に
+// なることがあったため、始点・終点の両方を渡してbboxを作らせる。
 export async function getGroundFeatures(
-  latitude: number,
-  longitude: number,
-  radiusDegrees: number = 0.01
-): Promise<GroundFeature[]> {
+  startLat: number,
+  startLon: number,
+  endLat: number,
+  endLon: number,
+  altitudeM?: number,
+  marginDegrees: number = 0.01
+): Promise<GroundFeatureResult> {
   try {
     const response = await fetch(`${BFF_BASE}/query_features`, {
       method: 'POST',
@@ -94,9 +108,12 @@ export async function getGroundFeatures(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        latitude,
-        longitude,
-        radius_degrees: radiusDegrees,
+        start_latitude: startLat,
+        start_longitude: startLon,
+        end_latitude: endLat,
+        end_longitude: endLon,
+        altitude_m: altitudeM,
+        margin_degrees: marginDegrees,
       }),
     });
 
@@ -107,7 +124,7 @@ export async function getGroundFeatures(
     }
 
     const data = await response.json();
-    return data.data || [];
+    return { features: data.data || [], routeJudgment: data.route_judgment };
   } catch (error) {
     console.error('Failed to fetch ground features:', error);
     throw error;

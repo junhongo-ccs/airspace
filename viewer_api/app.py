@@ -26,6 +26,7 @@ from fastapi import FastAPI, HTTPException  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
+from viewer.src.altitude import evaluate_agl_legal_limit, evaluate_building_vertical  # noqa: E402
 from viewer.src.api_client import ApiError, DigitalTwinApiClient  # noqa: E402
 
 app = FastAPI(title="Airspace Viewer BFF API")
@@ -105,9 +106,47 @@ class RegisterRouteRequest(BaseModel):
 
 
 class QueryFeaturesRequest(BaseModel):
-    latitude: float
-    longitude: float
-    radius_degrees: float = 0.01
+    start_latitude: float
+    start_longitude: float
+    end_latitude: float
+    end_longitude: float
+    margin_degrees: float = 0.01
+    # 判定詳細（AGL 150m判定・建物垂直判定）に使う。省略時は判定を行わない。
+    altitude_m: float | None = None
+
+
+def _bbox(coords: list[tuple]) -> tuple:
+    lats = [c[0] for c in coords]
+    lons = [c[1] for c in coords]
+    return min(lats), min(lons), max(lats), max(lons)
+
+
+def _bbox_overlap(a: tuple, b: tuple) -> bool:
+    return not (a[2] < b[0] or b[2] < a[0] or a[3] < b[1] or b[3] < a[1])
+
+
+def _judge_feature(feature: dict, route_bbox: tuple, altitude_m: float | None) -> str:
+    """viewer/src/components/results_table.py の build_result_rows と同じ判定ロジック。
+
+    Streamlit版と実装を共有するため、垂直判定（altitude.py）はそのままimportして使う。
+    水平方向のbbox重なり判定はresults_table.pyがstreamlit/pandasに依存するため、
+    ここでは同等の2関数だけを複製している（streamlit非依存を保つBFFの方針に合わせる）。
+    """
+    is_placeholder = "mock" in str(feature.get("source", ""))
+    if feature.get("layer") == "building":
+        height_m = feature.get("height_m")
+        vertical = evaluate_building_vertical(height_m, altitude_m)
+        footprint = feature.get("footprint")
+        horizontally_clear = footprint is not None and not _bbox_overlap(
+            _bbox(footprint), route_bbox
+        )
+        return "交差なし（水平方向に重なりなし）" if horizontally_clear else vertical
+    if is_placeholder:
+        return "要確認（属性不足・プレースホルダ）"
+    if feature.get("footprint"):
+        overlap = _bbox_overlap(_bbox(feature["footprint"]), route_bbox)
+        return "要確認（水平方向・簡易判定）" if overlap else "交差なし（水平方向・簡易判定）"
+    return "要確認（ジオメトリ未提供・ボクセル形式）"
 
 
 @app.get("/health")
@@ -170,13 +209,20 @@ async def register_route_endpoint(request: RegisterRouteRequest):
 
 @app.post("/query_features")
 async def query_features_endpoint(request: QueryFeaturesRequest):
-    """指定座標周辺の地物ボクセルを取得する。"""
-    r = request.radius_degrees
+    """航路（始点・終点）周辺の地物ボクセルを取得する。
+
+    始点のみでbboxを作ると、Streamlit版（航路全体の中点基準）と空間IDが
+    1タイルずれて0件になることがあった。`_bbox_from_route`
+    （viewer/src/components/route_form.py）と同じく始点・終点の両方から作る。
+    """
+    lats = [request.start_latitude, request.end_latitude]
+    lons = [request.start_longitude, request.end_longitude]
+    m = request.margin_degrees
     bbox = (
-        request.latitude - r,
-        request.longitude - r,
-        request.latitude + r,
-        request.longitude + r,
+        min(lats) - m,
+        min(lons) - m,
+        max(lats) + m,
+        max(lons) + m,
     )
     try:
         features = _client().get_ground_feature_voxel(bbox)
@@ -184,7 +230,16 @@ async def query_features_endpoint(request: QueryFeaturesRequest):
         raise HTTPException(status_code=502, detail=f"Laravel API error: {exc}") from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
-    return {"status": "success", "data": features}
+
+    route_bbox = _bbox([(lats[0], lons[0]), (lats[1], lons[1])])
+    for feature in features:
+        feature["intersect"] = _judge_feature(feature, route_bbox, request.altitude_m)
+
+    return {
+        "status": "success",
+        "data": features,
+        "route_judgment": evaluate_agl_legal_limit(request.altitude_m),
+    }
 
 
 if __name__ == "__main__":

@@ -116,8 +116,6 @@ export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* 照会で実際に返ってきた地物のみを件数で表示する。
-                      交差判定そのものは React 版では未実装（Streamlit 版のみ）。 */}
                   <tr className="border-b border-bg-table-head">
                     <td className="py-2">周辺地物（照会結果）</td>
                     <td className="py-2">
@@ -141,12 +139,42 @@ export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
                     <td className="py-2"><span className="text-text-secondary">未実装（React版）</span></td>
                   </tr>
                   <tr>
-                    <td className="py-2">150m AGL（絶対高度）判定</td>
-                    <td className="py-2"><span className="text-text-secondary">未実装（React版）</span></td>
+                    <td className="py-2">150m AGL（航空法上限）判定</td>
+                    <td className="py-2">
+                      {queryResult.routeJudgment ? (
+                        <span className="text-text-primary">{queryResult.routeJudgment}</span>
+                      ) : (
+                        <span className="text-text-secondary">未照会</span>
+                      )}
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
+
+            {/* 地物ごとの交差判定（垂直方向は建物のみ、それ以外は簡易・未検証の旨を表示）。 */}
+            {queryResult.status === 'success' && (queryResult.features?.length ?? 0) > 0 && (
+              <div className="overflow-x-auto mt-4">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-bg-table-head">
+                      <th className="pb-2 font-semibold text-text-primary text-xs">レイヤ</th>
+                      <th className="pb-2 font-semibold text-text-primary text-xs">識別子</th>
+                      <th className="pb-2 font-semibold text-text-primary text-xs">交差判定</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {queryResult.features?.map((f) => (
+                      <tr key={f.id} className="border-b border-bg-table-head">
+                        <td className="py-2">{LAYER_LABELS[f.layer] ?? f.layer}</td>
+                        <td className="py-2 mono text-xs">{f.id}</td>
+                        <td className="py-2">{f.intersect ?? '未検証'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
       </div>
