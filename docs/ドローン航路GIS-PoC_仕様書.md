@@ -1,11 +1,12 @@
 # 空域デジタルツイン活用・ドローン航路GIS-PoC 仕様書
 
-版：1.0（本物の飛行禁止エリア・150m高度制限追加版）  
-作成日：2026年8月6日  
-ステータス：Phase A受入基準達成、Phase Bは建物・道路・土砂災害・洪水浸水・土地利用を部分達成（地形のみ未着手）、§5-3高度基準統一は建物レイヤ＋150m高度制限に限り達成、飛行禁止エリアはDID地区（実データ）を追加  
+版：1.1（React＋BFF構成反映版）  
+作成日：2026年8月7日  
+ステータス：Phase A受入基準達成、Phase Bは建物・道路・土砂災害・洪水浸水・土地利用を部分達成（地形のみ未着手）、§5-3高度基準統一は建物レイヤ＋150m高度制限に限り達成、飛行禁止エリアはDID地区（実データ）を追加。Phase C（Viewer）はStreamlitからReact＋FastAPI BFFへ実装が移行済み（Streamlit版の正式廃止は未決定、§4-1参照）  
 
 | 版 | 日付 | 変更内容 | 対応レビュー |
 |---|---|---|---|
+| 1.1 | 2026年8月7日 | Phase C（Viewer）がStreamlitからReact＋TypeScript＋FastAPI BFF（`viewer-react/`＋`viewer_api/`）へ実装が移行したことを反映（移行自体は2026-08-06に実施済みだったが未反映だった）。あわせて、地物照会が始点座標のみでbboxを作っており空間IDが1タイルずれて常に0件になっていたバグを修正（始点・終点の両方から作るよう変更）。判定詳細（150m AGL判定・建物垂直判定）をBFFに実装（`viewer/src/altitude.py`をStreamlit版と共有）。建物フットプリント（`lod0RoofEdge`）をPLATEAU CityGMLから再抽出し（高さのみ保存済みで、フットプリントは未保存だったため）、React版の地図にPhase B投入分29件の建物ポリゴンを描画できるようにした。§4・§4-1・§7-3・実装タスクリストを更新。 | 実装セッション（2026-08-07、[進捗ログ](進捗ログ.md)参照） |
 | 1.0 | 2026年8月6日 | 飛行禁止空域3類型のうち、150m高度制限（空間データ不要）とDID地区（国土数値情報A16、秩父市、実データ）を実装した。DIPS・日立のSpring Bootサービスは使わず、PLATEAU同様「ネイティブ変換exeを経由せず直接DB投入」する方式（`digitaltwin:import-flight-prohibited-area`）を採用。空港周辺（②）は国土数値情報が制限表面を含まないため対象外。既定航路とDID地区の位置が約3km離れているため、DID地区の取得確認には始点座標の変更が必要である旨を明記。§7-2-補（新設）・§6-2・実装タスクリストを更新。 | 実装セッション（2026-08-06、[進捗ログ](進捗ログ.md)参照） |
 | 0.9 | 2026年8月6日 | 高度基準統一（§5-3）に建物レイヤに限り着手・達成した。PLATEAU建物のCityGML宣言（EPSG:6697＝JGD2011標高、地理院DEMと同一鉛直基準）と、AGL・measuredHeightがともに地盤面基準の相対高さであることを根拠に、絶対標高変換を行わずAGLと建物高さを直接比較する方式を採用（`viewer/src/altitude.py`）。LOD0フットプリントのz座標が全件0.0固定で実測許容差を算出できなかったため、暫定許容差±2mをドローン運用の一般的な安全マージンとして採用（実測未検証、要ラベル明記）。あわせて、建物投入データ中1件（`11207-bldg-96`）のmeasuredHeightがPLATEAUの欠測値センチネル`-9999`であった不具合を発見・修正（高さ情報なし扱いに変更）。建物以外のレイヤは高さ情報が無いため引き続き「未検証」。§5-3・§11受入基準#9・§12を更新。 | 実装セッション（2026-08-06、[進捗ログ](進捗ログ.md)参照） |
 | 0.8 | 2026年8月6日 | Phase Bを継続し、土地利用（`udx/luse`、対象2次メッシュ`533970`）もPLATEAU秩父市2025の実データから投入した。ファイルサイズ（約19MB、圧縮後約3.4MB）を理由に見送っていたが、HTTP Range取得で全体取得後、既定航路周辺±0.008度で5302件中99件に絞り込み`ground_feature_objects`へ登録（`object_cd=5`）。他レイヤと異なり航路周辺に絞ったため、`GET /ground_feature_voxel`で実際に土地利用1件を取得できることを確認した（建物・土砂災害と合わせて3レイヤが取得可能に）。§7-2・実装タスクリストを更新。地形（`udx/dem`）を除きPhase B主要レイヤの投入が完了。 | 実装セッション（2026-08-06、[進捗ログ](進捗ログ.md)参照） |
@@ -90,14 +91,25 @@ Streamlitは空域デジタルツインの代替DBではない。データ登録
         └───────────────────────┬──────────────────────┘
                                 │ HTTP API
         ┌───────────────────────▼──────────────────────┐
-        │ Streamlit                                     │
+        │ FastAPI BFF（viewer_api/）                     │
+        │ ・Reactからの唯一の接続先                       │
+        │ ・DigitalTwinApiClientでLaravelを呼ぶ           │
+        │ ・判定詳細（150m AGL・建物垂直判定）を付与       │
+        └───────────────────────┬──────────────────────┘
+                                │ HTTP（CORS許可）
+        ┌───────────────────────▼──────────────────────┐
+        │ React（viewer-react/、実装の主系統）           │
         │ ・航路入力／登録                               │
-        │ ・レイヤ照会／地図可視化                        │
+        │ ・レイヤ照会／地図可視化（MapLibre GL）         │
         │ ・静的リスクの説明・出力                        │
         └───────────────────────┬──────────────────────┘
                                 │
                               Render
-              （UI、API、DB、バッチを別サービスで配備）
+              （UI、BFF、API、DB、バッチを別サービスで配備）
+
+  ※ Streamlit版（viewer/）は2026-08-06にReact＋BFFへ移行した。判定ロジック
+    （viewer/src/altitude.py等）はBFFがモジュールとしてimportして共有しており、
+    Streamlitプロセス自体は不要。廃止するか維持するかは未決定（§4-1参照）。
 
   地理院DEM ───→ 品質比較・欠測確認（永続登録しない）
   国土数値情報 ┄→ PLATEAUに不足するレイヤのみ後続で登録
@@ -110,9 +122,11 @@ Streamlitは空域デジタルツインの代替DBではない。データ登録
 | Digital Twin API | `Drone-web`（Laravel/PHP） | 空域データの登録・照会 | **実績**：Render Docker Private Service（`airspace-drone-web`、外部非公開） |
 | Digital Twin DB | MySQL | Laravelの永続データストア | **実績**：Render Private Service（`airspace-mysql`、公式イメージ＋永続ディスク。§10-2・§12参照） |
 | GIS ETL | Python／C++バッチ | GISをAPI投入形式・空間ID・ボクセルへ変換 | Render Cron Job／Background Worker、または手動実行（Phase B、未着手） |
-| Viewer | Streamlit | データの登録操作、照会、可視化、CSV/GeoJSON出力 | **実績**：Render Web Service（`airspace-viewer`、公開・アクセスコードで入室制限） |
+| BFF | FastAPI（`viewer_api/`） | ReactからLaravelへの唯一の接続経路。CORS・認証情報の露出を防ぐ | **実績**：Render Web Service（`airspace-viewer-api`、公開） |
+| Viewer（主系統） | React＋TypeScript＋Vite＋MapLibre GL（`viewer-react/`） | データの登録操作、照会、可視化、CSV/GeoJSON出力 | **実績**：Render Web Service（`airspace-viewer-react`、公開）。BFF経由でのみLaravelへ接続 |
+| Viewer（旧系統） | Streamlit（`viewer/`） | React移行前のViewer実装。判定ロジック（`viewer/src/altitude.py`等）はBFFがモジュールとして共有利用しており、プロセス自体は不要になっている | **稼働中だが廃止方針は未決定**：Render Web Service（`airspace-viewer`、公開・アクセスコードで入室制限）。2026-08-06にReact＋BFFへ移行済み（進捗ログ参照） |
 
-RenderへStreamlitだけを置く構成ではない。LaravelとMySQLを必要とする。当初はまずローカルDockerで起動・疎通を確認してからの配備を想定していたが、実際にはローカルDocker環境が無かったため、Render上に直接3サービスを構築して疎通確認した（§10-1実績注記）。
+RenderへViewerだけを置く構成ではない。LaravelとMySQLを必要とする。当初はまずローカルDockerで起動・疎通を確認してからの配備を想定していたが、実際にはローカルDocker環境が無かったため、Render上に直接サービスを構築して疎通確認した（§10-1実績注記）。2026-08-06のReact＋BFF移行により、Renderの有償サービスはStreamlit版を含めて4つ（`airspace-viewer`／`airspace-viewer-react`／`airspace-viewer-api`／`airspace-drone-web`）＋DBの`airspace-mysql`に増えている。コスト確認は未実施（進捗ログ参照）。
 
 ---
 
@@ -301,14 +315,28 @@ DIPS実データは扱わない方針は変わらないが、DIPSを経由しな
    判定できる（`viewer/src/altitude.py`の`evaluate_agl_legal_limit`）。結果テーブルの
    航路行に反映済み。
 
-### 7-3. Phase C：Streamlit Viewer
+### 7-3. Phase C：Viewer（2026年8月6日、StreamlitからReact＋BFFへ実装移行）
 
-1. 始点・終点・地上高（AGL）・評価対象レイヤを入力する。
-2. 航路をデジタルツインへ登録し、登録済み航路として取得する。
-3. 航路周辺の地物ボクセル、エリア、注意区域をAPIから取得する。
-4. 地図上に航路と空域レイヤを重ねる。
-5. 航路と地物／注意区域の交差、取得不能、属性不足を「要確認」として表示する。
-6. 入力値、照会日時、データ出典、結果をCSV／GeoJSONで出力する。
+当初はStreamlit単体で実装したが、2026年8月6日にReact＋TypeScript＋Vite＋MapLibre GL
+（`viewer-react/`）＋FastAPI BFF（`viewer_api/`）へ移行した（進捗ログ参照）。判定ロジック
+（`viewer/src/altitude.py`）はBFFがStreamlit版と共有してimportしており、以下の手順自体は
+変わらない。
+
+1. 始点・終点・地上高（AGL）・評価対象レイヤを入力する。**実績**：React版で実装済み。
+2. 航路をデジタルツインへ登録し、登録済み航路として取得する。**実績**：React→BFF
+   （`POST /register_route`）→Laravel経由で実装済み。
+3. 航路周辺の地物ボクセル、エリア、注意区域をAPIから取得する。**実績（地物ボクセルのみ）**：
+   React→BFF（`POST /query_features`）で実装済み。当初は始点座標のみでbboxを作っており
+   空間IDが1タイルずれて常に0件になるバグがあったが、2026年8月7日に始点・終点の両方から
+   bboxを作るよう修正した。エリア・注意区域はBFFに未実装（Streamlit版のみ）。
+4. 地図上に航路と空域レイヤを重ねる。**実績（航路・建物のみ）**：MapLibre GLで航路を描画。
+   建物はPhase B投入分29件（フットプリント再抽出済み、2026年8月7日）のみポリゴン描画に
+   対応。DID地区・その他レイヤは未対応（BFFがポリゴンを返すエンドポイントを持たないため）。
+5. 航路と地物／注意区域の交差、取得不能、属性不足を「要確認」として表示する。**実績（建物・
+   150m AGLのみ）**：BFFが`viewer/src/altitude.py`の判定関数を呼び、地物ごとの交差判定と
+   航路のAGL判定をReact版に返すよう2026年8月7日に実装。DID地区との交差判定は未実装。
+6. 入力値、照会日時、データ出典、結果をCSV／GeoJSONで出力する。**未実装（React版）**：
+   Streamlit版のみ実装済み。
 
 ### 7-4. 共通の評価上の限界
 
@@ -336,7 +364,10 @@ DIPS実データは扱わない方針は変わらないが、DIPSを経由しな
 
 ---
 
-## 8. Streamlit画面仕様
+## 8. 画面仕様（Streamlit版として策定、React版が実装を引き継ぐ）
+
+design.mdのデザイントークンはそのままReact版（`viewer-react/`）へ流用しており、
+下記のレイアウト・必須表示項目はReact版にも適用する（§4-1参照）。
 
 ```text
 ┌──────────────────┬─────────────────────────────────────┐
