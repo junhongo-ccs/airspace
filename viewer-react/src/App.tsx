@@ -3,7 +3,6 @@ import './index.css';
 import SettingsPanel from './components/SettingsPanel';
 import MapContainer from './components/MapContainer';
 import ResultsPanel from './components/ResultsPanel';
-import Footer from './components/Footer';
 import {
   registerRoute,
   getGroundFeatures,
@@ -144,9 +143,6 @@ function App() {
           <ResultsPanel queryResult={queryResult} />
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }
