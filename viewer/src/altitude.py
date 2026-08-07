@@ -107,6 +107,20 @@ def lookup_prohibited_area_geometry(area_id: str | None) -> list[list[list[float
     return entry["rings"] if entry else None
 
 
+def list_known_prohibited_areas() -> list[dict]:
+    """ジオメトリを再取得済みの全飛行禁止区域を返す（Laravelへの照会不要）。
+
+    ルート登録・照会の前に地図へ危険区域を常時表示するための参照レイヤ用。
+    静的な参照データ（国土数値情報等）であり、Laravel側の登録有無に関わらず
+    同じ内容を返す。「実際に登録されているか」の確認は引き続き
+    query_prohibited_areasが担う。
+    """
+    return [
+        {"id": area_id, "name": entry.get("name"), "rings": entry["rings"]}
+        for area_id, entry in _PROHIBITED_AREAS.items()
+    ]
+
+
 def evaluate_building_vertical(height_m: float | None, agl_m: float | None) -> str:
     """建物のmeasuredHeightとAGLを比較し、交差・詳細表の「交差判定」文言を返す。
 

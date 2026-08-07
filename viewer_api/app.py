@@ -26,7 +26,11 @@ from fastapi import FastAPI, HTTPException  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
-from viewer.src.altitude import evaluate_agl_legal_limit, evaluate_building_vertical  # noqa: E402
+from viewer.src.altitude import (  # noqa: E402
+    evaluate_agl_legal_limit,
+    evaluate_building_vertical,
+    list_known_prohibited_areas,
+)
 from viewer.src.api_client import ApiError, DigitalTwinApiClient  # noqa: E402
 
 app = FastAPI(title="Airspace Viewer BFF API")
@@ -178,6 +182,17 @@ def _judge_feature(feature: dict, route_bbox: tuple, altitude_m: float | None) -
 async def health_check():
     """Render のヘルスチェック用。Laravel には触らない。"""
     return {"status": "ok"}
+
+
+@app.get("/known_prohibited_areas")
+async def known_prohibited_areas_endpoint():
+    """ジオメトリを再取得済みの飛行禁止区域を、Laravelへの照会なしで返す。
+
+    航路を登録・照会する前から地図に危険区域を表示できるようにするための
+    参照レイヤ用エンドポイント（座標入力に依存しない静的な参照データ）。
+    「実際にLaravelへ登録されているか」の確認は/query_prohibited_areasが担う。
+    """
+    return {"status": "success", "data": list_known_prohibited_areas()}
 
 
 @app.get("/connection_status")
