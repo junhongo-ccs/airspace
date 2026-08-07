@@ -160,6 +160,8 @@ function App() {
             showRoute={showRoute}
             buildingFeatures={queryResult.features}
             showBuildings={showBuildings}
+            prohibitedAreas={queryResult.prohibitedAreas}
+            showProhibitedAreas={showProhibitedAreas}
           />
 
           {/* Bottom results panel */}

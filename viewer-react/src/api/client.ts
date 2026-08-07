@@ -134,14 +134,18 @@ export async function getGroundFeatures(
   }
 }
 
-// BFF が返すDID地区（人口集中地区）等の飛行禁止区域。実APIはポリゴン座標を
-// 返さないため、intersectは常に「要確認（ジオメトリ未提供）」になる。
+// BFF が返すDID地区（人口集中地区）等の飛行禁止区域。実APIレスポンス自体には
+// ポリゴンが含まれないが、DID地区は安定ID（flightProhibitedAreaId）を持つため
+// 国土数値情報から再取得したジオメトリをBFF側で突き合わせている（他レイヤは
+// ランダムUUID採番のため引き続きrings無し＝地図描画できない）。
 export interface ProhibitedArea {
   id: string;
   name?: string | null;
   source: string;
   is_poc: boolean;
   intersect?: string;
+  // 地図描画用（[lat, lon]の閉じたリング複数、MultiPolygon）。DID地区のみ持つ。
+  rings?: [number, number][][] | null;
   raw?: unknown;
 }
 

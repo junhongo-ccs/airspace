@@ -3,8 +3,9 @@ import type { QueryResult } from '../App';
 
 interface ResultsPanelProps {
   queryResult: QueryResult;
-  // DID地区は地図描画ができないため、チェックボックスの唯一の効果は
-  // この判定詳細表での表示/非表示になる。
+  // 秩父市のDID地区のみ地図描画に対応（MapContainer参照）。それ以外の飛行禁止
+  // 区域はジオメトリが無く地図描画できないため、チェックボックスは判定詳細表の
+  // 表示/非表示も兼ねる。
   showProhibitedAreas: boolean;
 }
 
@@ -160,7 +161,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                       ) : queryResult.prohibitedAreas !== undefined ? (
                         queryResult.prohibitedAreas.length > 0 ? (
                           <span className="text-text-primary">
-                            {queryResult.prohibitedAreas.length} 件（要確認・ジオメトリ未提供）
+                            {queryResult.prohibitedAreas.length} 件（詳細は下表参照）
                           </span>
                         ) : (
                           <span className="text-text-secondary">0 件</span>
