@@ -20,7 +20,13 @@ from datetime import datetime, timezone
 
 import requests
 
-from .altitude import extract_building_id, lookup_building_footprint, lookup_building_height
+from .altitude import (
+    extract_building_id,
+    extract_prohibited_area_id,
+    lookup_building_footprint,
+    lookup_building_height,
+    lookup_prohibited_area_geometry,
+)
 from .config import API_PREFIX, CREATED_BY, ENVIRONMENT, IS_POC, POC_PREFIX
 from .spatial_id import DEFAULT_ZOOM_LEVEL, compute_real_spatial_id
 
@@ -399,16 +405,26 @@ class DigitalTwinApiClient:
         objects = (data.get("result") or {}).get("objects", []) if isinstance(data, dict) else []
         results = []
         for obj in objects:
-            name = (obj.get("other") or {}).get("name")
-            results.append(
-                {
-                    "id": obj.get("spatialId"),
-                    "name": name,
-                    "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
-                    "is_poc": bool(name) and str(name).startswith(POC_PREFIX),
-                    "raw": obj,
-                }
-            )
+            other = obj.get("other") or {}
+            name = other.get("name")
+            # 実APIレスポンスにポリゴンは含まれないが、DID地区は
+            # digitaltwin:import-flight-prohibited-area がvoxelBitFileNameへ
+            # 安定したflightProhibitedAreaId（例: DID-11207-CHICHIBU）を
+            # 埋め込んでいるため、国土数値情報から再取得したジオメトリと
+            # 突き合わせられる（道路・土砂災害等のランダムUUID採番とは異なる）。
+            area_id = extract_prohibited_area_id(other.get("voxelBitFileName"))
+            geometry = lookup_prohibited_area_geometry(area_id)
+            record = {
+                "id": obj.get("spatialId"),
+                "name": name,
+                "source": "airspace-drone-web（ボクセル形式・地図描画未対応）",
+                "is_poc": bool(name) and str(name).startswith(POC_PREFIX),
+                "raw": obj,
+            }
+            if geometry is not None:
+                record["source"] = "airspace-drone-web（国土数値情報A16-2020より再取得したジオメトリで描画）"
+                record["polygon_rings"] = geometry
+            results.append(record)
         return results
 
     # --- HTTPヘルパー（mock=False、実API疎通用） -----------------------

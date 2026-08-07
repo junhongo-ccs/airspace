@@ -268,11 +268,14 @@ async def query_features_endpoint(request: QueryFeaturesRequest):
 async def query_prohibited_areas_endpoint(request: QueryProhibitedAreasRequest):
     """DID地区（人口集中地区）等の飛行禁止区域を取得する。
 
-    実APIレスポンスにポリゴン座標が含まれないため（DigitalTwinApiClient.
-    list_flight_prohibited_areas参照）、交差判定は常に「要確認（ジオメトリ未提供）」
-    になる（Streamlit版と同じ制約）。既定の航路座標とDID地区（国土数値情報A16-2020、
-    秩父市）は約3km離れているため、既定のままでは0件が正しい結果になる
-    （仕様書§7-2-補参照）。
+    実APIレスポンス自体にはポリゴン座標が含まれないが、DID地区は
+    digitaltwin:import-flight-prohibited-areaが安定したflightProhibitedAreaId
+    （例: DID-11207-CHICHIBU）をvoxelBitFileNameに埋め込んでいるため、
+    国土数値情報A16-2020から再取得したジオメトリをクライアント側で突き合わせて
+    いる（DigitalTwinApiClient.list_flight_prohibited_areas参照。道路・土砂災害等
+    ランダムUUID採番のレイヤは同じ手が使えないため引き続きジオメトリ無し）。
+    既定の航路座標とDID地区は約3km離れているため、既定のままでは0件が正しい
+    結果になる（仕様書§7-2-補参照）。
     """
     bbox = _route_bbox(
         request.start_latitude, request.start_longitude,
@@ -285,8 +288,19 @@ async def query_prohibited_areas_endpoint(request: QueryProhibitedAreasRequest):
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    route_bbox = _route_bbox(
+        request.start_latitude, request.start_longitude,
+        request.end_latitude, request.end_longitude, margin=0,
+    )
     for area in areas:
-        area["intersect"] = NO_GEOMETRY_MESSAGE
+        rings = area.pop("polygon_rings", None)
+        if rings:
+            area["rings"] = rings
+            all_points = [pt for ring in rings for pt in ring]
+            overlap = _bbox_overlap(_bbox(all_points), route_bbox)
+            area["intersect"] = "要確認（水平方向・簡易判定）" if overlap else "交差なし（水平方向・簡易判定）"
+        else:
+            area["intersect"] = NO_GEOMETRY_MESSAGE
 
     return {"status": "success", "data": areas}
 

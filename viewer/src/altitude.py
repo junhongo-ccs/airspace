@@ -47,7 +47,14 @@ _HEIGHTS_PATH = Path(__file__).parent / "data" / "plateau_building_heights.json"
 # lod0RoofEdge（緯度経度の閉じたリング、gml:posListから抽出。z座標は全件0.0固定のため
 # 高さJSONと違い保持しない）。高さJSONと同じ29件・同じbuildingIDキーで対応する。
 _FOOTPRINTS_PATH = Path(__file__).parent / "data" / "plateau_building_footprints.json"
+# DID地区（人口集中地区）等の飛行禁止区域のジオメトリ。国土数値情報A16-2020から
+# 秩父市（市区町村コード11207）のMultiPolygonを再取得したもの（2026-08-07）。
+# flightProhibitedAreaId（`digitaltwin:import-flight-prohibited-area`が
+# voxelBitFileNameに埋め込んだ安定ID、道路・土砂災害等のimport時に振られる
+# ランダムUUIDとは異なりCityGML/GeoJSON側の識別子起源）をキーにする。
+_PROHIBITED_AREAS_PATH = Path(__file__).parent / "data" / "flight_prohibited_areas.json"
 _VOXEL_FILE_PATTERN = re.compile(r"plateau/[^/]+/([^/]+)\.json")
+_PROHIBITED_AREA_FILE_PATTERN = re.compile(r"flight_prohibited_area/([^/]+)\.json")
 
 
 def _load_json(path: Path) -> dict:
@@ -57,6 +64,7 @@ def _load_json(path: Path) -> dict:
 
 _BUILDING_HEIGHTS = _load_json(_HEIGHTS_PATH)
 _BUILDING_FOOTPRINTS = _load_json(_FOOTPRINTS_PATH)
+_PROHIBITED_AREAS = _load_json(_PROHIBITED_AREAS_PATH)
 
 
 def extract_building_id(voxel_bit_file_path: str | None) -> str | None:
@@ -78,6 +86,25 @@ def lookup_building_footprint(building_id: str | None) -> list[list[float]] | No
     if building_id is None:
         return None
     return _BUILDING_FOOTPRINTS.get(building_id)
+
+
+def extract_prohibited_area_id(voxel_bit_file_path: str | None) -> str | None:
+    """voxelBitFileName（`flight_prohibited_area/{flightProhibitedAreaId}.json`）から
+    flightProhibitedAreaIdを取り出す。"""
+    if not voxel_bit_file_path:
+        return None
+    m = _PROHIBITED_AREA_FILE_PATTERN.search(voxel_bit_file_path)
+    return m.group(1) if m else None
+
+
+def lookup_prohibited_area_geometry(area_id: str | None) -> list[list[list[float]]] | None:
+    """flightProhibitedAreaIdから[lat, lon]の閉じたリングのリスト（MultiPolygon、
+    地図描画用）を返す。国土数値情報のDID地区は複数の分離したポリゴンを
+    1つのMultiPolygonとして持つため、リングを複数返せる形にしている。"""
+    if area_id is None:
+        return None
+    entry = _PROHIBITED_AREAS.get(area_id)
+    return entry["rings"] if entry else None
 
 
 def evaluate_building_vertical(height_m: float | None, agl_m: float | None) -> str:

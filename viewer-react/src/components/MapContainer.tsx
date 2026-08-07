@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { GroundFeature } from '../api/client';
+import type { GroundFeature, ProhibitedArea } from '../api/client';
 
 // MapLibreはGeoJSONソース（航路・建物）の処理にWorkerを使うが、既定では自身の
 // import.meta.urlからの相対パスを見に行く。Viteの単一バンドル構成ではその隣に
@@ -27,12 +27,19 @@ interface MapContainerProps {
   // 照会結果の地物。footprint を持つ建物（Phase B投入分）のみ描画対象になる。
   buildingFeatures?: GroundFeature[];
   showBuildings?: boolean;
+  // rings を持つDID地区のみ描画対象になる（国土数値情報A16-2020から再取得済み、
+  // 秩父市のみ）。
+  prohibitedAreas?: ProhibitedArea[];
+  showProhibitedAreas?: boolean;
 }
 
 const ROUTE_LAYER_IDS = ['route-line', 'route-start', 'route-end'];
 const ROUTE_SOURCE_IDS = ['route', 'route-points'];
 const BUILDING_LAYER_IDS = ['building-fill', 'building-outline'];
 const BUILDING_SOURCE_IDS = ['buildings'];
+const PROHIBITED_LAYER_IDS = ['prohibited-fill', 'prohibited-outline'];
+const PROHIBITED_SOURCE_IDS = ['prohibited-areas'];
+const PROHIBITED_HATCH_IMAGE_ID = 'prohibited-hatch';
 
 // 航路のレイヤとソースを取り除く。レイヤはソースより先に消す必要がある。
 function removeRouteLayers(map: maplibregl.Map) {
@@ -53,11 +60,44 @@ function removeBuildingLayers(map: maplibregl.Map) {
   }
 }
 
+function removeProhibitedLayers(map: maplibregl.Map) {
+  for (const id of PROHIBITED_LAYER_IDS) {
+    if (map.getLayer(id)) map.removeLayer(id);
+  }
+  for (const id of PROHIBITED_SOURCE_IDS) {
+    if (map.getSource(id)) map.removeSource(id);
+  }
+}
+
+// design.md §5-3: 禁止区域は色（--brand-red）だけでなく塗りパターン（交差ハッチ）
+// でも区別すること、という制約への対応。8x8pxの交差ハッチをcanvasで生成して登録する。
+function ensureHatchPattern(map: maplibregl.Map) {
+  if (map.hasImage(PROHIBITED_HATCH_IMAGE_ID)) return;
+  const size = 8;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  ctx.strokeStyle = '#E8380D'; // --brand-red
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(size, size);
+  ctx.moveTo(size, 0);
+  ctx.lineTo(0, size);
+  ctx.stroke();
+  const imageData = ctx.getImageData(0, 0, size, size);
+  map.addImage(PROHIBITED_HATCH_IMAGE_ID, { width: size, height: size, data: imageData.data });
+}
+
 export default function MapContainer({
   routeData,
   showRoute = true,
   buildingFeatures = [],
   showBuildings = true,
+  prohibitedAreas = [],
+  showProhibitedAreas = true,
 }: MapContainerProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
@@ -266,6 +306,60 @@ export default function MapContainer({
       },
     });
   }, [buildingFeatures, showBuildings, styleReady]);
+
+  // DID地区（人口集中地区）等の飛行禁止区域を描画（rings を持つもののみ。
+  // 現状は国土数値情報から再取得済みの秩父市DID地区のみ）
+  useEffect(() => {
+    if (!map.current || !styleReady) return;
+
+    const mapInstance = map.current;
+    removeProhibitedLayers(mapInstance);
+    if (!showProhibitedAreas) return;
+
+    const polygons = prohibitedAreas
+      .filter((a) => a.rings && a.rings.length > 0)
+      .flatMap((a) =>
+        a.rings!.map((ring, i) => ({
+          type: 'Feature' as const,
+          properties: { id: `${a.id}-${i}`, name: a.name ?? '', intersect: a.intersect ?? '' },
+          geometry: {
+            type: 'Polygon' as const,
+            // rings は [lat, lon] のリング。GeoJSONは[lon, lat]の順。
+            coordinates: [ring.map(([lat, lon]) => [lon, lat])],
+          },
+        }))
+      );
+    if (polygons.length === 0) return;
+
+    ensureHatchPattern(mapInstance);
+
+    mapInstance.addSource('prohibited-areas', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: polygons },
+    });
+
+    mapInstance.addLayer({
+      id: 'prohibited-fill',
+      type: 'fill',
+      source: 'prohibited-areas',
+      paint: {
+        // design.md §5-3 --map-prohibited（--brand-red）＋交差ハッチ（色だけで
+        // 区別しない制約への対応）
+        'fill-pattern': PROHIBITED_HATCH_IMAGE_ID,
+        'fill-opacity': 0.7,
+      },
+    });
+
+    mapInstance.addLayer({
+      id: 'prohibited-outline',
+      type: 'line',
+      source: 'prohibited-areas',
+      paint: {
+        'line-color': '#E8380D',
+        'line-width': 2,
+      },
+    });
+  }, [prohibitedAreas, showProhibitedAreas, styleReady]);
 
   return (
     <div className="flex-1 relative bg-bg-app">

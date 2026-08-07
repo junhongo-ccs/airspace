@@ -219,9 +219,11 @@ export default function SettingsPanel({
               <span className="text-sm text-text-primary">建物</span>
               <span className="text-xs text-text-secondary">（Phase B投入分のみ）</span>
             </label>
-            {/* 実APIはDID地区のポリゴン座標を返さないため、地図描画はできない
-                （判定詳細の表にのみ反映）。既定の航路座標とはDID地区が約3km
-                離れているため、既定のままでは0件になる（仕様書§7-2-補参照）。 */}
+            {/* 実APIレスポンス自体にはポリゴンが含まれないが、DID地区は安定ID
+                （flightProhibitedAreaId）を持つため国土数値情報から再取得した
+                ジオメトリで秩父市のみ地図描画できる（2026年8月7日）。既定の航路
+                座標とはDID地区が約3km離れているため、既定のままでは0件になる
+                （仕様書§7-2-補参照）。 */}
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -230,7 +232,7 @@ export default function SettingsPanel({
                 className="w-4 h-4"
               />
               <span className="text-sm text-text-primary">DID地区</span>
-              <span className="text-xs text-text-secondary">（地図描画は未対応）</span>
+              <span className="text-xs text-text-secondary">（秩父市のみ地図描画対応）</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
