@@ -3,6 +3,16 @@ import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { GroundFeature } from '../api/client';
 
+// MapLibreはGeoJSONソース（航路・建物）の処理にWorkerを使うが、既定では自身の
+// import.meta.urlからの相対パスを見に行く。Viteの単一バンドル構成ではその隣に
+// ワーカーファイルが存在せず、SPAのフォールバックでindex.htmlが返ってしまい、
+// Workerがモジュールとして解釈できず無言で失敗する（ラスタータイルはWorker
+// 不要なので背景地図だけは表示され、航路・建物の線やポリゴンだけが描画されない、
+// という形で症状が出る）。vite.config.tsのmaplibreWorkerAssetsプラグインが
+// maplibre-gl-worker.mjsとその相対import先maplibre-gl-shared.mjsを
+// /assets/配下に固定パスで配置するので、そのパスを明示的に教える。
+maplibregl.setWorkerUrl('/assets/maplibre-gl-worker.mjs');
+
 interface RouteData {
   startLat: number;
   startLon: number;
