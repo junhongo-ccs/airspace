@@ -188,6 +188,31 @@ export async function getFlightProhibitedAreas(
   }
 }
 
+// ジオメトリを再取得済みの飛行禁止区域（現状DID地区のみ）。座標入力・航路登録に
+// 依存しない静的な参照データで、Laravelへの照会を伴わない。ルート設計前から
+// 危険区域を地図に表示できるようにするための参照レイヤ用。
+export interface KnownProhibitedArea {
+  id: string;
+  name?: string | null;
+  rings: [number, number][][];
+}
+
+export async function getKnownProhibitedAreas(): Promise<KnownProhibitedArea[]> {
+  try {
+    const response = await fetch(`${BFF_BASE}/known_prohibited_areas`);
+    if (!response.ok) {
+      throw new Error(await describeError(response));
+    }
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    // 参照レイヤの取得失敗は致命的ではない（航路登録・照会自体は続行できる）ため、
+    // 他の照会関数と異なり空配列を返し、画面が使えなくなることを避ける。
+    console.error('Failed to fetch known prohibited areas:', error);
+    return [];
+  }
+}
+
 export interface ConnectionStatus {
   connected: boolean;
   state: 'connected' | 'disconnected' | 'error' | 'unknown';

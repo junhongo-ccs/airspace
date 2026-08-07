@@ -7,10 +7,12 @@ import {
   registerRoute,
   getGroundFeatures,
   getFlightProhibitedAreas,
+  getKnownProhibitedAreas,
   getConnectionStatus,
   type ConnectionStatus,
   type GroundFeature,
   type ProhibitedArea,
+  type KnownProhibitedArea,
 } from './api/client';
 
 // partial = 航路登録は成功したが地物照会・飛行禁止区域照会のいずれかが失敗した状態。
@@ -40,6 +42,10 @@ function App() {
   const [showProhibitedAreas, setShowProhibitedAreas] = useState(true);
   const [queryResult, setQueryResult] = useState<QueryResult>({ status: 'idle' });
   const [isLoading, setIsLoading] = useState(false);
+  // 座標入力・航路登録に依存しない参照レイヤ。ルートを引いてから交差を確認する
+  // のではなく、危険区域を先に見せてルート設計時に避けられるようにするため、
+  // 起動時に一度だけ取得して常に地図へ表示する。
+  const [knownProhibitedAreas, setKnownProhibitedAreas] = useState<KnownProhibitedArea[]>([]);
 
   const refreshConnection = useCallback(async () => {
     setConnection(await getConnectionStatus());
@@ -50,6 +56,10 @@ function App() {
   useEffect(() => {
     void refreshConnection();
   }, [refreshConnection]);
+
+  useEffect(() => {
+    void getKnownProhibitedAreas().then(setKnownProhibitedAreas);
+  }, []);
 
   const handleQuery = async () => {
     setIsLoading(true);
@@ -160,7 +170,7 @@ function App() {
             showRoute={showRoute}
             buildingFeatures={queryResult.features}
             showBuildings={showBuildings}
-            prohibitedAreas={queryResult.prohibitedAreas}
+            prohibitedAreas={knownProhibitedAreas}
             showProhibitedAreas={showProhibitedAreas}
           />
 

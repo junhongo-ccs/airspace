@@ -221,9 +221,11 @@ export default function SettingsPanel({
             </label>
             {/* 実APIレスポンス自体にはポリゴンが含まれないが、DID地区は安定ID
                 （flightProhibitedAreaId）を持つため国土数値情報から再取得した
-                ジオメトリで秩父市のみ地図描画できる（2026年8月7日）。既定の航路
-                座標とはDID地区が約3km離れているため、既定のままでは0件になる
-                （仕様書§7-2-補参照）。 */}
+                ジオメトリで秩父市のみ地図描画できる（2026年8月7日）。ルート設計時に
+                危険区域を避けられるよう、座標入力・航路登録の前から常時地図に表示
+                する（航路との交差確認は登録後の判定詳細を参照。既定の航路座標とは
+                DID地区が約3km離れているため、既定のままでは判定詳細は0件になる。
+                仕様書§7-2-補参照）。 */}
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"

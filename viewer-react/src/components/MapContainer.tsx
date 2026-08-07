@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { GroundFeature, ProhibitedArea } from '../api/client';
+import type { GroundFeature, KnownProhibitedArea } from '../api/client';
 
 // MapLibreはGeoJSONソース（航路・建物）の処理にWorkerを使うが、既定では自身の
 // import.meta.urlからの相対パスを見に行く。Viteの単一バンドル構成ではその隣に
@@ -27,9 +27,10 @@ interface MapContainerProps {
   // 照会結果の地物。footprint を持つ建物（Phase B投入分）のみ描画対象になる。
   buildingFeatures?: GroundFeature[];
   showBuildings?: boolean;
-  // rings を持つDID地区のみ描画対象になる（国土数値情報A16-2020から再取得済み、
-  // 秩父市のみ）。
-  prohibitedAreas?: ProhibitedArea[];
+  // 座標入力・航路登録に依存しない静的な参照レイヤ（国土数値情報A16-2020から
+  // 再取得済み、秩父市のみ）。ルート設計前から危険区域を確認できるよう、常時
+  // 描画対象になる。
+  prohibitedAreas?: KnownProhibitedArea[];
   showProhibitedAreas?: boolean;
 }
 
@@ -308,7 +309,8 @@ export default function MapContainer({
   }, [buildingFeatures, showBuildings, styleReady]);
 
   // DID地区（人口集中地区）等の飛行禁止区域を描画（rings を持つもののみ。
-  // 現状は国土数値情報から再取得済みの秩父市DID地区のみ）
+  // 現状は国土数値情報から再取得済みの秩父市DID地区のみ）。座標入力・航路登録の
+  // 前から常時表示し、ルート設計時に危険区域を避けられるようにする。
   useEffect(() => {
     if (!map.current || !styleReady) return;
 
@@ -321,7 +323,7 @@ export default function MapContainer({
       .flatMap((a) =>
         a.rings!.map((ring, i) => ({
           type: 'Feature' as const,
-          properties: { id: `${a.id}-${i}`, name: a.name ?? '', intersect: a.intersect ?? '' },
+          properties: { id: `${a.id}-${i}`, name: a.name ?? '' },
           geometry: {
             type: 'Polygon' as const,
             // rings は [lat, lon] のリング。GeoJSONは[lon, lat]の順。
