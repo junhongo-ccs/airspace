@@ -115,6 +115,20 @@ class QueryFeaturesRequest(BaseModel):
     altitude_m: float | None = None
 
 
+class QueryProhibitedAreasRequest(BaseModel):
+    start_latitude: float
+    start_longitude: float
+    end_latitude: float
+    end_longitude: float
+    margin_degrees: float = 0.01
+
+
+# 実APIのDID地区（人口集中地区）・飛行禁止区域はポリゴン座標を返さない
+# （list_flight_prohibited_areas参照）。建物のようにCityGMLから再抽出して
+# 描画する手も無いため、この文言で「地図描画は未対応」と明示する。
+NO_GEOMETRY_MESSAGE = "要確認（ジオメトリ未提供・ボクセル形式）"
+
+
 def _bbox(coords: list[tuple]) -> tuple:
     lats = [c[0] for c in coords]
     lons = [c[1] for c in coords]
@@ -123,6 +137,17 @@ def _bbox(coords: list[tuple]) -> tuple:
 
 def _bbox_overlap(a: tuple, b: tuple) -> bool:
     return not (a[2] < b[0] or b[2] < a[0] or a[3] < b[1] or b[3] < a[1])
+
+
+def _route_bbox(start_lat, start_lon, end_lat, end_lon, margin: float) -> tuple:
+    """始点・終点の両方からbboxを作る（`_bbox_from_route`、route_form.py相当）。
+
+    始点のみで作ると、Streamlit版（航路全体の中点基準）と空間IDが1タイルずれて
+    0件になることがあった（query_featuresで実際に踏んだ不具合）。
+    """
+    lats = [start_lat, end_lat]
+    lons = [start_lon, end_lon]
+    return (min(lats) - margin, min(lons) - margin, max(lats) + margin, max(lons) + margin)
 
 
 def _judge_feature(feature: dict, route_bbox: tuple, altitude_m: float | None) -> str:
@@ -146,7 +171,7 @@ def _judge_feature(feature: dict, route_bbox: tuple, altitude_m: float | None) -
     if feature.get("footprint"):
         overlap = _bbox_overlap(_bbox(feature["footprint"]), route_bbox)
         return "要確認（水平方向・簡易判定）" if overlap else "交差なし（水平方向・簡易判定）"
-    return "要確認（ジオメトリ未提供・ボクセル形式）"
+    return NO_GEOMETRY_MESSAGE
 
 
 @app.get("/health")
@@ -212,17 +237,11 @@ async def query_features_endpoint(request: QueryFeaturesRequest):
     """航路（始点・終点）周辺の地物ボクセルを取得する。
 
     始点のみでbboxを作ると、Streamlit版（航路全体の中点基準）と空間IDが
-    1タイルずれて0件になることがあった。`_bbox_from_route`
-    （viewer/src/components/route_form.py）と同じく始点・終点の両方から作る。
+    1タイルずれて0件になることがあった。始点・終点の両方から作る。
     """
-    lats = [request.start_latitude, request.end_latitude]
-    lons = [request.start_longitude, request.end_longitude]
-    m = request.margin_degrees
-    bbox = (
-        min(lats) - m,
-        min(lons) - m,
-        max(lats) + m,
-        max(lons) + m,
+    bbox = _route_bbox(
+        request.start_latitude, request.start_longitude,
+        request.end_latitude, request.end_longitude, request.margin_degrees,
     )
     try:
         features = _client().get_ground_feature_voxel(bbox)
@@ -231,7 +250,10 @@ async def query_features_endpoint(request: QueryFeaturesRequest):
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-    route_bbox = _bbox([(lats[0], lons[0]), (lats[1], lons[1])])
+    route_bbox = _route_bbox(
+        request.start_latitude, request.start_longitude,
+        request.end_latitude, request.end_longitude, margin=0,
+    )
     for feature in features:
         feature["intersect"] = _judge_feature(feature, route_bbox, request.altitude_m)
 
@@ -240,6 +262,33 @@ async def query_features_endpoint(request: QueryFeaturesRequest):
         "data": features,
         "route_judgment": evaluate_agl_legal_limit(request.altitude_m),
     }
+
+
+@app.post("/query_prohibited_areas")
+async def query_prohibited_areas_endpoint(request: QueryProhibitedAreasRequest):
+    """DID地区（人口集中地区）等の飛行禁止区域を取得する。
+
+    実APIレスポンスにポリゴン座標が含まれないため（DigitalTwinApiClient.
+    list_flight_prohibited_areas参照）、交差判定は常に「要確認（ジオメトリ未提供）」
+    になる（Streamlit版と同じ制約）。既定の航路座標とDID地区（国土数値情報A16-2020、
+    秩父市）は約3km離れているため、既定のままでは0件が正しい結果になる
+    （仕様書§7-2-補参照）。
+    """
+    bbox = _route_bbox(
+        request.start_latitude, request.start_longitude,
+        request.end_latitude, request.end_longitude, request.margin_degrees,
+    )
+    try:
+        areas = _client().list_flight_prohibited_areas(bbox)
+    except ApiError as exc:
+        raise HTTPException(status_code=502, detail=f"Laravel API error: {exc}") from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    for area in areas:
+        area["intersect"] = NO_GEOMETRY_MESSAGE
+
+    return {"status": "success", "data": areas}
 
 
 if __name__ == "__main__":

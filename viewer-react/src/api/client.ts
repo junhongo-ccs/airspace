@@ -134,36 +134,53 @@ export async function getGroundFeatures(
   }
 }
 
-// 飛行禁止区域を取得（現在未使用、将来の機能拡張用）
+// BFF が返すDID地区（人口集中地区）等の飛行禁止区域。実APIはポリゴン座標を
+// 返さないため、intersectは常に「要確認（ジオメトリ未提供）」になる。
+export interface ProhibitedArea {
+  id: string;
+  name?: string | null;
+  source: string;
+  is_poc: boolean;
+  intersect?: string;
+  raw?: unknown;
+}
+
+// 航路周辺のDID地区（人口集中地区）等の飛行禁止区域を取得（BFF 経由）。
+// 既定の航路座標とDID地区（国土数値情報A16-2020、秩父市）は約3km離れているため、
+// 既定の座標のままでは0件が正しい結果になる（仕様書§7-2-補参照）。
 export async function getFlightProhibitedAreas(
-  latitude: number,
-  longitude: number,
-  radiusDegrees: number = 0.01
-) {
+  startLat: number,
+  startLon: number,
+  endLat: number,
+  endLon: number,
+  marginDegrees: number = 0.01
+): Promise<ProhibitedArea[]> {
   try {
-    // BFF でこのエンドポイントが実装されたら使用
     const response = await fetch(`${BFF_BASE}/query_prohibited_areas`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        latitude,
-        longitude,
-        radius_degrees: radiusDegrees,
+        start_latitude: startLat,
+        start_longitude: startLon,
+        end_latitude: endLat,
+        end_longitude: endLon,
+        margin_degrees: marginDegrees,
       }),
     });
 
     if (!response.ok) {
-      console.error(`BFF error: ${response.status}`);
-      return [];
+      // 空配列を返すと「照会成功・0件」と区別が付かなくなる。他の照会と同様、
+      // 失敗として投げる。
+      throw new Error(await describeError(response));
     }
 
     const data = await response.json();
     return data.data || [];
   } catch (error) {
     console.error('Failed to fetch prohibited areas:', error);
-    return [];
+    throw error;
   }
 }
 

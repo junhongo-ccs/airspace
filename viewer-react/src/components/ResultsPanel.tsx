@@ -3,6 +3,9 @@ import type { QueryResult } from '../App';
 
 interface ResultsPanelProps {
   queryResult: QueryResult;
+  // DID地区は地図描画ができないため、チェックボックスの唯一の効果は
+  // この判定詳細表での表示/非表示になる。
+  showProhibitedAreas: boolean;
 }
 
 // BFF が返す layer 値の表示名。viewer/src/api_client.py の OBJECT_CD_LAYERS と対応。
@@ -24,10 +27,27 @@ function countByLayer(features: QueryResult['features']): Record<string, number>
   return counts;
 }
 
-export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
+export default function ResultsPanel({ queryResult, showProhibitedAreas }: ResultsPanelProps) {
   const [queryExpanded, setQueryExpanded] = useState(true);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
   const layerCounts = countByLayer(queryResult.features);
+  // partial は「地物照会が失敗」と「地物は成功したが飛行禁止区域の照会だけ失敗」の
+  // 両方を意味する。航路登録が成功していれば、少なくとも航路IDと取得試行結果は表示する。
+  const routeQueried = queryResult.status === 'success' || queryResult.status === 'partial';
+  const detailRows = [
+    ...(queryResult.features ?? []).map((f) => ({
+      key: `feature-${f.id}`,
+      layer: LAYER_LABELS[f.layer] ?? f.layer,
+      id: f.id,
+      intersect: f.intersect ?? '未検証',
+    })),
+    ...(showProhibitedAreas ? queryResult.prohibitedAreas ?? [] : []).map((a) => ({
+      key: `prohibited-${a.id}`,
+      layer: '飛行禁止区域（DID等）',
+      id: a.name ?? a.id,
+      intersect: a.intersect ?? '未検証',
+    })),
+  ];
 
   return (
     <div className="border-t border-brand-blue-light/20 bg-bg-panel flex flex-col">
@@ -54,7 +74,7 @@ export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
             {queryResult.status === 'loading' && (
               <p className="text-status-idle">実行中…</p>
             )}
-            {queryResult.status === 'success' && (
+            {routeQueried && (
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>航路ID:</span>
@@ -62,24 +82,22 @@ export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
                 </div>
                 <div className="flex justify-between">
                   <span>周辺地物:</span>
-                  <span className="text-text-primary font-medium">{queryResult.features?.length || 0} 件</span>
+                  {queryResult.features !== undefined ? (
+                    <span className="text-text-primary font-medium">{queryResult.features.length} 件</span>
+                  ) : (
+                    <span className="text-status-error font-medium">取得失敗</span>
+                  )}
                 </div>
                 <div className="flex justify-between">
                   <span>取得時刻:</span>
                   <span className="text-text-secondary text-xs">{queryResult.timestamp ? new Date(queryResult.timestamp).toLocaleString('ja-JP') : '-'}</span>
                 </div>
-              </div>
-            )}
-            {queryResult.status === 'partial' && (
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>航路ID:</span>
-                  <span className="mono text-text-primary font-medium">{queryResult.routeId}</span>
-                </div>
-                <div className="text-status-warn">
-                  <p className="font-medium">一部成功 — 周辺地物の照会に失敗</p>
-                  <p className="text-xs">{queryResult.message}</p>
-                </div>
+                {queryResult.status === 'partial' && (
+                  <div className="text-status-warn">
+                    <p className="font-medium">一部成功</p>
+                    <p className="text-xs">{queryResult.message}</p>
+                  </div>
+                )}
               </div>
             )}
             {queryResult.status === 'error' && (
@@ -119,7 +137,7 @@ export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
                   <tr className="border-b border-bg-table-head">
                     <td className="py-2">周辺地物（照会結果）</td>
                     <td className="py-2">
-                      {queryResult.status === 'success' ? (
+                      {queryResult.features !== undefined ? (
                         Object.keys(layerCounts).length > 0 ? (
                           <span className="text-text-primary">
                             {Object.entries(layerCounts)
@@ -135,8 +153,22 @@ export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
                     </td>
                   </tr>
                   <tr className="border-b border-bg-table-head">
-                    <td className="py-2">DID地区との交差判定</td>
-                    <td className="py-2"><span className="text-text-secondary">未実装（React版）</span></td>
+                    <td className="py-2">DID地区・飛行禁止区域</td>
+                    <td className="py-2">
+                      {!showProhibitedAreas ? (
+                        <span className="text-text-secondary">非表示（レイヤOFF）</span>
+                      ) : queryResult.prohibitedAreas !== undefined ? (
+                        queryResult.prohibitedAreas.length > 0 ? (
+                          <span className="text-text-primary">
+                            {queryResult.prohibitedAreas.length} 件（要確認・ジオメトリ未提供）
+                          </span>
+                        ) : (
+                          <span className="text-text-secondary">0 件</span>
+                        )
+                      ) : (
+                        <span className="text-text-secondary">未照会</span>
+                      )}
+                    </td>
                   </tr>
                   <tr>
                     <td className="py-2">150m AGL（航空法上限）判定</td>
@@ -152,8 +184,9 @@ export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
               </table>
             </div>
 
-            {/* 地物ごとの交差判定（垂直方向は建物のみ、それ以外は簡易・未検証の旨を表示）。 */}
-            {queryResult.status === 'success' && (queryResult.features?.length ?? 0) > 0 && (
+            {/* 地物・飛行禁止区域ごとの交差判定（垂直方向は建物のみ、それ以外は
+                簡易・未検証の旨を表示）。 */}
+            {routeQueried && detailRows.length > 0 && (
               <div className="overflow-x-auto mt-4">
                 <table className="w-full text-left">
                   <thead>
@@ -164,11 +197,11 @@ export default function ResultsPanel({ queryResult }: ResultsPanelProps) {
                     </tr>
                   </thead>
                   <tbody>
-                    {queryResult.features?.map((f) => (
-                      <tr key={f.id} className="border-b border-bg-table-head">
-                        <td className="py-2">{LAYER_LABELS[f.layer] ?? f.layer}</td>
-                        <td className="py-2 mono text-xs">{f.id}</td>
-                        <td className="py-2">{f.intersect ?? '未検証'}</td>
+                    {detailRows.map((row) => (
+                      <tr key={row.key} className="border-b border-bg-table-head">
+                        <td className="py-2">{row.layer}</td>
+                        <td className="py-2 mono text-xs">{row.id}</td>
+                        <td className="py-2">{row.intersect}</td>
                       </tr>
                     ))}
                   </tbody>
