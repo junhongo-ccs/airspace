@@ -6,12 +6,14 @@ import ResultsPanel from './components/ResultsPanel';
 import {
   registerRoute,
   getGroundFeatures,
+  getFlightProhibitedAreas,
   getConnectionStatus,
   type ConnectionStatus,
   type GroundFeature,
+  type ProhibitedArea,
 } from './api/client';
 
-// partial = 航路登録は成功したが地物照会が失敗した状態。
+// partial = 航路登録は成功したが地物照会・飛行禁止区域照会のいずれかが失敗した状態。
 // これを success に含めると「0件」と「照会失敗」が見分けられなくなる。
 export interface QueryResult {
   status: 'idle' | 'loading' | 'success' | 'partial' | 'error';
@@ -19,6 +21,9 @@ export interface QueryResult {
   features?: GroundFeature[];
   // 航路AGLの150m高度制限判定（viewer/src/altitude.pyをBFF経由で適用）。
   routeJudgment?: string;
+  // DID地区（人口集中地区）等の飛行禁止区域。実APIはポリゴンを返さないため
+  // 交差判定は常に「要確認（ジオメトリ未提供）」になる。
+  prohibitedAreas?: ProhibitedArea[];
   timestamp?: string;
   message?: string;
 }
@@ -32,6 +37,7 @@ function App() {
   const [aglM, setAglM] = useState(100.0);
   const [showRoute, setShowRoute] = useState(true);
   const [showBuildings, setShowBuildings] = useState(true);
+  const [showProhibitedAreas, setShowProhibitedAreas] = useState(true);
   const [queryResult, setQueryResult] = useState<QueryResult>({ status: 'idle' });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -76,12 +82,27 @@ function App() {
           endLon,
           aglM
         );
+
+        // 飛行禁止区域は別のLaravelエンドポイント（general_purpose）経由のため、
+        // 地物照会とは独立に成否を扱う。ここが失敗しても地物照会の結果は握りつぶさない。
+        let prohibitedAreas: ProhibitedArea[] = [];
+        let prohibitedError: string | undefined;
+        try {
+          prohibitedAreas = await getFlightProhibitedAreas(startLat, startLon, endLat, endLon);
+        } catch (error) {
+          prohibitedError = error instanceof Error ? error.message : '不明なエラー';
+        }
+
         setQueryResult({
-          status: 'success',
+          status: prohibitedError ? 'partial' : 'success',
           routeId,
           features,
           routeJudgment,
+          prohibitedAreas,
           timestamp: new Date().toISOString(),
+          message: prohibitedError
+            ? `航路・周辺地物は取得できましたが、飛行禁止区域の照会に失敗しました: ${prohibitedError}`
+            : undefined,
         });
       } catch (error) {
         setQueryResult({
@@ -124,6 +145,8 @@ function App() {
           setShowRoute={setShowRoute}
           showBuildings={showBuildings}
           setShowBuildings={setShowBuildings}
+          showProhibitedAreas={showProhibitedAreas}
+          setShowProhibitedAreas={setShowProhibitedAreas}
           onQuery={handleQuery}
           isLoading={isLoading}
         />
@@ -140,7 +163,7 @@ function App() {
           />
 
           {/* Bottom results panel */}
-          <ResultsPanel queryResult={queryResult} />
+          <ResultsPanel queryResult={queryResult} showProhibitedAreas={showProhibitedAreas} />
         </div>
       </div>
     </div>

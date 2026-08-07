@@ -17,6 +17,8 @@ interface SettingsPanelProps {
   setShowRoute: (val: boolean) => void;
   showBuildings: boolean;
   setShowBuildings: (val: boolean) => void;
+  showProhibitedAreas: boolean;
+  setShowProhibitedAreas: (val: boolean) => void;
   onQuery: () => void;
   isLoading: boolean;
 }
@@ -66,6 +68,8 @@ export default function SettingsPanel({
   setShowRoute,
   showBuildings,
   setShowBuildings,
+  showProhibitedAreas,
+  setShowProhibitedAreas,
   onQuery,
   isLoading,
 }: SettingsPanelProps) {
@@ -215,12 +219,18 @@ export default function SettingsPanel({
               <span className="text-sm text-text-primary">建物</span>
               <span className="text-xs text-text-secondary">（Phase B投入分のみ）</span>
             </label>
-            {/* DID地区はBFFがポリゴンを取得するエンドポイント自体を未実装のため、
-                引き続き無効化して準備中と明示する。 */}
-            <label className="flex items-center gap-2 cursor-not-allowed opacity-60">
-              <input type="checkbox" checked={false} disabled readOnly className="w-4 h-4" />
-              <span className="text-sm text-text-secondary">DID地区</span>
-              <span className="text-xs text-text-secondary">（準備中）</span>
+            {/* 実APIはDID地区のポリゴン座標を返さないため、地図描画はできない
+                （判定詳細の表にのみ反映）。既定の航路座標とはDID地区が約3km
+                離れているため、既定のままでは0件になる（仕様書§7-2-補参照）。 */}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showProhibitedAreas}
+                onChange={(e) => setShowProhibitedAreas(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <span className="text-sm text-text-primary">DID地区</span>
+              <span className="text-xs text-text-secondary">（地図描画は未対応）</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
