@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 
 import requests
 
-from .altitude import extract_building_id, lookup_building_height
+from .altitude import extract_building_id, lookup_building_footprint, lookup_building_height
 from .config import API_PREFIX, CREATED_BY, ENVIRONMENT, IS_POC, POC_PREFIX
 from .spatial_id import DEFAULT_ZOOM_LEVEL, compute_real_spatial_id
 
@@ -272,6 +272,12 @@ class DigitalTwinApiClient:
                     voxel_bit_file_path = (obj.get("other") or {}).get("voxelBitFileName")
                     building_id = extract_building_id(voxel_bit_file_path)
                     voxel["height_m"] = lookup_building_height(building_id)
+                    # 地図描画用フットプリント（lod0RoofEdge由来）。高さと同じくPhase Bで
+                    # 投入済みの29件のみ持つ。無ければNone（地図には描画されない）。
+                    footprint = lookup_building_footprint(building_id)
+                    voxel["footprint"] = footprint
+                    if footprint is not None:
+                        voxel["source"] = "airspace-drone-web（ボクセル形式、フットプリントはPhase B投入分のみ）"
                 results.append(voxel)
         return results
 

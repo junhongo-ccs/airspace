@@ -26,6 +26,9 @@ export interface GroundFeature {
   // 交差判定文言（viewer/src/altitude.pyの判定をBFFが付与）。建物は高さ方向、
   // それ以外はジオメトリ未提供のため簡易表現になる。
   intersect?: string;
+  // 地図描画用フットプリント（[lat, lon]の閉じたリング）。Phase B投入分の建物のみ
+  // 持つ。無ければ地図には描画しない。
+  footprint?: [number, number][] | null;
   raw?: unknown;
 }
 

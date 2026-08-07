@@ -44,15 +44,19 @@ from pathlib import Path
 AGL_TOLERANCE_M = 2.0
 
 _HEIGHTS_PATH = Path(__file__).parent / "data" / "plateau_building_heights.json"
+# lod0RoofEdge（緯度経度の閉じたリング、gml:posListから抽出。z座標は全件0.0固定のため
+# 高さJSONと違い保持しない）。高さJSONと同じ29件・同じbuildingIDキーで対応する。
+_FOOTPRINTS_PATH = Path(__file__).parent / "data" / "plateau_building_footprints.json"
 _VOXEL_FILE_PATTERN = re.compile(r"plateau/[^/]+/([^/]+)\.json")
 
 
-def _load_building_heights() -> dict[str, float | None]:
-    with open(_HEIGHTS_PATH, encoding="utf-8") as f:
+def _load_json(path: Path) -> dict:
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 
-_BUILDING_HEIGHTS = _load_building_heights()
+_BUILDING_HEIGHTS = _load_json(_HEIGHTS_PATH)
+_BUILDING_FOOTPRINTS = _load_json(_FOOTPRINTS_PATH)
 
 
 def extract_building_id(voxel_bit_file_path: str | None) -> str | None:
@@ -67,6 +71,13 @@ def lookup_building_height(building_id: str | None) -> float | None:
     if building_id is None:
         return None
     return _BUILDING_HEIGHTS.get(building_id)
+
+
+def lookup_building_footprint(building_id: str | None) -> list[list[float]] | None:
+    """buildingIdから[lat, lon]の閉じたリング（地図描画用）を返す。"""
+    if building_id is None:
+        return None
+    return _BUILDING_FOOTPRINTS.get(building_id)
 
 
 def evaluate_building_vertical(height_m: float | None, agl_m: float | None) -> str:

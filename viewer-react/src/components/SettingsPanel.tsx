@@ -15,6 +15,8 @@ interface SettingsPanelProps {
   setAglM: (val: number) => void;
   showRoute: boolean;
   setShowRoute: (val: boolean) => void;
+  showBuildings: boolean;
+  setShowBuildings: (val: boolean) => void;
   onQuery: () => void;
   isLoading: boolean;
 }
@@ -62,6 +64,8 @@ export default function SettingsPanel({
   setAglM,
   showRoute,
   setShowRoute,
+  showBuildings,
+  setShowBuildings,
   onQuery,
   isLoading,
 }: SettingsPanelProps) {
@@ -199,14 +203,20 @@ export default function SettingsPanel({
             レイヤ
           </label>
           <div className="space-y-2">
-            {/* 建物・DID地区は地図描画そのものが未実装（BFFはボクセル参照を返すのみで
-                ポリゴンを持たない）。操作できるように見せると「非表示にしたのに結果が
-                変わらない」という誤解を生むため、無効化して準備中と明示する。 */}
-            <label className="flex items-center gap-2 cursor-not-allowed opacity-60">
-              <input type="checkbox" checked={false} disabled readOnly className="w-4 h-4" />
-              <span className="text-sm text-text-secondary">建物</span>
-              <span className="text-xs text-text-secondary">（準備中）</span>
+            {/* 建物のフットプリントはPhase B投入分（3次メッシュ53397062、29件）のみ
+                地図描画できる。範囲外の建物は引き続きボクセル参照のみで描画されない。 */}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showBuildings}
+                onChange={(e) => setShowBuildings(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <span className="text-sm text-text-primary">建物</span>
+              <span className="text-xs text-text-secondary">（Phase B投入分のみ）</span>
             </label>
+            {/* DID地区はBFFがポリゴンを取得するエンドポイント自体を未実装のため、
+                引き続き無効化して準備中と明示する。 */}
             <label className="flex items-center gap-2 cursor-not-allowed opacity-60">
               <input type="checkbox" checked={false} disabled readOnly className="w-4 h-4" />
               <span className="text-sm text-text-secondary">DID地区</span>

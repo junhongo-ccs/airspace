@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import type { GroundFeature } from '../api/client';
 
 interface RouteData {
   startLat: number;
@@ -13,10 +14,15 @@ interface MapContainerProps {
   routeData?: RouteData | null;
   // 左パネルの「航路」レイヤ切り替え。false のときは描画しない。
   showRoute?: boolean;
+  // 照会結果の地物。footprint を持つ建物（Phase B投入分）のみ描画対象になる。
+  buildingFeatures?: GroundFeature[];
+  showBuildings?: boolean;
 }
 
 const ROUTE_LAYER_IDS = ['route-line', 'route-start', 'route-end'];
 const ROUTE_SOURCE_IDS = ['route', 'route-points'];
+const BUILDING_LAYER_IDS = ['building-fill', 'building-outline'];
+const BUILDING_SOURCE_IDS = ['buildings'];
 
 // 航路のレイヤとソースを取り除く。レイヤはソースより先に消す必要がある。
 function removeRouteLayers(map: maplibregl.Map) {
@@ -28,7 +34,21 @@ function removeRouteLayers(map: maplibregl.Map) {
   }
 }
 
-export default function MapContainer({ routeData, showRoute = true }: MapContainerProps) {
+function removeBuildingLayers(map: maplibregl.Map) {
+  for (const id of BUILDING_LAYER_IDS) {
+    if (map.getLayer(id)) map.removeLayer(id);
+  }
+  for (const id of BUILDING_SOURCE_IDS) {
+    if (map.getSource(id)) map.removeSource(id);
+  }
+}
+
+export default function MapContainer({
+  routeData,
+  showRoute = true,
+  buildingFeatures = [],
+  showBuildings = true,
+}: MapContainerProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   // スタイル読み込み完了前に addSource/addLayer を呼ぶと MapLibre が
@@ -188,6 +208,54 @@ export default function MapContainer({ routeData, showRoute = true }: MapContain
       },
     });
   }, [routeData, showRoute, styleReady]);
+
+  // 建物フットプリントを描画（Phase B投入分の29件のみfootprintを持つ）
+  useEffect(() => {
+    if (!map.current || !styleReady) return;
+
+    const mapInstance = map.current;
+    removeBuildingLayers(mapInstance);
+    if (!showBuildings) return;
+
+    const polygons = buildingFeatures
+      .filter((f) => f.layer === 'building' && f.footprint)
+      .map((f) => ({
+        type: 'Feature' as const,
+        properties: { id: f.id, intersect: f.intersect ?? '' },
+        geometry: {
+          type: 'Polygon' as const,
+          // footprint は [lat, lon] のリング。GeoJSONは[lon, lat]の順。
+          coordinates: [f.footprint!.map(([lat, lon]) => [lon, lat])],
+        },
+      }));
+    if (polygons.length === 0) return;
+
+    mapInstance.addSource('buildings', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: polygons },
+    });
+
+    mapInstance.addLayer({
+      id: 'building-fill',
+      type: 'fill',
+      source: 'buildings',
+      paint: {
+        // design.md §5-3 --map-building（中間グレー、ベタ塗り）
+        'fill-color': '#8A96A0',
+        'fill-opacity': 0.6,
+      },
+    });
+
+    mapInstance.addLayer({
+      id: 'building-outline',
+      type: 'line',
+      source: 'buildings',
+      paint: {
+        'line-color': '#8A96A0',
+        'line-width': 1,
+      },
+    });
+  }, [buildingFeatures, showBuildings, styleReady]);
 
   return (
     <div className="flex-1 relative bg-bg-app">
