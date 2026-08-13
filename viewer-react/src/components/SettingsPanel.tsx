@@ -93,7 +93,7 @@ export default function SettingsPanel({
   return (
     <div className="w-80 bg-bg-panel border-r border-brand-blue-light/20 flex flex-col overflow-y-auto">
       {/* Connection status */}
-      <div className="px-6 py-4 border-b border-bg-table-head">
+      <div className="px-5 py-2.5 border-b border-bg-table-head">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${connectionView.dotClass}`}></div>
           <span className="text-sm font-medium text-text-primary">
@@ -101,21 +101,21 @@ export default function SettingsPanel({
           </span>
         </div>
         {connectionView.detail && (
-          <p className="mt-1 text-xs text-text-secondary break-all">
+          <p className="mt-0.5 text-xs text-text-secondary break-all leading-4">
             {connectionView.detail}
           </p>
         )}
       </div>
 
       {/* Settings */}
-      <div className="flex-1 px-6 py-6 space-y-6">
+      <div className="flex-1 px-5 py-3 space-y-3">
         {/* Spatial ID display */}
         {spatialId && (
           <div>
-            <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-2">
+            <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-1">
               空間ID
             </label>
-            <div className="mono bg-bg-app p-2 rounded border border-bg-table-head text-xs text-text-primary">
+            <div className="mono bg-bg-app px-2 py-1.5 rounded border border-bg-table-head text-xs text-text-primary">
               {spatialId}
             </div>
           </div>
@@ -123,10 +123,10 @@ export default function SettingsPanel({
 
         {/* Start coordinates */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-3">
+          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
             始点
           </label>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <input
               type="number"
               step="0.0001"
@@ -134,7 +134,7 @@ export default function SettingsPanel({
               onChange={(e) => setStartLat(parseFloat(e.target.value))}
               placeholder="緯度"
               aria-label="始点 緯度"
-              className="w-full px-3 py-2 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
+              className="w-full px-3 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
             />
             <input
               type="number"
@@ -143,17 +143,17 @@ export default function SettingsPanel({
               onChange={(e) => setStartLon(parseFloat(e.target.value))}
               placeholder="経度"
               aria-label="始点 経度"
-              className="w-full px-3 py-2 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
+              className="w-full px-3 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
             />
           </div>
         </div>
 
         {/* End coordinates */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-3">
+          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
             終点
           </label>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <input
               type="number"
               step="0.0001"
@@ -161,7 +161,7 @@ export default function SettingsPanel({
               onChange={(e) => setEndLat(parseFloat(e.target.value))}
               placeholder="緯度"
               aria-label="終点 緯度"
-              className="w-full px-3 py-2 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
+              className="w-full px-3 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
             />
             <input
               type="number"
@@ -170,14 +170,14 @@ export default function SettingsPanel({
               onChange={(e) => setEndLon(parseFloat(e.target.value))}
               placeholder="経度"
               aria-label="終点 経度"
-              className="w-full px-3 py-2 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
+              className="w-full px-3 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
             />
           </div>
         </div>
 
         {/* AGL altitude */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-2">
+          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-1">
             飛行高度（AGL・地上高、m）
           </label>
           <input
@@ -186,11 +186,11 @@ export default function SettingsPanel({
             value={aglM}
             onChange={(e) => setAglM(parseFloat(e.target.value))}
             aria-label="飛行高度（AGL・地上高、m）"
-            className="w-full px-3 py-2 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
+            className="w-full px-3 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
           />
           {/* 入力値と150mの単純比較のみ。飛行可否を示すものではないため
               「適合」等の断定表現は使わず、未確認の範囲を必ず併記する（仕様書§2-2）。 */}
-          <div className="mt-2 p-2 bg-bg-app rounded text-xs text-text-secondary">
+          <div className="mt-1.5 px-2 py-1.5 bg-bg-app rounded text-xs text-text-secondary leading-4">
             {aglM < 150 ? (
               <span className="text-status-ok">150m未満（ほかの要件は未確認）</span>
             ) : (
@@ -203,13 +203,13 @@ export default function SettingsPanel({
 
         {/* Layer visibility */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-3">
+          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
             レイヤ
           </label>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {/* 建物のフットプリントはPhase B投入分（3次メッシュ53397062、29件）のみ
                 地図描画できる。範囲外の建物は引き続きボクセル参照のみで描画されない。 */}
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer leading-4">
               <input
                 type="checkbox"
                 checked={showBuildings}
@@ -226,7 +226,7 @@ export default function SettingsPanel({
                 する（航路との交差確認は登録後の判定詳細を参照。既定の航路座標とは
                 DID地区が約3km離れているため、既定のままでは判定詳細は0件になる。
                 仕様書§7-2-補参照）。 */}
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer leading-4">
               <input
                 type="checkbox"
                 checked={showProhibitedAreas}
@@ -236,7 +236,7 @@ export default function SettingsPanel({
               <span className="text-sm text-text-primary">DID地区</span>
               <span className="text-xs text-text-secondary">（秩父市のみ地図描画対応）</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer leading-4">
               <input
                 type="checkbox"
                 checked={showRoute}
@@ -252,7 +252,7 @@ export default function SettingsPanel({
         <button
           onClick={onQuery}
           disabled={isLoading}
-          className="w-full px-4 py-3 bg-action-primary text-white font-semibold rounded transition-colors hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="w-full px-4 py-2.5 bg-action-primary text-white text-sm font-semibold rounded transition-colors hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {isLoading ? '実行中…' : '航路を登録して周辺データを照会'}
         </button>
