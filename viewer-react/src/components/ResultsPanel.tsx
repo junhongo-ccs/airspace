@@ -18,10 +18,17 @@ const LAYER_LABELS: Record<string, string> = {
   landuse: '土地利用',
 };
 
-// 地物をレイヤ別に集計する。
+// 現在のボクセル照会で画面に出せるのは、外形と高さを保持する建物だけ。
+// 道路・土砂災害・洪水浸水・土地利用は、元データの分類・外形を再取得してから
+// 表示する（改善タスク参照）。件数だけの表示は航路判断を誤らせるため除外する。
+function isDisplayableFeature(feature: NonNullable<QueryResult['features']>[number]): boolean {
+  return feature.layer === 'building';
+}
+
+// 表示可能な地物をレイヤ別に集計する。
 function countByLayer(features: QueryResult['features']): Record<string, number> {
   const counts: Record<string, number> = {};
-  for (const f of features ?? []) {
+  for (const f of (features ?? []).filter(isDisplayableFeature)) {
     const key = f.layer ?? 'unknown';
     counts[key] = (counts[key] ?? 0) + 1;
   }
@@ -32,11 +39,12 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
   const [queryExpanded, setQueryExpanded] = useState(true);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
   const layerCounts = countByLayer(queryResult.features);
+  const displayableFeatures = (queryResult.features ?? []).filter(isDisplayableFeature);
   // partial は「地物照会が失敗」と「地物は成功したが飛行禁止区域の照会だけ失敗」の
   // 両方を意味する。航路登録が成功していれば、少なくとも航路IDと取得試行結果は表示する。
   const routeQueried = queryResult.status === 'success' || queryResult.status === 'partial';
   const detailRows = [
-    ...(queryResult.features ?? []).map((f) => ({
+    ...displayableFeatures.map((f) => ({
       key: `feature-${f.id}`,
       layer: LAYER_LABELS[f.layer] ?? f.layer,
       id: f.id,
@@ -82,9 +90,9 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                   <span className="mono text-text-primary font-medium">{queryResult.routeId}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>周辺地物:</span>
+                  <span>表示可能な周辺地物:</span>
                   {queryResult.features !== undefined ? (
-                    <span className="text-text-primary font-medium">{queryResult.features.length} 件</span>
+                    <span className="text-text-primary font-medium">{displayableFeatures.length} 件</span>
                   ) : (
                     <span className="text-status-error font-medium">取得失敗</span>
                   )}
@@ -136,17 +144,17 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                 </thead>
                 <tbody>
                   <tr className="border-b border-bg-table-head">
-                    <td className="py-2">周辺地物（照会結果）</td>
+                    <td className="py-2">周辺地物（表示可能な照会結果）</td>
                     <td className="py-2">
                       {queryResult.features !== undefined ? (
                         Object.keys(layerCounts).length > 0 ? (
                           <span className="text-text-primary">
                             {Object.entries(layerCounts)
-                              .map(([layer, n]) => `${LAYER_LABELS[layer] ?? layer} ${n} 件`)
+                              .map(([layer, count]) => `${LAYER_LABELS[layer] ?? layer} ${count} 件`)
                               .join(' / ')}
                           </span>
                         ) : (
-                          <span className="text-text-secondary">0 件</span>
+                          <span className="text-text-secondary">該当なし</span>
                         )
                       ) : (
                         <span className="text-text-secondary">未照会</span>
