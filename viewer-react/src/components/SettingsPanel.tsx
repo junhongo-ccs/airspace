@@ -112,9 +112,10 @@ export default function SettingsPanel({
         {/* Spatial ID display */}
         {spatialId && (
           <div>
-            <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-1">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary tracking-wide mb-1">
+              <span className="h-3 w-0.5 rounded-full bg-action-primary" aria-hidden="true" />
               空間ID
-            </label>
+            </div>
             <div className="mono bg-bg-app px-2 py-1.5 rounded border border-bg-table-head text-xs text-text-primary">
               {spatialId}
             </div>
@@ -123,63 +124,74 @@ export default function SettingsPanel({
 
         {/* Start coordinates */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
+            <span className="h-3 w-0.5 rounded-full bg-action-primary" aria-hidden="true" />
             始点
-          </label>
-          <div className="space-y-1.5">
-            <input
-              type="number"
-              step="0.0001"
-              value={startLat}
-              onChange={(e) => setStartLat(parseFloat(e.target.value))}
-              placeholder="緯度"
-              aria-label="始点 緯度"
-              className="w-full px-3 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
-            />
-            <input
-              type="number"
-              step="0.0001"
-              value={startLon}
-              onChange={(e) => setStartLon(parseFloat(e.target.value))}
-              placeholder="経度"
-              aria-label="始点 経度"
-              className="w-full px-3 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
-            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="block text-xs text-text-secondary">
+              緯度
+              <input
+                type="number"
+                step="0.0001"
+                value={startLat}
+                onChange={(e) => setStartLat(parseFloat(e.target.value))}
+                aria-label="始点 緯度"
+                className="mt-0.5 w-full px-2 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
+              />
+            </label>
+            <label className="block text-xs text-text-secondary">
+              経度
+              <input
+                type="number"
+                step="0.0001"
+                value={startLon}
+                onChange={(e) => setStartLon(parseFloat(e.target.value))}
+                aria-label="始点 経度"
+                className="mt-0.5 w-full px-2 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
+              />
+            </label>
           </div>
         </div>
 
         {/* End coordinates */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
+            <span className="h-3 w-0.5 rounded-full bg-action-primary" aria-hidden="true" />
             終点
-          </label>
-          <div className="space-y-1.5">
-            <input
-              type="number"
-              step="0.0001"
-              value={endLat}
-              onChange={(e) => setEndLat(parseFloat(e.target.value))}
-              placeholder="緯度"
-              aria-label="終点 緯度"
-              className="w-full px-3 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
-            />
-            <input
-              type="number"
-              step="0.0001"
-              value={endLon}
-              onChange={(e) => setEndLon(parseFloat(e.target.value))}
-              placeholder="経度"
-              aria-label="終点 経度"
-              className="w-full px-3 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-action-primary"
-            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="block text-xs text-text-secondary">
+              緯度
+              <input
+                type="number"
+                step="0.0001"
+                value={endLat}
+                onChange={(e) => setEndLat(parseFloat(e.target.value))}
+                aria-label="終点 緯度"
+                className="mt-0.5 w-full px-2 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
+              />
+            </label>
+            <label className="block text-xs text-text-secondary">
+              経度
+              <input
+                type="number"
+                step="0.0001"
+                value={endLon}
+                onChange={(e) => setEndLon(parseFloat(e.target.value))}
+                aria-label="終点 経度"
+                className="mt-0.5 w-full px-2 py-1.5 text-sm border border-brand-blue-light/30 rounded bg-white text-text-primary focus:outline-none focus:ring-2 focus:ring-action-primary"
+              />
+            </label>
           </div>
         </div>
 
         {/* AGL altitude */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-1">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary tracking-wide mb-1">
+            <span className="h-3 w-0.5 rounded-full bg-action-primary" aria-hidden="true" />
             飛行高度（AGL・地上高、m）
-          </label>
+          </div>
           <input
             type="number"
             step="1"
@@ -203,9 +215,10 @@ export default function SettingsPanel({
 
         {/* Layer visibility */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
+            <span className="h-3 w-0.5 rounded-full bg-action-primary" aria-hidden="true" />
             レイヤ
-          </label>
+          </div>
           <div className="space-y-1.5">
             {/* 建物のフットプリントはPhase B投入分（3次メッシュ53397062、29件）のみ
                 地図描画できる。範囲外の建物は引き続きボクセル参照のみで描画されない。 */}
@@ -214,7 +227,7 @@ export default function SettingsPanel({
                 type="checkbox"
                 checked={showBuildings}
                 onChange={(e) => setShowBuildings(e.target.checked)}
-                className="w-4 h-4"
+                className="w-4 h-4 accent-action-primary"
               />
               <span className="text-sm text-text-primary">建物</span>
               <span className="text-xs text-text-secondary">（Phase B投入分のみ）</span>
@@ -231,7 +244,7 @@ export default function SettingsPanel({
                 type="checkbox"
                 checked={showProhibitedAreas}
                 onChange={(e) => setShowProhibitedAreas(e.target.checked)}
-                className="w-4 h-4"
+                className="w-4 h-4 accent-action-primary"
               />
               <span className="text-sm text-text-primary">DID地区</span>
               <span className="text-xs text-text-secondary">（秩父市のみ地図描画対応）</span>
@@ -241,7 +254,7 @@ export default function SettingsPanel({
                 type="checkbox"
                 checked={showRoute}
                 onChange={(e) => setShowRoute(e.target.checked)}
-                className="w-4 h-4"
+                className="w-4 h-4 accent-action-primary"
               />
               <span className="text-sm text-text-primary">航路</span>
             </label>

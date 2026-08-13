@@ -56,7 +56,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
       <div className="border-b border-bg-table-head">
         <button
           onClick={() => setQueryExpanded(!queryExpanded)}
-          className="w-full px-6 py-4 flex items-center justify-between hover:bg-bg-app transition-colors"
+          className="w-full px-6 py-3 flex items-center justify-between hover:bg-bg-app transition-colors"
         >
           <h2 className="text-sm font-semibold text-text-primary">
             照会結果
@@ -115,7 +115,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
       <div>
         <button
           onClick={() => setDetailsExpanded(!detailsExpanded)}
-          className="w-full px-6 py-4 flex items-center justify-between hover:bg-bg-app transition-colors"
+          className="w-full px-6 py-3 flex items-center justify-between hover:bg-bg-app transition-colors"
         >
           <h2 className="text-sm font-semibold text-text-primary">
             判定詳細
