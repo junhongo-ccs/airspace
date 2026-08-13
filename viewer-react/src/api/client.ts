@@ -197,6 +197,27 @@ export interface KnownProhibitedArea {
   rings: [number, number][][];
 }
 
+// 地図描画用に外形を保持している建物。現状はPLATEAU秩父市2025のPhase B投入分29件。
+export interface KnownBuilding extends GroundFeature {
+  layer: 'building';
+  footprint: [number, number][];
+}
+
+export async function getKnownBuildings(): Promise<KnownBuilding[]> {
+  try {
+    const response = await fetch(`${BFF_BASE}/known_buildings`);
+    if (!response.ok) {
+      throw new Error(await describeError(response));
+    }
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    // 参照レイヤの取得失敗は航路登録・照会を妨げない。空配列を返し、表示だけを省略する。
+    console.error('Failed to fetch known buildings:', error);
+    return [];
+  }
+}
+
 export async function getKnownProhibitedAreas(): Promise<KnownProhibitedArea[]> {
   try {
     const response = await fetch(`${BFF_BASE}/known_prohibited_areas`);

@@ -7,10 +7,12 @@ import {
   registerRoute,
   getGroundFeatures,
   getFlightProhibitedAreas,
+  getKnownBuildings,
   getKnownProhibitedAreas,
   getConnectionStatus,
   type ConnectionStatus,
   type GroundFeature,
+  type KnownBuilding,
   type ProhibitedArea,
   type KnownProhibitedArea,
 } from './api/client';
@@ -46,6 +48,7 @@ function App() {
   // のではなく、危険区域を先に見せてルート設計時に避けられるようにするため、
   // 起動時に一度だけ取得して常に地図へ表示する。
   const [knownProhibitedAreas, setKnownProhibitedAreas] = useState<KnownProhibitedArea[]>([]);
+  const [knownBuildings, setKnownBuildings] = useState<KnownBuilding[]>([]);
 
   const refreshConnection = useCallback(async () => {
     setConnection(await getConnectionStatus());
@@ -58,6 +61,7 @@ function App() {
   }, [refreshConnection]);
 
   useEffect(() => {
+    void getKnownBuildings().then(setKnownBuildings);
     void getKnownProhibitedAreas().then(setKnownProhibitedAreas);
   }, []);
 
@@ -155,6 +159,7 @@ function App() {
           setShowRoute={setShowRoute}
           showBuildings={showBuildings}
           setShowBuildings={setShowBuildings}
+          buildingCount={knownBuildings.length}
           showProhibitedAreas={showProhibitedAreas}
           setShowProhibitedAreas={setShowProhibitedAreas}
           onQuery={handleQuery}
@@ -168,7 +173,7 @@ function App() {
               routeRegistered ? { startLat, startLon, endLat, endLon } : null
             }
             showRoute={showRoute}
-            buildingFeatures={queryResult.features}
+            buildingFeatures={knownBuildings}
             showBuildings={showBuildings}
             prohibitedAreas={knownProhibitedAreas}
             showProhibitedAreas={showProhibitedAreas}

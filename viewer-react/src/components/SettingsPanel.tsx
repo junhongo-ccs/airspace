@@ -17,6 +17,7 @@ interface SettingsPanelProps {
   setShowRoute: (val: boolean) => void;
   showBuildings: boolean;
   setShowBuildings: (val: boolean) => void;
+  buildingCount: number;
   showProhibitedAreas: boolean;
   setShowProhibitedAreas: (val: boolean) => void;
   onQuery: () => void;
@@ -68,6 +69,7 @@ export default function SettingsPanel({
   setShowRoute,
   showBuildings,
   setShowBuildings,
+  buildingCount,
   showProhibitedAreas,
   setShowProhibitedAreas,
   onQuery,
@@ -220,8 +222,8 @@ export default function SettingsPanel({
             レイヤ
           </div>
           <div className="space-y-1.5">
-            {/* 建物のフットプリントはPhase B投入分（3次メッシュ53397062、29件）のみ
-                地図描画できる。範囲外の建物は引き続きボクセル参照のみで描画されない。 */}
+            {/* 建物外形はPhase B投入分（3次メッシュ53397062）のみ。レイヤーONなら
+                航路照会前でも地図上で表示・非表示を切り替えられる。 */}
             <label className="flex items-center gap-2 cursor-pointer leading-4">
               <input
                 type="checkbox"
@@ -230,7 +232,7 @@ export default function SettingsPanel({
                 className="w-4 h-4 accent-action-primary"
               />
               <span className="text-sm text-text-primary">建物</span>
-              <span className="text-xs text-text-secondary">（Phase B投入分のみ）</span>
+              <span className="text-xs text-text-secondary">（{buildingCount}件・Phase B投入分）</span>
             </label>
             {/* 実APIレスポンス自体にはポリゴンが含まれないが、DID地区は安定ID
                 （flightProhibitedAreaId）を持つため国土数値情報から再取得した

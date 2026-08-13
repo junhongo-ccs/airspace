@@ -29,6 +29,7 @@ from pydantic import BaseModel  # noqa: E402
 from viewer.src.altitude import (  # noqa: E402
     evaluate_agl_legal_limit,
     evaluate_building_vertical,
+    list_known_buildings,
     list_known_prohibited_areas,
 )
 from viewer.src.api_client import ApiError, DigitalTwinApiClient  # noqa: E402
@@ -193,6 +194,16 @@ async def known_prohibited_areas_endpoint():
     「実際にLaravelへ登録されているか」の確認は/query_prohibited_areasが担う。
     """
     return {"status": "success", "data": list_known_prohibited_areas()}
+
+
+@app.get("/known_buildings")
+async def known_buildings_endpoint():
+    """地図描画可能な建物を、Laravelへの照会なしで返す。
+
+    現状はPLATEAU秩父市2025から抽出したPhase B投入分29件。航路登録前から
+    建物レイヤーを表示・非表示できるようにするための参照レイヤ用エンドポイント。
+    """
+    return {"status": "success", "data": list_known_buildings()}
 
 
 @app.get("/connection_status")

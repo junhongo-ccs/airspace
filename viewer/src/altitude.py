@@ -88,6 +88,25 @@ def lookup_building_footprint(building_id: str | None) -> list[list[float]] | No
     return _BUILDING_FOOTPRINTS.get(building_id)
 
 
+def list_known_buildings() -> list[dict]:
+    """地図表示可能な建物を返す（現状はPhase B投入済みの29件）。
+
+    航路照会の結果に依存させず、レイヤーON時に対象建物を常に表示するための
+    静的な参照データ。高さと外形はいずれも同じPLATEAU CityGMLから抽出したもの。
+    """
+    return [
+        {
+            "id": building_id,
+            "layer": "building",
+            "height_m": _BUILDING_HEIGHTS.get(building_id),
+            "footprint": footprint,
+            "source": "PLATEAU秩父市2025（Phase B投入分）",
+            "is_poc": True,
+        }
+        for building_id, footprint in _BUILDING_FOOTPRINTS.items()
+    ]
+
+
 def extract_prohibited_area_id(voxel_bit_file_path: str | None) -> str | None:
     """voxelBitFileName（`flight_prohibited_area/{flightProhibitedAreaId}.json`）から
     flightProhibitedAreaIdを取り出す。"""
