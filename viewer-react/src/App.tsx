@@ -159,7 +159,6 @@ function App() {
           setShowRoute={setShowRoute}
           showBuildings={showBuildings}
           setShowBuildings={setShowBuildings}
-          buildingCount={knownBuildings.length}
           showProhibitedAreas={showProhibitedAreas}
           setShowProhibitedAreas={setShowProhibitedAreas}
           onQuery={handleQuery}
