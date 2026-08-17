@@ -33,6 +33,7 @@ from viewer.src.altitude import (  # noqa: E402
     list_known_prohibited_areas,
 )
 from viewer.src.api_client import ApiError, DigitalTwinApiClient  # noqa: E402
+from viewer.src.plateau_buildings import BboxTooLargeError, get_buildings_in_bbox  # noqa: E402
 
 app = FastAPI(title="Airspace Viewer BFF API")
 
@@ -204,6 +205,25 @@ async def known_buildings_endpoint():
     建物レイヤーを表示・非表示できるようにするための参照レイヤ用エンドポイント。
     """
     return {"status": "success", "data": list_known_buildings()}
+
+
+@app.get("/buildings")
+async def buildings_endpoint(min_lat: float, max_lat: float, min_lon: float, max_lon: float):
+    """地図表示範囲（bbox）内の建物を返す（6-5）。
+
+    `/known_buildings`（固定29件、mesh 53397062限定）を置き換える、秩父市周辺
+    全域（対象範囲は`viewer.src.target_area`参照）に対応した建物取得エンドポイント。
+    対象範囲外や建物の無いメッシュを含むbboxを指定しても、単に該当ぶんが0件に
+    なるだけでエラーにはしない。Laravelへの照会は行わない（再抽出済みの静的
+    GeoJSONを読むだけ）。
+    """
+    try:
+        features = get_buildings_in_bbox(min_lat, max_lat, min_lon, max_lon)
+    except BboxTooLargeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return {"status": "success", "data": features}
 
 
 @app.get("/connection_status")

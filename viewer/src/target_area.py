@@ -77,9 +77,8 @@ def latlon_to_mesh3(lat: float, lon: float) -> str:
     return _mesh3_from_row_col(row, col)
 
 
-def target_mesh_codes() -> list[str]:
-    """対象範囲（正方形bbox）と交差する3次メッシュコードの一覧を返す。"""
-    min_lat, max_lat, min_lon, max_lon = target_bbox()
+def mesh3_codes_in_bbox(min_lat: float, max_lat: float, min_lon: float, max_lon: float) -> list[str]:
+    """任意のbboxと交差する3次メッシュコードの一覧を返す（6-5のbbox建物取得用）。"""
     row_min, col_min = _row_col(min_lat, min_lon)
     row_max, col_max = _row_col(max_lat, max_lon)
     codes = {
@@ -88,6 +87,11 @@ def target_mesh_codes() -> list[str]:
         for col in range(col_min, col_max + 1)
     }
     return sorted(codes)
+
+
+def target_mesh_codes() -> list[str]:
+    """対象範囲（正方形bbox）と交差する3次メッシュコードの一覧を返す。"""
+    return mesh3_codes_in_bbox(*target_bbox())
 
 
 # 起動時に一度だけ計算する。設定ファイルとしての実体はTARGET_AREA_SQUARE_KMと
