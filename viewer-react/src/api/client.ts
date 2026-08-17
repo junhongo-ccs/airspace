@@ -16,26 +16,42 @@ export interface DroneRoute {
   created_at: string;
 }
 
-// BFF が返す地物ボクセル。実APIはボクセル参照を返すため footprint は含まれない。
+// 6-11: 航路と交差する地物（1件ずつ）。6-2/6-2aで再抽出したメッシュ単位GeoJSONを
+// 根拠に、viewer_api/app.pyのjudge_route_featuresがbboxロード＋水平重なり判定した
+// 結果（class_label等はplateau_route_judgment.py参照）。
+export type GroundFeatureGroup = 'impact' | 'opportunity' | 'landuse';
+
 export interface GroundFeature {
   id: string;
   layer: string; // building / road / landslide / flood / landuse
-  source: string;
-  is_poc: boolean;
+  // 6-13: 「航路への影響」（building/road等）/「航路活用の可能性」
+  // （landslide/flood）/土地利用（分類により変わる）の区分。
+  group: GroundFeatureGroup;
+  class_label: string | null;
   height_m?: number | null;
-  // 交差判定文言（viewer/src/altitude.pyの判定をBFFが付与）。建物は高さ方向、
-  // それ以外はジオメトリ未提供のため簡易表現になる。
-  intersect?: string;
-  // 地図描画用フットプリント（[lat, lon]の閉じたリング）。Phase B投入分の建物のみ
-  // 持つ。無ければ地図には描画しない。
-  footprint?: [number, number][] | null;
-  raw?: unknown;
+  // 交差判定文言（建物は高さ方向の判定文、それ以外は分類名を含む文章）。
+  intersect: string;
+}
+
+// 6-11: 航路と交差しない地物は(レイヤ,分類)単位で集約した要約。密集レイヤ
+// （洪水浸水等）でmargin範囲内に数百件になりうるため、個別行ではなく1文で示す。
+export interface NearbyFeatureSummary {
+  layer: string;
+  group: GroundFeatureGroup;
+  class_label: string | null;
+  count: number;
+  sentence: string;
 }
 
 export interface GroundFeatureResult {
   features: GroundFeature[];
+  nearbySummary: NearbyFeatureSummary[];
   // 航路のAGLが航空法上の150m高度制限に抵触するかの判定文言。
   routeJudgment?: string;
+  meta: PlateauDatasetMeta | null;
+  // 6-12: 土砂災害・洪水浸水は区域データであって発災状況や飛行禁止の確定判断では
+  // ないという免責。行ごとではなく「航路活用の可能性」グループの見出しに添える。
+  landslideFloodDisclaimer?: string;
 }
 
 export interface ApiResponse<T> {
@@ -127,7 +143,13 @@ export async function getGroundFeatures(
     }
 
     const data = await response.json();
-    return { features: data.data || [], routeJudgment: data.route_judgment };
+    return {
+      features: data.data || [],
+      nearbySummary: data.nearby_summary || [],
+      routeJudgment: data.route_judgment,
+      meta: parseDatasetMeta(data.meta),
+      landslideFloodDisclaimer: data.landslide_flood_disclaimer,
+    };
   } catch (error) {
     console.error('Failed to fetch ground features:', error);
     throw error;

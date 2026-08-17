@@ -14,6 +14,7 @@ import {
   type ConnectionStatus,
   type GroundFeature,
   type GroundFeatureLayerKey,
+  type NearbyFeatureSummary,
   type PlateauBuildingFeature,
   type PlateauDatasetMeta,
   type PlateauGroundFeature,
@@ -34,11 +35,18 @@ export interface QueryResult {
   status: 'idle' | 'loading' | 'success' | 'partial' | 'error';
   routeId?: string;
   features?: GroundFeature[];
+  // 6-11: 航路と交差しない地物の(レイヤ,分類)単位の要約文。
+  nearbySummary?: NearbyFeatureSummary[];
   // 航路AGLの150m高度制限判定（viewer/src/altitude.pyをBFF経由で適用）。
   routeJudgment?: string;
   // DID地区（人口集中地区）等の飛行禁止区域。実APIはポリゴンを返さないため
   // 交差判定は常に「要確認（ジオメトリ未提供）」になる。
   prohibitedAreas?: ProhibitedArea[];
+  // 6-10: データ出典・データ時点。
+  datasetMeta?: PlateauDatasetMeta | null;
+  // 6-12: 土砂災害・洪水浸水は区域データであって発災状況や飛行禁止の確定判断では
+  // ないという免責。
+  landslideFloodDisclaimer?: string;
   timestamp?: string;
   message?: string;
 }
@@ -195,13 +203,8 @@ function App() {
       // 航路はすでに登録済み。ここで失敗しても登録自体は取り消されないので、
       // 「登録は成功・照会は失敗」を partial として区別して表示する。
       try {
-        const { features, routeJudgment } = await getGroundFeatures(
-          startLat,
-          startLon,
-          endLat,
-          endLon,
-          aglM
-        );
+        const { features, nearbySummary, routeJudgment, meta, landslideFloodDisclaimer } =
+          await getGroundFeatures(startLat, startLon, endLat, endLon, aglM);
 
         // 飛行禁止区域は別のLaravelエンドポイント（general_purpose）経由のため、
         // 地物照会とは独立に成否を扱う。ここが失敗しても地物照会の結果は握りつぶさない。
@@ -217,8 +220,11 @@ function App() {
           status: prohibitedError ? 'partial' : 'success',
           routeId,
           features,
+          nearbySummary,
           routeJudgment,
           prohibitedAreas,
+          datasetMeta: meta,
+          landslideFloodDisclaimer,
           timestamp: new Date().toISOString(),
           message: prohibitedError
             ? `航路・周辺地物は取得できましたが、飛行禁止区域の照会に失敗しました: ${prohibitedError}`

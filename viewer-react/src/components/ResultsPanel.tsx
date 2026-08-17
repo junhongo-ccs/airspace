@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { QueryResult } from '../App';
+import type { GroundFeatureGroup } from '../api/client';
 
 interface ResultsPanelProps {
   queryResult: QueryResult;
@@ -9,7 +10,7 @@ interface ResultsPanelProps {
   showProhibitedAreas: boolean;
 }
 
-// BFF が返す layer 値の表示名。viewer/src/api_client.py の OBJECT_CD_LAYERS と対応。
+// BFF が返す layer 値の表示名。viewer/src/plateau_route_judgment.py と対応。
 const LAYER_LABELS: Record<string, string> = {
   building: '建物',
   road: '道路',
@@ -18,45 +19,26 @@ const LAYER_LABELS: Record<string, string> = {
   landuse: '土地利用',
 };
 
-// 現在のボクセル照会で画面に出せるのは、外形と高さを保持する建物だけ。
-// 道路・土砂災害・洪水浸水・土地利用は、元データの分類・外形を再取得してから
-// 表示する（改善タスク参照）。件数だけの表示は航路判断を誤らせるため除外する。
-function isDisplayableFeature(feature: NonNullable<QueryResult['features']>[number]): boolean {
-  return feature.layer === 'building';
-}
-
-// 表示可能な地物をレイヤ別に集計する。
-function countByLayer(features: QueryResult['features']): Record<string, number> {
-  const counts: Record<string, number> = {};
-  for (const f of (features ?? []).filter(isDisplayableFeature)) {
-    const key = f.layer ?? 'unknown';
-    counts[key] = (counts[key] ?? 0) + 1;
-  }
-  return counts;
-}
+// 6-13: 結果画面も地図凡例と同じ「航路への影響」/「航路活用の可能性」で区分する。
+// 災害リスク区域（土砂災害・洪水浸水）を、航路を妨げる障害物や飛行禁止区域と
+// 同じ意味で誤認させないための区分（改善タスク§2・6-13）。
+const GROUP_LABELS: Record<GroundFeatureGroup, string> = {
+  impact: '航路への影響',
+  opportunity: '航路活用の可能性',
+  landuse: '土地利用（影響/活用は分類による）',
+};
+const GROUP_ORDER: GroundFeatureGroup[] = ['impact', 'opportunity', 'landuse'];
 
 export default function ResultsPanel({ queryResult, showProhibitedAreas }: ResultsPanelProps) {
   const [queryExpanded, setQueryExpanded] = useState(true);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
-  const layerCounts = countByLayer(queryResult.features);
-  const displayableFeatures = (queryResult.features ?? []).filter(isDisplayableFeature);
+
+  const features = queryResult.features ?? [];
+  const nearbySummary = queryResult.nearbySummary ?? [];
   // partial は「地物照会が失敗」と「地物は成功したが飛行禁止区域の照会だけ失敗」の
   // 両方を意味する。航路登録が成功していれば、少なくとも航路IDと取得試行結果は表示する。
   const routeQueried = queryResult.status === 'success' || queryResult.status === 'partial';
-  const detailRows = [
-    ...displayableFeatures.map((f) => ({
-      key: `feature-${f.id}`,
-      layer: LAYER_LABELS[f.layer] ?? f.layer,
-      id: f.id,
-      intersect: f.intersect ?? '未検証',
-    })),
-    ...(showProhibitedAreas ? queryResult.prohibitedAreas ?? [] : []).map((a) => ({
-      key: `prohibited-${a.id}`,
-      layer: '飛行禁止区域（DID等）',
-      id: a.name ?? a.id,
-      intersect: a.intersect ?? '未検証',
-    })),
-  ];
+  const hasAnyContent = features.length > 0 || nearbySummary.length > 0;
 
   return (
     <div className="border-t border-brand-blue-light/20 bg-bg-panel flex flex-col">
@@ -89,10 +71,15 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                   <span>航路ID:</span>
                   <span className="mono text-text-primary font-medium">{queryResult.routeId}</span>
                 </div>
+                {/* 6-11: 件数だけの表示（例:「土砂災害 1件」）は航路判断を誤らせるため
+                    行わない。ここでは「航路との関係を確認できた地物がある/ない」までを
+                    示し、内容は下の判定詳細（文章）を参照させる。 */}
                 <div className="flex justify-between">
-                  <span>表示可能な周辺地物:</span>
+                  <span>周辺の状況:</span>
                   {queryResult.features !== undefined ? (
-                    <span className="text-text-primary font-medium">{displayableFeatures.length} 件</span>
+                    <span className="text-text-primary font-medium">
+                      {hasAnyContent ? '判定詳細を参照' : '対象範囲内に該当データなし'}
+                    </span>
                   ) : (
                     <span className="text-status-error font-medium">取得失敗</span>
                   )}
@@ -101,6 +88,14 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                   <span>取得時刻:</span>
                   <span className="text-text-secondary text-xs">{queryResult.timestamp ? new Date(queryResult.timestamp).toLocaleString('ja-JP') : '-'}</span>
                 </div>
+                {queryResult.datasetMeta && (
+                  <div className="flex justify-between text-xs">
+                    <span>データ出典:</span>
+                    <span className="text-text-secondary">
+                      {queryResult.datasetMeta.source}（{queryResult.datasetMeta.dataDate}時点）
+                    </span>
+                  </div>
+                )}
                 {queryResult.status === 'partial' && (
                   <div className="text-status-warn">
                     <p className="font-medium">一部成功</p>
@@ -133,88 +128,79 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
           </span>
         </button>
         {detailsExpanded && (
-          <div className="px-6 py-4 bg-bg-app text-sm text-text-secondary border-t border-bg-table-head">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-bg-table-head">
-                    <th className="pb-2 font-semibold text-text-primary text-xs">項目</th>
-                    <th className="pb-2 font-semibold text-text-primary text-xs">状態</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-bg-table-head">
-                    <td className="py-2">周辺地物（表示可能な照会結果）</td>
-                    <td className="py-2">
-                      {queryResult.features !== undefined ? (
-                        Object.keys(layerCounts).length > 0 ? (
-                          <span className="text-text-primary">
-                            {Object.entries(layerCounts)
-                              .map(([layer, count]) => `${LAYER_LABELS[layer] ?? layer} ${count} 件`)
-                              .join(' / ')}
-                          </span>
-                        ) : (
-                          <span className="text-text-secondary">該当なし</span>
-                        )
-                      ) : (
-                        <span className="text-text-secondary">未照会</span>
-                      )}
-                    </td>
-                  </tr>
-                  <tr className="border-b border-bg-table-head">
-                    <td className="py-2">DID地区・飛行禁止区域</td>
-                    <td className="py-2">
-                      {!showProhibitedAreas ? (
-                        <span className="text-text-secondary">非表示（レイヤOFF）</span>
-                      ) : queryResult.prohibitedAreas !== undefined ? (
-                        queryResult.prohibitedAreas.length > 0 ? (
-                          <span className="text-text-primary">
-                            {queryResult.prohibitedAreas.length} 件（詳細は下表参照）
-                          </span>
-                        ) : (
-                          <span className="text-text-secondary">0 件</span>
-                        )
-                      ) : (
-                        <span className="text-text-secondary">未照会</span>
-                      )}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-2">150m AGL（航空法上限）判定</td>
-                    <td className="py-2">
-                      {queryResult.routeJudgment ? (
-                        <span className="text-text-primary">{queryResult.routeJudgment}</span>
-                      ) : (
-                        <span className="text-text-secondary">未照会</span>
-                      )}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div className="px-6 py-4 bg-bg-app text-sm text-text-secondary border-t border-bg-table-head space-y-4">
+            {!routeQueried && (
+              <p className="text-text-secondary">航路照会後にここへ表示されます。</p>
+            )}
 
-            {/* 地物・飛行禁止区域ごとの交差判定（垂直方向は建物のみ、それ以外は
-                簡易・未検証の旨を表示）。 */}
-            {routeQueried && detailRows.length > 0 && (
-              <div className="overflow-x-auto mt-4">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="border-b border-bg-table-head">
-                      <th className="pb-2 font-semibold text-text-primary text-xs">レイヤ</th>
-                      <th className="pb-2 font-semibold text-text-primary text-xs">識別子</th>
-                      <th className="pb-2 font-semibold text-text-primary text-xs">交差判定</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {detailRows.map((row) => (
-                      <tr key={row.key} className="border-b border-bg-table-head">
-                        <td className="py-2">{row.layer}</td>
-                        <td className="py-2 mono text-xs">{row.id}</td>
-                        <td className="py-2">{row.intersect}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            {routeQueried && !hasAnyContent && showProhibitedAreas === false && (
+              <p className="text-text-secondary">対象範囲内に該当データはありませんでした。</p>
+            )}
+
+            {routeQueried &&
+              GROUP_ORDER.map((group) => {
+                const groupFeatures = features.filter((f) => f.group === group);
+                const groupSummaries = nearbySummary.filter((s) => s.group === group);
+                if (groupFeatures.length === 0 && groupSummaries.length === 0) return null;
+                return (
+                  <div key={group}>
+                    <div className="font-semibold text-text-primary text-xs mb-1">
+                      {GROUP_LABELS[group]}
+                    </div>
+                    {/* 6-12: 土砂災害・洪水浸水（opportunityグループ）は区域データで
+                        あって発災状況や飛行禁止の確定判断ではないことを明記する。
+                        行ごとの繰り返しではなく、グループ見出しに1回だけ添える。 */}
+                    {group === 'opportunity' && queryResult.landslideFloodDisclaimer && (
+                      <p className="text-xs text-status-warn mb-2">
+                        {queryResult.landslideFloodDisclaimer}
+                      </p>
+                    )}
+                    <ul className="space-y-1">
+                      {groupFeatures.map((f) => (
+                        <li key={`feature-${f.id}`} className="text-text-primary">
+                          <span className="text-text-secondary">[{LAYER_LABELS[f.layer] ?? f.layer}]</span>{' '}
+                          {f.intersect}
+                        </li>
+                      ))}
+                      {groupSummaries.map((s) => (
+                        <li
+                          key={`summary-${s.layer}-${s.class_label ?? 'none'}`}
+                          className="text-text-secondary"
+                        >
+                          <span>[{LAYER_LABELS[s.layer] ?? s.layer}]</span> {s.sentence}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+
+            {/* DID地区（人口集中地区）等の飛行禁止区域。ジオメトリを持たないため
+                交差判定は簡易表現になる（既存挙動を維持）。 */}
+            {routeQueried && showProhibitedAreas && (queryResult.prohibitedAreas?.length ?? 0) > 0 && (
+              <div>
+                <div className="font-semibold text-text-primary text-xs mb-1">
+                  {GROUP_LABELS.impact}（飛行禁止区域）
+                </div>
+                <ul className="space-y-1">
+                  {queryResult.prohibitedAreas!.map((a) => (
+                    <li key={`prohibited-${a.id}`} className="text-text-primary">
+                      <span className="text-text-secondary">[DID地区]</span> {a.name ?? a.id}:{' '}
+                      {a.intersect ?? '未検証'}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {routeQueried && (
+              <div className="pt-2 border-t border-bg-table-head text-xs">
+                150m AGL（航空法上限）判定:{' '}
+                {queryResult.routeJudgment ? (
+                  <span className="text-text-primary">{queryResult.routeJudgment}</span>
+                ) : (
+                  <span className="text-text-secondary">未照会</span>
+                )}
               </div>
             )}
           </div>

@@ -28,13 +28,16 @@ from pydantic import BaseModel  # noqa: E402
 
 from viewer.src.altitude import (  # noqa: E402
     evaluate_agl_legal_limit,
-    evaluate_building_vertical,
     list_known_buildings,
     list_known_prohibited_areas,
 )
 from viewer.src.api_client import ApiError, DigitalTwinApiClient  # noqa: E402
 from viewer.src.plateau_buildings import BboxTooLargeError, get_buildings_in_bbox  # noqa: E402
 from viewer.src.plateau_metadata import plateau_dataset_meta  # noqa: E402
+from viewer.src.plateau_route_judgment import (  # noqa: E402
+    LANDSLIDE_FLOOD_DISCLAIMER,
+    judge_route_features,
+)
 from viewer.src.plateau_ground_features import (  # noqa: E402
     BboxTooLargeError as GroundFeatureBboxTooLargeError,
 )
@@ -164,30 +167,6 @@ def _route_bbox(start_lat, start_lon, end_lat, end_lon, margin: float) -> tuple:
     return (min(lats) - margin, min(lons) - margin, max(lats) + margin, max(lons) + margin)
 
 
-def _judge_feature(feature: dict, route_bbox: tuple, altitude_m: float | None) -> str:
-    """viewer/src/components/results_table.py の build_result_rows と同じ判定ロジック。
-
-    Streamlit版と実装を共有するため、垂直判定（altitude.py）はそのままimportして使う。
-    水平方向のbbox重なり判定はresults_table.pyがstreamlit/pandasに依存するため、
-    ここでは同等の2関数だけを複製している（streamlit非依存を保つBFFの方針に合わせる）。
-    """
-    is_placeholder = "mock" in str(feature.get("source", ""))
-    if feature.get("layer") == "building":
-        height_m = feature.get("height_m")
-        vertical = evaluate_building_vertical(height_m, altitude_m)
-        footprint = feature.get("footprint")
-        horizontally_clear = footprint is not None and not _bbox_overlap(
-            _bbox(footprint), route_bbox
-        )
-        return "交差なし（水平方向に重なりなし）" if horizontally_clear else vertical
-    if is_placeholder:
-        return "要確認（属性不足・プレースホルダ）"
-    if feature.get("footprint"):
-        overlap = _bbox_overlap(_bbox(feature["footprint"]), route_bbox)
-        return "要確認（水平方向・簡易判定）" if overlap else "交差なし（水平方向・簡易判定）"
-    return NO_GEOMETRY_MESSAGE
-
-
 @app.get("/health")
 async def health_check():
     """Render のヘルスチェック用。Laravel には触らない。"""
@@ -311,33 +290,38 @@ async def register_route_endpoint(request: RegisterRouteRequest):
 
 @app.post("/query_features")
 async def query_features_endpoint(request: QueryFeaturesRequest):
-    """航路（始点・終点）周辺の地物ボクセルを取得する。
+    """航路（始点・終点）周辺の建物・道路・土砂災害・洪水浸水・土地利用を判定する（6-11）。
 
-    始点のみでbboxを作ると、Streamlit版（航路全体の中点基準）と空間IDが
-    1タイルずれて0件になることがあった。始点・終点の両方から作る。
+    改善タスク§9の決定により、`ground_feature_voxel`（Laravel実API、空間ID完全一致・
+    分類/外形なし・件数のみ）は判定・表示の根拠にしない。6-2/6-2aで再抽出した
+    メッシュ単位GeoJSON（`plateau_route_judgment.judge_route_features`）を使い、
+    航路のbbox範囲に実際に含まれる地物を取得して文章化する。
     """
-    bbox = _route_bbox(
-        request.start_latitude, request.start_longitude,
-        request.end_latitude, request.end_longitude, request.margin_degrees,
-    )
     try:
-        features = _client().get_ground_feature_voxel(bbox)
-    except ApiError as exc:
-        raise HTTPException(status_code=502, detail=f"Laravel API error: {exc}") from exc
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-    route_bbox = _route_bbox(
-        request.start_latitude, request.start_longitude,
-        request.end_latitude, request.end_longitude, margin=0,
-    )
-    for feature in features:
-        feature["intersect"] = _judge_feature(feature, route_bbox, request.altitude_m)
+        judged = judge_route_features(
+            request.start_latitude,
+            request.start_longitude,
+            request.end_latitude,
+            request.end_longitude,
+            request.margin_degrees,
+            request.altitude_m,
+        )
+    except (BboxTooLargeError, GroundFeatureBboxTooLargeError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     return {
         "status": "success",
-        "data": features,
+        # 交差する地物は1件ずつ、交差しない地物は(レイヤ,分類)単位で集約した要約
+        # （nearby_summary）。密集レイヤ（洪水浸水等）でmargin範囲内に数百件になる
+        # ことがあり、個別行のままではかえって判断の妨げになるため分けている。
+        "data": judged["intersecting"],
+        "nearby_summary": judged["nearby_summary"],
         "route_judgment": evaluate_agl_legal_limit(request.altitude_m),
+        "meta": plateau_dataset_meta(),
+        # 6-12: 土砂災害・洪水浸水は区域データであって発災状況や飛行禁止の確定判断
+        # ではない。行ごとの繰り返しではなく、結果表示側でグループ見出しに
+        # まとめて出すための免責文言。
+        "landslide_flood_disclaimer": LANDSLIDE_FLOOD_DISCLAIMER,
     }
 
 
