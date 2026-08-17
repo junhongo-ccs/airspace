@@ -378,17 +378,30 @@ export default function MapContainer({
 
   // 建物フットプリントを描画（6-6: 表示範囲bboxで取得したGeoJSONをそのまま使う。
   // 座標は既にGeoJSON標準の[lon, lat]順のため変換不要）。
+  //
+  // 地図を動かすたびにremoveLayer→addLayerをやり直すと、MapLibreがレイヤーを
+  // 一から作り直すため一瞬ちらつく（ユーザー報告2026-08-17）。ソースが既にあれば
+  // setData()でデータだけ差し替える（MapLibre標準の更新方法、レイヤーは再生成
+  // されない）。ソースがまだ無い（初回表示・レイヤーOFFから復帰した直後）ときだけ
+  // addSource/addLayerする。
   useEffect(() => {
     if (!map.current || !styleReady) return;
 
     const mapInstance = map.current;
-    removeBuildingLayers(mapInstance);
-    if (!showBuildings || buildingFeatures.length === 0) return;
 
-    mapInstance.addSource('buildings', {
-      type: 'geojson',
-      data: { type: 'FeatureCollection', features: buildingFeatures },
-    });
+    if (!showBuildings || buildingFeatures.length === 0) {
+      removeBuildingLayers(mapInstance);
+      return;
+    }
+
+    const data = { type: 'FeatureCollection' as const, features: buildingFeatures };
+    const existingSource = mapInstance.getSource('buildings') as maplibregl.GeoJSONSource | undefined;
+    if (existingSource) {
+      existingSource.setData(data);
+      return;
+    }
+
+    mapInstance.addSource('buildings', { type: 'geojson', data });
 
     mapInstance.addLayer({
       id: 'building-fill',
@@ -473,31 +486,50 @@ export default function MapContainer({
   const datasetMetaRef = useRef(datasetMeta);
   datasetMetaRef.current = datasetMeta;
 
+  // レイヤーごとに登録済みのクリックハンドラを覚えておく。setData()での更新時は
+  // レイヤー自体を作り直さないため、ハンドラも再登録しない（付けっぱなしでよい）。
+  // OFFにする・データが0件になるときだけ、対応するハンドラを外す。
+  const groundClickHandlersRef = useRef<
+    Partial<Record<GroundFeatureLayerKey, (e: maplibregl.MapLayerMouseEvent) => void>>
+  >({});
+
   // 6-6a: 道路・土砂災害・洪水浸水・土地利用を描画する。4レイヤーとも構造が同じ
   // （Polygon/MultiPolygonのfill+outline、任意でハッチパターン）ため1つのeffectで
   // まとめて扱う。クリックで分類名・出典・データ時点のポップアップを出す（6-6a）。
+  //
+  // 地図を動かすたびにレイヤーを一から作り直すと一瞬ちらつく（ユーザー報告
+  // 2026-08-17）ため、ソースが既にあればsetData()でデータだけ差し替える。
+  // このeffectはreturnでのクリーンアップを行わない（差分更新のたびに前回分を
+  // 消してしまうと、setData()の意味が無くなる）。OFF/0件になった場合の後始末は
+  // 下のループ内で明示的に行う。コンポーネント自体のアンマウント時はmap.remove()
+  // （初期化effect側）がsource/layer/イベントごと丸ごと破棄する。
   useEffect(() => {
     if (!map.current || !styleReady) return;
     const mapInstance = map.current;
 
-    const clickHandlers: Array<{ layerId: string; handler: (e: maplibregl.MapLayerMouseEvent) => void }> = [];
-
     for (const layer of GROUND_FEATURE_LAYER_KEYS) {
-      removeGroundFeatureLayer(mapInstance, layer);
-    }
+      const ids = groundLayerIds(layer);
+      const features = layerVisibility[layer] ? groundFeaturesByLayer[layer] : undefined;
 
-    for (const layer of GROUND_FEATURE_LAYER_KEYS) {
-      if (!layerVisibility[layer]) continue;
-      const features = groundFeaturesByLayer[layer];
-      if (!features || features.length === 0) continue;
+      if (!features || features.length === 0) {
+        const existingHandler = groundClickHandlersRef.current[layer];
+        if (existingHandler) {
+          mapInstance.off('click', ids.fill, existingHandler);
+          delete groundClickHandlersRef.current[layer];
+        }
+        removeGroundFeatureLayer(mapInstance, layer);
+        continue;
+      }
+
+      const data = { type: 'FeatureCollection' as const, features };
+      const existingSource = mapInstance.getSource(ids.source) as maplibregl.GeoJSONSource | undefined;
+      if (existingSource) {
+        existingSource.setData(data);
+        continue;
+      }
 
       const style = GROUND_LAYER_STYLE[layer];
-      const ids = groundLayerIds(layer);
-
-      mapInstance.addSource(ids.source, {
-        type: 'geojson',
-        data: { type: 'FeatureCollection', features },
-      });
+      mapInstance.addSource(ids.source, { type: 'geojson', data });
 
       const fillPaint: maplibregl.FillLayerSpecification['paint'] = style.hatch
         ? (() => {
@@ -532,14 +564,8 @@ export default function MapContainer({
           .addTo(mapInstance);
       };
       mapInstance.on('click', ids.fill, handler);
-      clickHandlers.push({ layerId: ids.fill, handler });
+      groundClickHandlersRef.current[layer] = handler;
     }
-
-    return () => {
-      for (const { layerId, handler } of clickHandlers) {
-        mapInstance.off('click', layerId, handler);
-      }
-    };
   }, [groundFeaturesByLayer, layerVisibility, styleReady]);
 
   return (
