@@ -34,6 +34,13 @@ from viewer.src.altitude import (  # noqa: E402
 )
 from viewer.src.api_client import ApiError, DigitalTwinApiClient  # noqa: E402
 from viewer.src.plateau_buildings import BboxTooLargeError, get_buildings_in_bbox  # noqa: E402
+from viewer.src.plateau_ground_features import (  # noqa: E402
+    BboxTooLargeError as GroundFeatureBboxTooLargeError,
+)
+from viewer.src.plateau_ground_features import (  # noqa: E402
+    UnknownLayerError,
+    get_ground_features_in_bbox,
+)
 
 app = FastAPI(title="Airspace Viewer BFF API")
 
@@ -221,6 +228,28 @@ async def buildings_endpoint(min_lat: float, max_lat: float, min_lon: float, max
     try:
         features = get_buildings_in_bbox(min_lat, max_lat, min_lon, max_lon)
     except BboxTooLargeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return {"status": "success", "data": features}
+
+
+@app.get("/ground_features_bbox")
+async def ground_features_bbox_endpoint(
+    layer: str, min_lat: float, max_lat: float, min_lon: float, max_lon: float
+):
+    """地図表示範囲（bbox）内の道路・土砂災害・洪水浸水・土地利用を返す（6-6a）。
+
+    `layer`はroad/landslide/flood/landuseのいずれか。`/buildings`と同じ構造だが、
+    建物と違い高さ・AGL判定を持たないため専用エンドポイントに分けている。
+    `ground_feature_voxel`（現行の`/query_features`が使う、件数・ランダムUUIDのみ
+    返す実API照会）とは別系統で、6-2aで再抽出済みの静的GeoJSONを読むだけ。
+    """
+    try:
+        features = get_ground_features_in_bbox(layer, min_lat, max_lat, min_lon, max_lon)
+    except UnknownLayerError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except GroundFeatureBboxTooLargeError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
