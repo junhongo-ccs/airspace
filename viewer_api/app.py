@@ -201,8 +201,9 @@ async def known_prohibited_areas_endpoint():
 async def known_buildings_endpoint():
     """地図描画可能な建物を、Laravelへの照会なしで返す。
 
-    現状はPLATEAU秩父市2025から抽出したPhase B投入分29件。航路登録前から
-    建物レイヤーを表示・非表示できるようにするための参照レイヤ用エンドポイント。
+    PLATEAU秩父市2025から抽出したPhase B投入分29件（mesh 53397062限定）。
+    6-9の決定により、React Viewerは`/buildings`（bbox対応、6-5）へ移行済みで
+    このエンドポイントはもう呼ばない。手動確認・後方互換のためだけに残置している。
     """
     return {"status": "success", "data": list_known_buildings()}
 

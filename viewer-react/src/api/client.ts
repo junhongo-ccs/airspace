@@ -197,15 +197,42 @@ export interface KnownProhibitedArea {
   rings: [number, number][][];
 }
 
-// 地図描画用に外形を保持している建物。現状はPLATEAU秩父市2025のPhase B投入分29件。
-export interface KnownBuilding extends GroundFeature {
-  layer: 'building';
-  footprint: [number, number][];
+// 秩父市周辺の表示範囲（bbox）内の建物（6-5/6-6）。旧`/known_buildings`
+// （固定29件、mesh 53397062限定）を置き換える。地図移動・ズームのたびに
+// 現在の表示範囲で呼び直す想定のため、GeoJSON Featureをそのまま返す
+// （footprintの[lat,lon]⇄[lon,lat]変換が不要になる）。6-9の決定により、
+// `/known_buildings`は廃止しフロント側では呼ばない（BFF側のエンドポイント自体は
+// 手動確認用に残置）。
+export interface PlateauBuildingGeometry {
+  type: 'Polygon' | 'MultiPolygon';
+  coordinates: number[][][] | number[][][][];
 }
 
-export async function getKnownBuildings(): Promise<KnownBuilding[]> {
+export interface PlateauBuildingFeature {
+  type: 'Feature';
+  id: string;
+  geometry: PlateauBuildingGeometry;
+  properties: {
+    layer: 'building';
+    // -9999センチネル等の欠測高さはBFF側でnullに変換済み（6-3）。
+    height_m: number | null;
+  };
+}
+
+export async function getBuildingsInBbox(
+  minLat: number,
+  maxLat: number,
+  minLon: number,
+  maxLon: number
+): Promise<PlateauBuildingFeature[]> {
   try {
-    const response = await fetch(`${BFF_BASE}/known_buildings`);
+    const params = new URLSearchParams({
+      min_lat: String(minLat),
+      max_lat: String(maxLat),
+      min_lon: String(minLon),
+      max_lon: String(maxLon),
+    });
+    const response = await fetch(`${BFF_BASE}/buildings?${params.toString()}`);
     if (!response.ok) {
       throw new Error(await describeError(response));
     }
@@ -213,7 +240,7 @@ export async function getKnownBuildings(): Promise<KnownBuilding[]> {
     return data.data || [];
   } catch (error) {
     // 参照レイヤの取得失敗は航路登録・照会を妨げない。空配列を返し、表示だけを省略する。
-    console.error('Failed to fetch known buildings:', error);
+    console.error('Failed to fetch buildings in bbox:', error);
     return [];
   }
 }

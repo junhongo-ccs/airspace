@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { GroundFeature, KnownProhibitedArea } from '../api/client';
+import type { KnownProhibitedArea, PlateauBuildingFeature } from '../api/client';
+
+export interface MapBounds {
+  minLat: number;
+  maxLat: number;
+  minLon: number;
+  maxLon: number;
+}
 
 // MapLibreはGeoJSONソース（航路・建物）の処理にWorkerを使うが、既定では自身の
 // import.meta.urlからの相対パスを見に行く。Viteの単一バンドル構成ではその隣に
@@ -24,9 +31,13 @@ interface MapContainerProps {
   routeData?: RouteData | null;
   // 左パネルの「航路」レイヤ切り替え。false のときは描画しない。
   showRoute?: boolean;
-  // 照会結果の地物。footprint を持つ建物（Phase B投入分）のみ描画対象になる。
-  buildingFeatures?: GroundFeature[];
+  // 秩父市周辺の表示範囲（bbox）内の建物（6-5/6-6）。GeoJSON Featureをそのまま描画する。
+  buildingFeatures?: PlateauBuildingFeature[];
   showBuildings?: boolean;
+  // 地図の表示範囲が変わるたび（初回描画・移動・ズーム）に呼ばれる。呼び出し側は
+  // これを使って現在の表示範囲だけbboxで建物を取得し直す（6-6）。showBuildingsが
+  // falseの間は呼び出し側で取得自体をスキップし、不要な取得を避ける（6-7）。
+  onBoundsChange?: (bounds: MapBounds) => void;
   // 座標入力・航路登録に依存しない静的な参照レイヤ（国土数値情報A16-2020から
   // 再取得済み、秩父市のみ）。ルート設計前から危険区域を確認できるよう、常時
   // 描画対象になる。
@@ -97,6 +108,7 @@ export default function MapContainer({
   showRoute = true,
   buildingFeatures = [],
   showBuildings = true,
+  onBoundsChange,
   prohibitedAreas = [],
   showProhibitedAreas = true,
 }: MapContainerProps) {
@@ -106,6 +118,11 @@ export default function MapContainer({
   // "Style is not done loading." を投げ、未捕捉例外で画面全体が白くなる。
   // 準備完了を state で持ち、描画side effectの依存に入れて待ち合わせる。
   const [styleReady, setStyleReady] = useState(false);
+  // 地図初期化effect（依存配列[]、マウント時に1回だけ実行）からは常に最新の
+  // onBoundsChangeを呼びたいが、依存に入れると親の再レンダリングのたびに地図を
+  // 作り直すことになってしまう。refで最新値だけ追従させ、古いクロージャを避ける。
+  const onBoundsChangeRef = useRef(onBoundsChange);
+  onBoundsChangeRef.current = onBoundsChange;
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -150,6 +167,25 @@ export default function MapContainer({
     const markStyleReady = () => setStyleReady(true);
     map.current.on('style.load', markStyleReady);
     map.current.on('load', markStyleReady);
+
+    // 初回表示・移動・ズームのたびに現在の表示範囲を通知する（6-6）。
+    // 'moveend' はドラッグ・ズーム操作の完了時にまとめて1回発火するため、
+    // ドラッグ中に毎フレーム取得しにいくことはない。
+    const notifyBounds = () => {
+      if (!map.current || !onBoundsChangeRef.current) return;
+      const bounds = map.current.getBounds();
+      onBoundsChangeRef.current({
+        minLat: bounds.getSouth(),
+        maxLat: bounds.getNorth(),
+        minLon: bounds.getWest(),
+        maxLon: bounds.getEast(),
+      });
+    };
+    map.current.on('moveend', notifyBounds);
+    // 'load'（背景タイル取得完了）ではなく、上と同じ'style.load'を使う。背景タイル
+    // （OpenStreetMap）が遅い・到達できない環境でも建物データ取得は妨げない
+    // （実機確認: 2026-08-17、'load'待ちだと/buildingsが永久に呼ばれなかった）。
+    map.current.on('style.load', notifyBounds);
 
     return () => {
       setStyleReady(false);
@@ -260,30 +296,18 @@ export default function MapContainer({
     });
   }, [routeData, showRoute, styleReady]);
 
-  // 建物フットプリントを描画（Phase B投入分の29件のみfootprintを持つ）
+  // 建物フットプリントを描画（6-6: 表示範囲bboxで取得したGeoJSONをそのまま使う。
+  // 座標は既にGeoJSON標準の[lon, lat]順のため変換不要）。
   useEffect(() => {
     if (!map.current || !styleReady) return;
 
     const mapInstance = map.current;
     removeBuildingLayers(mapInstance);
-    if (!showBuildings) return;
-
-    const polygons = buildingFeatures
-      .filter((f) => f.layer === 'building' && f.footprint)
-      .map((f) => ({
-        type: 'Feature' as const,
-        properties: { id: f.id, intersect: f.intersect ?? '' },
-        geometry: {
-          type: 'Polygon' as const,
-          // footprint は [lat, lon] のリング。GeoJSONは[lon, lat]の順。
-          coordinates: [f.footprint!.map(([lat, lon]) => [lon, lat])],
-        },
-      }));
-    if (polygons.length === 0) return;
+    if (!showBuildings || buildingFeatures.length === 0) return;
 
     mapInstance.addSource('buildings', {
       type: 'geojson',
-      data: { type: 'FeatureCollection', features: polygons },
+      data: { type: 'FeatureCollection', features: buildingFeatures },
     });
 
     mapInstance.addLayer({

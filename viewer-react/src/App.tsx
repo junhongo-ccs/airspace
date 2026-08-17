@@ -1,21 +1,25 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './index.css';
 import SettingsPanel from './components/SettingsPanel';
-import MapContainer from './components/MapContainer';
+import MapContainer, { type MapBounds } from './components/MapContainer';
 import ResultsPanel from './components/ResultsPanel';
 import {
   registerRoute,
   getGroundFeatures,
   getFlightProhibitedAreas,
-  getKnownBuildings,
+  getBuildingsInBbox,
   getKnownProhibitedAreas,
   getConnectionStatus,
   type ConnectionStatus,
   type GroundFeature,
-  type KnownBuilding,
+  type PlateauBuildingFeature,
   type ProhibitedArea,
   type KnownProhibitedArea,
 } from './api/client';
+
+// 地図移動中に発生する連続したmoveendのたびに毎回/buildingsを叩かないための
+// デバウンス時間（6-7: 不要な追加取得を行わない）。
+const BOUNDS_FETCH_DEBOUNCE_MS = 300;
 
 // partial = 航路登録は成功したが地物照会・飛行禁止区域照会のいずれかが失敗した状態。
 // これを success に含めると「0件」と「照会失敗」が見分けられなくなる。
@@ -48,7 +52,11 @@ function App() {
   // のではなく、危険区域を先に見せてルート設計時に避けられるようにするため、
   // 起動時に一度だけ取得して常に地図へ表示する。
   const [knownProhibitedAreas, setKnownProhibitedAreas] = useState<KnownProhibitedArea[]>([]);
-  const [knownBuildings, setKnownBuildings] = useState<KnownBuilding[]>([]);
+  // 秩父市周辺の表示範囲（bbox）内の建物（6-5/6-6）。地図移動・ズームに応じて
+  // 現在の表示範囲だけ取得し直す。固定29件だった旧`/known_buildings`は廃止（6-9）。
+  const [plateauBuildings, setPlateauBuildings] = useState<PlateauBuildingFeature[]>([]);
+  const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
+  const boundsFetchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const refreshConnection = useCallback(async () => {
     setConnection(await getConnectionStatus());
@@ -61,9 +69,35 @@ function App() {
   }, [refreshConnection]);
 
   useEffect(() => {
-    void getKnownBuildings().then(setKnownBuildings);
     void getKnownProhibitedAreas().then(setKnownProhibitedAreas);
   }, []);
+
+  // MapContainerから表示範囲（bbox）の変化を受け取る（初回表示・移動・ズーム）。
+  const handleBoundsChange = useCallback((bounds: MapBounds) => {
+    setMapBounds(bounds);
+  }, []);
+
+  // 建物レイヤーONの間だけ、表示範囲が変わるたびに/buildingsを取得し直す（6-6）。
+  // OFFのときは取得自体を行わない（6-7）。連続したbounds変化はデバウンスして
+  // 最後の1回だけ実際に取得する。
+  useEffect(() => {
+    if (!showBuildings || !mapBounds) {
+      setPlateauBuildings([]);
+      return;
+    }
+    if (boundsFetchTimer.current) clearTimeout(boundsFetchTimer.current);
+    boundsFetchTimer.current = setTimeout(() => {
+      void getBuildingsInBbox(
+        mapBounds.minLat,
+        mapBounds.maxLat,
+        mapBounds.minLon,
+        mapBounds.maxLon
+      ).then(setPlateauBuildings);
+    }, BOUNDS_FETCH_DEBOUNCE_MS);
+    return () => {
+      if (boundsFetchTimer.current) clearTimeout(boundsFetchTimer.current);
+    };
+  }, [showBuildings, mapBounds]);
 
   const handleQuery = async () => {
     setIsLoading(true);
@@ -172,8 +206,9 @@ function App() {
               routeRegistered ? { startLat, startLon, endLat, endLon } : null
             }
             showRoute={showRoute}
-            buildingFeatures={knownBuildings}
+            buildingFeatures={plateauBuildings}
             showBuildings={showBuildings}
+            onBoundsChange={handleBoundsChange}
             prohibitedAreas={knownProhibitedAreas}
             showProhibitedAreas={showProhibitedAreas}
           />
