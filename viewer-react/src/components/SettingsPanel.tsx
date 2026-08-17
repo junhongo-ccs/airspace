@@ -19,6 +19,18 @@ interface SettingsPanelProps {
   setShowBuildings: (val: boolean) => void;
   showProhibitedAreas: boolean;
   setShowProhibitedAreas: (val: boolean) => void;
+  // 6-6a/6-13: 「航路への影響」レイヤー
+  showRoad: boolean;
+  setShowRoad: (val: boolean) => void;
+  // 6-6a/6-13: 「航路活用の可能性」レイヤー
+  showLandslide: boolean;
+  setShowLandslide: (val: boolean) => void;
+  showFlood: boolean;
+  setShowFlood: (val: boolean) => void;
+  // 6-6a: 土地利用は分類ごとに影響／活用のどちらの意味も持ちうるため、
+  // 上記2グループとは別枠で表示する（改善タスク§2参照）。
+  showLanduse: boolean;
+  setShowLanduse: (val: boolean) => void;
   onQuery: () => void;
   isLoading: boolean;
 }
@@ -70,6 +82,14 @@ export default function SettingsPanel({
   setShowBuildings,
   showProhibitedAreas,
   setShowProhibitedAreas,
+  showRoad,
+  setShowRoad,
+  showLandslide,
+  setShowLandslide,
+  showFlood,
+  setShowFlood,
+  showLanduse,
+  setShowLanduse,
   onQuery,
   isLoading,
 }: SettingsPanelProps) {
@@ -219,39 +239,99 @@ export default function SettingsPanel({
             <span className="h-3 w-0.5 rounded-full bg-action-primary" aria-hidden="true" />
             レイヤ
           </div>
+
+          {/* 6-13: 建物・道路・DID地区等は「航路への影響」（回避・高度変更・安全距離の
+              検討）、土砂災害・洪水浸水は「航路活用の可能性」（災害時の状況確認・
+              物資輸送等を優先検討する根拠）として見出しを分ける。災害リスク区域を
+              飛行禁止区域や障害物と同じ意味で誤認させないための区分（改善タスク§2）。 */}
+          <div className="mb-2">
+            <div className="text-[11px] font-semibold text-text-secondary mb-1">航路への影響</div>
+            <div className="space-y-1.5">
+              {/* 6-6/6-8: 建物外形は秩父市周辺（対象範囲は viewer/src/target_area.py
+                  参照、既存デフォルト地図中心の20km四方）で地図移動・ズームに応じて
+                  取得する。対象範囲外へ地図を移動すると表示対象外になる
+                  （6-2の抽出データが無いため0件、エラーではない）。レイヤーONなら
+                  航路照会前でも地図上で表示・非表示を切り替えられる。 */}
+              <label className="flex items-center gap-2 cursor-pointer leading-4">
+                <input
+                  type="checkbox"
+                  checked={showBuildings}
+                  onChange={(e) => setShowBuildings(e.target.checked)}
+                  className="w-4 h-4 accent-action-primary"
+                />
+                <span className="text-sm text-text-primary">建物（秩父市周辺）</span>
+                <span className="text-xs text-text-secondary">（対象範囲外は非表示）</span>
+              </label>
+              {/* 6-6a: 道路も建物と同じ再抽出データ（3次メッシュ単位）をbboxで取得する。 */}
+              <label className="flex items-center gap-2 cursor-pointer leading-4">
+                <input
+                  type="checkbox"
+                  checked={showRoad}
+                  onChange={(e) => setShowRoad(e.target.checked)}
+                  className="w-4 h-4 accent-action-primary"
+                />
+                <span className="text-sm text-text-primary">道路（秩父市周辺）</span>
+              </label>
+              {/* 実APIレスポンス自体にはポリゴンが含まれないが、DID地区は安定ID
+                  （flightProhibitedAreaId）を持つため国土数値情報から再取得した
+                  ジオメトリで秩父市のみ地図描画できる（2026年8月7日）。ルート設計時に
+                  危険区域を避けられるよう、座標入力・航路登録の前から常時地図に表示
+                  する（航路との交差確認は登録後の判定詳細を参照。既定の航路座標とは
+                  DID地区が約3km離れているため、既定のままでは判定詳細は0件になる。
+                  仕様書§7-2-補参照）。 */}
+              <label className="flex items-center gap-2 cursor-pointer leading-4">
+                <input
+                  type="checkbox"
+                  checked={showProhibitedAreas}
+                  onChange={(e) => setShowProhibitedAreas(e.target.checked)}
+                  className="w-4 h-4 accent-action-primary"
+                />
+                <span className="text-sm text-text-primary">DID地区</span>
+                <span className="text-xs text-text-secondary">（秩父市のみ地図描画対応）</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="mb-2">
+            <div className="text-[11px] font-semibold text-text-secondary mb-1">航路活用の可能性</div>
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-2 cursor-pointer leading-4">
+                <input
+                  type="checkbox"
+                  checked={showLandslide}
+                  onChange={(e) => setShowLandslide(e.target.checked)}
+                  className="w-4 h-4 accent-action-primary"
+                />
+                <span className="text-sm text-text-primary">土砂災害警戒区域</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer leading-4">
+                <input
+                  type="checkbox"
+                  checked={showFlood}
+                  onChange={(e) => setShowFlood(e.target.checked)}
+                  className="w-4 h-4 accent-action-primary"
+                />
+                <span className="text-sm text-text-primary">洪水浸水想定区域</span>
+              </label>
+            </div>
+          </div>
+
+          {/* 6-6a: 土地利用は分類ごとに影響／活用のどちらの意味も持ちうるため、
+              上記2グループとは別枠で表示する（改善タスク§2）。 */}
+          <div className="mb-2">
+            <label className="flex items-center gap-2 cursor-pointer leading-4">
+              <input
+                type="checkbox"
+                checked={showLanduse}
+                onChange={(e) => setShowLanduse(e.target.checked)}
+                className="w-4 h-4 accent-action-primary"
+              />
+              <span className="text-sm text-text-primary">土地利用</span>
+              <span className="text-xs text-text-secondary">（分類により影響/活用の目安が異なる）</span>
+            </label>
+          </div>
+
           <div className="space-y-1.5">
-            {/* 6-6/6-8: 建物外形は秩父市周辺（対象範囲は viewer/src/target_area.py
-                参照、既存デフォルト地図中心の20km四方）で地図移動・ズームに応じて
-                取得する。対象範囲外へ地図を移動すると表示対象外になる
-                （6-2の抽出データが無いため0件、エラーではない）。レイヤーONなら
-                航路照会前でも地図上で表示・非表示を切り替えられる。 */}
-            <label className="flex items-center gap-2 cursor-pointer leading-4">
-              <input
-                type="checkbox"
-                checked={showBuildings}
-                onChange={(e) => setShowBuildings(e.target.checked)}
-                className="w-4 h-4 accent-action-primary"
-              />
-              <span className="text-sm text-text-primary">建物（秩父市周辺）</span>
-              <span className="text-xs text-text-secondary">（対象範囲外は非表示）</span>
-            </label>
-            {/* 実APIレスポンス自体にはポリゴンが含まれないが、DID地区は安定ID
-                （flightProhibitedAreaId）を持つため国土数値情報から再取得した
-                ジオメトリで秩父市のみ地図描画できる（2026年8月7日）。ルート設計時に
-                危険区域を避けられるよう、座標入力・航路登録の前から常時地図に表示
-                する（航路との交差確認は登録後の判定詳細を参照。既定の航路座標とは
-                DID地区が約3km離れているため、既定のままでは判定詳細は0件になる。
-                仕様書§7-2-補参照）。 */}
-            <label className="flex items-center gap-2 cursor-pointer leading-4">
-              <input
-                type="checkbox"
-                checked={showProhibitedAreas}
-                onChange={(e) => setShowProhibitedAreas(e.target.checked)}
-                className="w-4 h-4 accent-action-primary"
-              />
-              <span className="text-sm text-text-primary">DID地区</span>
-              <span className="text-xs text-text-secondary">（秩父市のみ地図描画対応）</span>
-            </label>
             <label className="flex items-center gap-2 cursor-pointer leading-4">
               <input
                 type="checkbox"

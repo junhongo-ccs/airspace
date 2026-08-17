@@ -1,7 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { KnownProhibitedArea, PlateauBuildingFeature } from '../api/client';
+import type {
+  GroundFeatureLayerKey,
+  KnownProhibitedArea,
+  PlateauBuildingFeature,
+  PlateauDatasetMeta,
+  PlateauGroundFeature,
+} from '../api/client';
 
 export interface MapBounds {
   minLat: number;
@@ -43,7 +49,28 @@ interface MapContainerProps {
   // 描画対象になる。
   prohibitedAreas?: KnownProhibitedArea[];
   showProhibitedAreas?: boolean;
+  // 6-6a: 道路・土砂災害・洪水浸水・土地利用（レイヤーキーごとのGeoJSON Feature）。
+  groundFeaturesByLayer?: Record<GroundFeatureLayerKey, PlateauGroundFeature[]>;
+  layerVisibility?: Record<GroundFeatureLayerKey, boolean>;
+  // 6-10: 凡例・ポップアップに表示する出典・データ時点。
+  datasetMeta?: PlateauDatasetMeta | null;
 }
+
+// 6-6a/6-13: レイヤーごとの色・パターン・表示名・区分（「航路への影響」/
+// 「航路活用の可能性」/土地利用）。design.mdの既存パレットから、まだ未使用の
+// トークンを充てる（--brand-cyan=道路、--map-caution=土砂災害、
+// --brand-blue-light=洪水浸水、--map-terrain-high=土地利用）。
+const GROUND_LAYER_STYLE: Record<
+  GroundFeatureLayerKey,
+  { color: string; hatch: boolean; label: string; group: 'impact' | 'opportunity' | 'landuse' }
+> = {
+  road: { color: '#00D2E6', hatch: false, label: '道路', group: 'impact' },
+  landslide: { color: '#FF8A00', hatch: true, label: '土砂災害警戒区域', group: 'opportunity' },
+  flood: { color: '#3E9BE0', hatch: true, label: '洪水浸水想定区域', group: 'opportunity' },
+  landuse: { color: '#8C6239', hatch: false, label: '土地利用', group: 'landuse' },
+};
+
+const GROUND_FEATURE_LAYER_KEYS: GroundFeatureLayerKey[] = ['road', 'landslide', 'flood', 'landuse'];
 
 const ROUTE_LAYER_IDS = ['route-line', 'route-start', 'route-end'];
 const ROUTE_SOURCE_IDS = ['route', 'route-points'];
@@ -81,6 +108,22 @@ function removeProhibitedLayers(map: maplibregl.Map) {
   }
 }
 
+function groundLayerIds(layer: GroundFeatureLayerKey) {
+  return {
+    source: `ground-${layer}`,
+    fill: `ground-${layer}-fill`,
+    outline: `ground-${layer}-outline`,
+    hatchImage: `ground-${layer}-hatch`,
+  };
+}
+
+function removeGroundFeatureLayer(map: maplibregl.Map, layer: GroundFeatureLayerKey) {
+  const ids = groundLayerIds(layer);
+  if (map.getLayer(ids.fill)) map.removeLayer(ids.fill);
+  if (map.getLayer(ids.outline)) map.removeLayer(ids.outline);
+  if (map.getSource(ids.source)) map.removeSource(ids.source);
+}
+
 // design.md §5-3: 禁止区域は色（--brand-red）だけでなく塗りパターン（交差ハッチ）
 // でも区別すること、という制約への対応。8x8pxの交差ハッチをcanvasで生成して登録する。
 function ensureHatchPattern(map: maplibregl.Map) {
@@ -103,6 +146,40 @@ function ensureHatchPattern(map: maplibregl.Map) {
   map.addImage(PROHIBITED_HATCH_IMAGE_ID, { width: size, height: size, data: imageData.data });
 }
 
+// 土砂災害・洪水浸水（「航路活用の可能性」区分）向けの斜線ハッチ。DID地区の
+// 交差ハッチ（禁止区域＝影響）と見た目のパターンを変え、色だけでなく形でも
+// 「別カテゴリの区域」だと分かるようにする（design.md §5-3の考え方を踏襲）。
+function ensureDiagonalHatchPattern(map: maplibregl.Map, imageId: string, color: string) {
+  if (map.hasImage(imageId)) return;
+  const size = 8;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, size);
+  ctx.lineTo(size, 0);
+  ctx.stroke();
+  const imageData = ctx.getImageData(0, 0, size, size);
+  map.addImage(imageId, { width: size, height: size, data: imageData.data });
+}
+
+const EMPTY_GROUND_FEATURES: Record<GroundFeatureLayerKey, PlateauGroundFeature[]> = {
+  road: [],
+  landslide: [],
+  flood: [],
+  landuse: [],
+};
+const ALL_LAYERS_VISIBLE: Record<GroundFeatureLayerKey, boolean> = {
+  road: true,
+  landslide: true,
+  flood: true,
+  landuse: true,
+};
+
 export default function MapContainer({
   routeData,
   showRoute = true,
@@ -111,6 +188,9 @@ export default function MapContainer({
   onBoundsChange,
   prohibitedAreas = [],
   showProhibitedAreas = true,
+  groundFeaturesByLayer = EMPTY_GROUND_FEATURES,
+  layerVisibility = ALL_LAYERS_VISIBLE,
+  datasetMeta = null,
 }: MapContainerProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
@@ -387,14 +467,146 @@ export default function MapContainer({
     });
   }, [prohibitedAreas, showProhibitedAreas, styleReady]);
 
+  // クリックポップアップは常に最新のdatasetMetaを参照したいが、effectの依存に
+  // 入れるとレイヤー再描画・クリックハンドラ再登録が余計に走るためrefで追従させる
+  // （onBoundsChangeRefと同じ考え方）。
+  const datasetMetaRef = useRef(datasetMeta);
+  datasetMetaRef.current = datasetMeta;
+
+  // 6-6a: 道路・土砂災害・洪水浸水・土地利用を描画する。4レイヤーとも構造が同じ
+  // （Polygon/MultiPolygonのfill+outline、任意でハッチパターン）ため1つのeffectで
+  // まとめて扱う。クリックで分類名・出典・データ時点のポップアップを出す（6-6a）。
+  useEffect(() => {
+    if (!map.current || !styleReady) return;
+    const mapInstance = map.current;
+
+    const clickHandlers: Array<{ layerId: string; handler: (e: maplibregl.MapLayerMouseEvent) => void }> = [];
+
+    for (const layer of GROUND_FEATURE_LAYER_KEYS) {
+      removeGroundFeatureLayer(mapInstance, layer);
+    }
+
+    for (const layer of GROUND_FEATURE_LAYER_KEYS) {
+      if (!layerVisibility[layer]) continue;
+      const features = groundFeaturesByLayer[layer];
+      if (!features || features.length === 0) continue;
+
+      const style = GROUND_LAYER_STYLE[layer];
+      const ids = groundLayerIds(layer);
+
+      mapInstance.addSource(ids.source, {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features },
+      });
+
+      const fillPaint: maplibregl.FillLayerSpecification['paint'] = style.hatch
+        ? (() => {
+            ensureDiagonalHatchPattern(mapInstance, ids.hatchImage, style.color);
+            return { 'fill-pattern': ids.hatchImage, 'fill-opacity': 0.6 };
+          })()
+        : { 'fill-color': style.color, 'fill-opacity': 0.35 };
+
+      mapInstance.addLayer({ id: ids.fill, type: 'fill', source: ids.source, paint: fillPaint });
+      mapInstance.addLayer({
+        id: ids.outline,
+        type: 'line',
+        source: ids.source,
+        paint: { 'line-color': style.color, 'line-width': 1 },
+      });
+
+      const handler = (e: maplibregl.MapLayerMouseEvent) => {
+        const feature = e.features?.[0];
+        if (!feature) return;
+        const props = feature.properties as PlateauGroundFeature['properties'];
+        const meta = datasetMetaRef.current;
+        const lines = [
+          `<div style="font-weight:600;margin-bottom:2px;">${style.label}</div>`,
+          `<div>分類: ${props.class_label ?? '不明'}</div>`,
+        ];
+        if (props.status_label) lines.push(`<div>指定状況: ${props.status_label}</div>`);
+        if (props.scale_label) lines.push(`<div>規模区分: ${props.scale_label}</div>`);
+        if (meta) lines.push(`<div style="margin-top:4px;color:#6b7280;">出典: ${meta.source}（${meta.dataDate}時点）</div>`);
+        new maplibregl.Popup({ closeButton: true })
+          .setLngLat(e.lngLat)
+          .setHTML(lines.join(''))
+          .addTo(mapInstance);
+      };
+      mapInstance.on('click', ids.fill, handler);
+      clickHandlers.push({ layerId: ids.fill, handler });
+    }
+
+    return () => {
+      for (const { layerId, handler } of clickHandlers) {
+        mapInstance.off('click', layerId, handler);
+      }
+    };
+  }, [groundFeaturesByLayer, layerVisibility, styleReady]);
+
   return (
     <div className="flex-1 relative bg-bg-app">
       <div ref={mapContainer} className="w-full h-full" />
-      {/* Map overlay info */}
-      <div className="absolute top-4 right-4 bg-bg-panel rounded shadow-lg p-3 text-xs text-text-secondary max-w-48">
-        <p>地図：MapLibre GL</p>
-        <p>ズーム15・秩父市周辺</p>
+      {/* 6-6a/6-13: 凡例。「航路への影響」/「航路活用の可能性」の見出しを分け、
+          災害リスク区域を障害物・飛行禁止区域と同じ意味で誤認させない
+          （改善タスク§2）。ハッチはCSSのrepeating-linear-gradientでcanvas版と
+          近い見た目を作る（実データの塗りとは別レンダリング経路だが凡例用途では
+          十分）。 */}
+      <div className="absolute top-4 right-4 bg-bg-panel rounded shadow-lg p-3 text-xs text-text-secondary max-w-56 space-y-2">
+        <div>
+          <p className="font-semibold text-text-primary">地図：MapLibre GL</p>
+          <p>ズーム15・秩父市周辺</p>
+        </div>
+
+        <div>
+          <div className="font-semibold text-text-primary mb-1">航路への影響</div>
+          <LegendRow color="#0B3D75" label="航路" />
+          <LegendRow color="#8A96A0" label="建物" />
+          <LegendRow color="#00D2E6" label="道路" />
+          <LegendRow color="#E8380D" label="DID地区" hatch="cross" />
+        </div>
+
+        <div>
+          <div className="font-semibold text-text-primary mb-1">航路活用の可能性</div>
+          <LegendRow color="#FF8A00" label="土砂災害警戒区域" hatch="diagonal" />
+          <LegendRow color="#3E9BE0" label="洪水浸水想定区域" hatch="diagonal" />
+        </div>
+
+        <div>
+          <div className="font-semibold text-text-primary mb-1">その他</div>
+          <LegendRow color="#8C6239" label="土地利用（影響/活用は分類による）" />
+        </div>
+
+        {datasetMeta && (
+          <div className="pt-1 border-t border-gray-200 text-[10px] text-text-secondary">
+            出典: {datasetMeta.source}（{datasetMeta.dataDate}時点）
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
+
+function LegendRow({
+  color,
+  label,
+  hatch,
+}: {
+  color: string;
+  label: string;
+  hatch?: 'diagonal' | 'cross';
+}) {
+  const swatchStyle: CSSProperties = hatch
+    ? {
+        backgroundColor: `${color}33`,
+        backgroundImage:
+          hatch === 'cross'
+            ? `repeating-linear-gradient(45deg, ${color} 0, ${color} 1px, transparent 1px, transparent 4px), repeating-linear-gradient(-45deg, ${color} 0, ${color} 1px, transparent 1px, transparent 4px)`
+            : `repeating-linear-gradient(45deg, ${color} 0, ${color} 1px, transparent 1px, transparent 4px)`,
+      }
+    : { backgroundColor: color };
+  return (
+    <div className="flex items-center gap-1.5 leading-4">
+      <span className="inline-block w-3 h-3 rounded-sm border border-black/10 flex-shrink-0" style={swatchStyle} />
+      <span>{label}</span>
     </div>
   );
 }

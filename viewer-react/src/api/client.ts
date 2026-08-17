@@ -219,12 +219,31 @@ export interface PlateauBuildingFeature {
   };
 }
 
+// 6-6a/6-10: データセットの出典・データ時点。凡例・ポップアップに表示する
+// （bboxエンドポイントのレスポンスに共通で付与される、メッシュファイルごとの
+// 重複を避けるための一箇所管理の値）。
+export interface PlateauDatasetMeta {
+  source: string;
+  dataDate: string;
+}
+
+export interface BboxFeatureResult<T> {
+  features: T[];
+  meta: PlateauDatasetMeta | null;
+}
+
+function parseDatasetMeta(raw: unknown): PlateauDatasetMeta | null {
+  const meta = raw as { source?: string; data_date?: string } | undefined;
+  if (!meta?.source || !meta?.data_date) return null;
+  return { source: meta.source, dataDate: meta.data_date };
+}
+
 export async function getBuildingsInBbox(
   minLat: number,
   maxLat: number,
   minLon: number,
   maxLon: number
-): Promise<PlateauBuildingFeature[]> {
+): Promise<BboxFeatureResult<PlateauBuildingFeature>> {
   try {
     const params = new URLSearchParams({
       min_lat: String(minLat),
@@ -237,11 +256,60 @@ export async function getBuildingsInBbox(
       throw new Error(await describeError(response));
     }
     const data = await response.json();
-    return data.data || [];
+    return { features: data.data || [], meta: parseDatasetMeta(data.meta) };
   } catch (error) {
     // 参照レイヤの取得失敗は航路登録・照会を妨げない。空配列を返し、表示だけを省略する。
     console.error('Failed to fetch buildings in bbox:', error);
-    return [];
+    return { features: [], meta: null };
+  }
+}
+
+// 秩父市周辺の表示範囲（bbox）内の道路・土砂災害・洪水浸水・土地利用（6-6a）。
+// getBuildingsInBboxと同じ形。分類コードだけでなく人間可読な分類名
+// （class_label等、BFF側でcodelistから解決済み）も含む。
+export type GroundFeatureLayerKey = 'road' | 'landslide' | 'flood' | 'landuse';
+
+export interface PlateauGroundFeature {
+  type: 'Feature';
+  id: string;
+  geometry: PlateauBuildingGeometry;
+  properties: {
+    layer: GroundFeatureLayerKey;
+    class_code: string | null;
+    class_label: string | null;
+    // 土砂災害のみ（警戒区域の指定状況）
+    status_code?: string | null;
+    status_label?: string | null;
+    // 洪水浸水のみ（L1計画規模/L2想定最大規模）
+    scale_code?: string | null;
+    scale_label?: string | null;
+  };
+}
+
+export async function getGroundFeaturesInBbox(
+  layer: GroundFeatureLayerKey,
+  minLat: number,
+  maxLat: number,
+  minLon: number,
+  maxLon: number
+): Promise<BboxFeatureResult<PlateauGroundFeature>> {
+  try {
+    const params = new URLSearchParams({
+      layer,
+      min_lat: String(minLat),
+      max_lat: String(maxLat),
+      min_lon: String(minLon),
+      max_lon: String(maxLon),
+    });
+    const response = await fetch(`${BFF_BASE}/ground_features_bbox?${params.toString()}`);
+    if (!response.ok) {
+      throw new Error(await describeError(response));
+    }
+    const data = await response.json();
+    return { features: data.data || [], meta: parseDatasetMeta(data.meta) };
+  } catch (error) {
+    console.error(`Failed to fetch ground features (${layer}) in bbox:`, error);
+    return { features: [], meta: null };
   }
 }
 

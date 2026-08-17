@@ -34,6 +34,7 @@ from viewer.src.altitude import (  # noqa: E402
 )
 from viewer.src.api_client import ApiError, DigitalTwinApiClient  # noqa: E402
 from viewer.src.plateau_buildings import BboxTooLargeError, get_buildings_in_bbox  # noqa: E402
+from viewer.src.plateau_metadata import plateau_dataset_meta  # noqa: E402
 from viewer.src.plateau_ground_features import (  # noqa: E402
     BboxTooLargeError as GroundFeatureBboxTooLargeError,
 )
@@ -231,7 +232,7 @@ async def buildings_endpoint(min_lat: float, max_lat: float, min_lon: float, max
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    return {"status": "success", "data": features}
+    return {"status": "success", "data": features, "meta": plateau_dataset_meta()}
 
 
 @app.get("/ground_features_bbox")
@@ -253,7 +254,7 @@ async def ground_features_bbox_endpoint(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    return {"status": "success", "data": features}
+    return {"status": "success", "data": features, "meta": plateau_dataset_meta()}
 
 
 @app.get("/connection_status")
