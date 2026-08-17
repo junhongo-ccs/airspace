@@ -41,7 +41,10 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
   const hasAnyContent = features.length > 0 || nearbySummary.length > 0;
 
   return (
-    <div className="border-t border-brand-blue-light/20 bg-bg-panel flex flex-col">
+    // relative z-20: MapContainer側の凡例（z-10）より確実に前面へ出し、判定詳細
+    // アコーディオンを開いたときに地図側の要素と重なって操作できなくなる不具合を
+    // 防ぐ（2026-08-17報告）。
+    <div className="relative z-20 border-t border-brand-blue-light/20 bg-bg-panel flex flex-col">
       {/* Query Results Section */}
       <div className="border-b border-bg-table-head">
         <button

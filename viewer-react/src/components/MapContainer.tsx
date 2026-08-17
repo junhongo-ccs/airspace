@@ -543,14 +543,19 @@ export default function MapContainer({
   }, [groundFeaturesByLayer, layerVisibility, styleReady]);
 
   return (
-    <div className="flex-1 relative bg-bg-app">
+    // overflow-hidden: 凡例（absolute）や地図canvasが、判定詳細アコーディオンを
+    // 開いてこのflexボックスが縮んだ際にも自身の領域内に留まるようにする。
+    // これが無いと、縮む前の高さのまま凡例が描画され続け、下のResultsPanel（別要素、
+    // z軸では並列）に重なって操作できなくなる不具合があった（2026-08-17報告）。
+    <div className="flex-1 relative bg-bg-app overflow-hidden">
       <div ref={mapContainer} className="w-full h-full" />
       {/* 6-6a/6-13: 凡例。「航路への影響」/「航路活用の可能性」の見出しを分け、
           災害リスク区域を障害物・飛行禁止区域と同じ意味で誤認させない
           （改善タスク§2）。ハッチはCSSのrepeating-linear-gradientでcanvas版と
           近い見た目を作る（実データの塗りとは別レンダリング経路だが凡例用途では
-          十分）。 */}
-      <div className="absolute top-4 right-4 bg-bg-panel rounded shadow-lg p-3 text-xs text-text-secondary max-w-56 space-y-2">
+          十分）。z-10はMapLibreの内部canvas/コントロール類より確実に前面へ出す
+          ためで、ResultsPanel（z-20、App.tsx側）より下に固定する。 */}
+      <div className="absolute top-4 right-4 z-10 bg-bg-panel rounded shadow-lg p-3 text-xs text-text-secondary max-w-56 space-y-2">
         <div>
           <p className="font-semibold text-text-primary">地図：MapLibre GL</p>
           <p>ズーム15・秩父市周辺</p>
