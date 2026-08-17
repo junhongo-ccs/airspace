@@ -140,6 +140,39 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
               <p className="text-text-secondary">対象範囲内に該当データはありませんでした。</p>
             )}
 
+            {/* 概要: 下の詳細（レイヤ別・地物1件ずつ）に入る前に、区分ごとの交差状況を
+                数行でまとめる。件数はすべて「交差」の有無を明示した値のみを使い、
+                6-11が禁じる「土砂災害 1件」のような関係不明の単独件数は出さない。 */}
+            {routeQueried && hasAnyContent && (
+              <div className="bg-bg-panel rounded p-3 text-xs space-y-1 border border-bg-table-head">
+                {GROUP_ORDER.map((group) => {
+                  const intersectCount = features.filter((f) => f.group === group).length;
+                  const nearbyCount = nearbySummary
+                    .filter((s) => s.group === group)
+                    .reduce((sum, s) => sum + s.count, 0);
+                  if (intersectCount === 0 && nearbyCount === 0) return null;
+                  return (
+                    <div key={`summary-${group}`} className="flex justify-between gap-4">
+                      <span className="text-text-secondary">{GROUP_LABELS[group]}:</span>
+                      <span className="text-text-primary font-medium text-right">
+                        {intersectCount > 0
+                          ? `交差 ${intersectCount}件`
+                          : `交差なし（付近に${nearbyCount}件）`}
+                      </span>
+                    </div>
+                  );
+                })}
+                {showProhibitedAreas && (queryResult.prohibitedAreas?.length ?? 0) > 0 && (
+                  <div className="flex justify-between gap-4">
+                    <span className="text-text-secondary">DID地区:</span>
+                    <span className="text-text-primary font-medium">
+                      {queryResult.prohibitedAreas!.length}件
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
             {routeQueried &&
               GROUP_ORDER.map((group) => {
                 const groupFeatures = features.filter((f) => f.group === group);
