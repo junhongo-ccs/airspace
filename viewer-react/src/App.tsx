@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './index.css';
 import SettingsPanel from './components/SettingsPanel';
 import MapContainer, { type MapBounds } from './components/MapContainer';
@@ -28,6 +28,35 @@ const BOUNDS_FETCH_DEBOUNCE_MS = 300;
 
 // 6-6a: 建物以外にbboxで取得・表示する地物レイヤー。
 const GROUND_FEATURE_LAYERS: GroundFeatureLayerKey[] = ['road', 'landslide', 'flood', 'landuse'];
+
+// 表示範囲そのものではなく、上下左右にこの比率だけ広げたbboxを先読みする
+// （ビューポートバッファリング）。少しドラッグしただけでも表示範囲bboxの数値は
+// 必ず変わるため、バッファ無しだと手で動かすたびに再取得・再描画が走ってしまう
+// （ユーザー報告2026-08-17）。読み込み済みバッファの中に収まる移動は取得済みの
+// データで足りるため、取得自体をスキップする。比率を大きくしすぎると、bboxが
+// 一度に読み込めるメッシュ数の上限（plateau_buildings.MAX_MESHES_PER_REQUEST=200）
+// に近づいたときに400エラーで無言で空表示になりやすくなるため、控えめな値にする。
+const VIEWPORT_BUFFER_RATIO = 0.5;
+
+function padBounds(bounds: MapBounds, ratio: number): MapBounds {
+  const latPad = (bounds.maxLat - bounds.minLat) * ratio;
+  const lonPad = (bounds.maxLon - bounds.minLon) * ratio;
+  return {
+    minLat: bounds.minLat - latPad,
+    maxLat: bounds.maxLat + latPad,
+    minLon: bounds.minLon - lonPad,
+    maxLon: bounds.maxLon + lonPad,
+  };
+}
+
+function boundsContain(outer: MapBounds, inner: MapBounds): boolean {
+  return (
+    outer.minLat <= inner.minLat &&
+    outer.maxLat >= inner.maxLat &&
+    outer.minLon <= inner.minLon &&
+    outer.maxLon >= inner.maxLon
+  );
+}
 
 // partial = 航路登録は成功したが地物照会・飛行禁止区域照会のいずれかが失敗した状態。
 // これを success に含めると「0件」と「照会失敗」が見分けられなくなる。
@@ -85,6 +114,12 @@ function App() {
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   const boundsFetchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const groundFeaturesFetchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // 直近に実際取得した（バッファ込みの）bbox。次のmapBoundsがこの範囲に収まって
+  // いれば、表示中のデータで足りるため取得自体をスキップする。
+  const lastFetchedBuildingsBoundsRef = useRef<MapBounds | null>(null);
+  const lastFetchedGroundFeaturesBoundsRef = useRef<{ bounds: MapBounds; layerVisibilityKey: string } | null>(
+    null
+  );
 
   const refreshConnection = useCallback(async () => {
     setConnection(await getConnectionStatus());
@@ -111,16 +146,30 @@ function App() {
   useEffect(() => {
     if (!showBuildings || !mapBounds) {
       setPlateauBuildings([]);
+      lastFetchedBuildingsBoundsRef.current = null;
+      return;
+    }
+    // 既に読み込み済みのバッファ範囲に収まる移動なら、表示中のデータで足りるため
+    // 取得しない（手でわずかにドラッグするたびに再取得・再描画が走る問題への対応）。
+    if (
+      lastFetchedBuildingsBoundsRef.current &&
+      boundsContain(lastFetchedBuildingsBoundsRef.current, mapBounds)
+    ) {
       return;
     }
     if (boundsFetchTimer.current) clearTimeout(boundsFetchTimer.current);
     boundsFetchTimer.current = setTimeout(() => {
-      void getBuildingsInBbox(mapBounds.minLat, mapBounds.maxLat, mapBounds.minLon, mapBounds.maxLon).then(
-        ({ features, meta }) => {
-          setPlateauBuildings(features);
-          if (meta) setDatasetMeta(meta);
-        }
-      );
+      const fetchBounds = padBounds(mapBounds, VIEWPORT_BUFFER_RATIO);
+      lastFetchedBuildingsBoundsRef.current = fetchBounds;
+      void getBuildingsInBbox(
+        fetchBounds.minLat,
+        fetchBounds.maxLat,
+        fetchBounds.minLon,
+        fetchBounds.maxLon
+      ).then(({ features, meta }) => {
+        setPlateauBuildings(features);
+        if (meta) setDatasetMeta(meta);
+      });
     }, BOUNDS_FETCH_DEBOUNCE_MS);
     return () => {
       if (boundsFetchTimer.current) clearTimeout(boundsFetchTimer.current);
@@ -130,35 +179,61 @@ function App() {
   // 6-6a: 道路・土砂災害・洪水浸水・土地利用も同じ考え方で、ONのレイヤーだけ
   // 表示範囲が変わるたびに取得し直す。4レイヤーまとめて1回デバウンスし、
   // 有効なものだけ並行取得する（6-7: OFFのレイヤーは取得しない）。
-  const layerVisibility: Record<GroundFeatureLayerKey, boolean> = {
-    road: showRoad,
-    landslide: showLandslide,
-    flood: showFlood,
-    landuse: showLanduse,
-  };
+  //
+  // useMemoで包まないと、mapBoundsの更新（＝地図を動かすたび）を含むAppの
+  // 再レンダーのたびにこのオブジェクトが新しい参照として作られ、MapContainer側の
+  // 「表示範囲・レイヤー変更を検知するeffect」が値の変化なしに毎回発火して
+  // setData()が呼ばれ続け、地図がちらつく不具合の原因になっていた
+  // （ユーザー報告2026-08-17、setData化＝コミット5dc6603だけでは解消しなかった）。
+  const layerVisibility = useMemo<Record<GroundFeatureLayerKey, boolean>>(
+    () => ({ road: showRoad, landslide: showLandslide, flood: showFlood, landuse: showLanduse }),
+    [showRoad, showLandslide, showFlood, showLanduse]
+  );
   const layerVisibilityKey = GROUND_FEATURE_LAYERS.map((l) => (layerVisibility[l] ? '1' : '0')).join('');
 
   useEffect(() => {
     const enabledLayers = GROUND_FEATURE_LAYERS.filter((l) => layerVisibility[l]);
     setGroundFeaturesByLayer((prev) => {
+      // 実際にOFFへ切り替わって中身が空になるレイヤーが無ければprevをそのまま
+      // 返す。{...prev}のスプレッドは中身が同じでも常に新しい参照を作ってしまい、
+      // 上と同じ理由でMapContainer側のちらつきにつながるため、変更が無い限り
+      // 新しいオブジェクトを作らない。
+      let changed = false;
       const next = { ...prev };
       for (const layer of GROUND_FEATURE_LAYERS) {
-        if (!layerVisibility[layer]) next[layer] = [];
+        if (!layerVisibility[layer] && prev[layer].length > 0) {
+          next[layer] = [];
+          changed = true;
+        }
       }
-      return next;
+      return changed ? next : prev;
     });
     if (enabledLayers.length === 0 || !mapBounds) return;
 
+    // 建物と同じ考え方：有効なレイヤーの組み合わせが前回取得時と同じで、かつ
+    // 表示範囲が読み込み済みバッファに収まっていれば取得しない（手で少し動かす
+    // たびに再取得・再描画が走る問題への対応、2026-08-17報告）。
+    const lastFetch = lastFetchedGroundFeaturesBoundsRef.current;
+    if (
+      lastFetch &&
+      lastFetch.layerVisibilityKey === layerVisibilityKey &&
+      boundsContain(lastFetch.bounds, mapBounds)
+    ) {
+      return;
+    }
+
     if (groundFeaturesFetchTimer.current) clearTimeout(groundFeaturesFetchTimer.current);
     groundFeaturesFetchTimer.current = setTimeout(() => {
+      const fetchBounds = padBounds(mapBounds, VIEWPORT_BUFFER_RATIO);
+      lastFetchedGroundFeaturesBoundsRef.current = { bounds: fetchBounds, layerVisibilityKey };
       void Promise.all(
         enabledLayers.map((layer) =>
           getGroundFeaturesInBbox(
             layer,
-            mapBounds.minLat,
-            mapBounds.maxLat,
-            mapBounds.minLon,
-            mapBounds.maxLon
+            fetchBounds.minLat,
+            fetchBounds.maxLat,
+            fetchBounds.minLon,
+            fetchBounds.maxLon
           ).then((result) => [layer, result] as const)
         )
       ).then((results) => {
