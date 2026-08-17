@@ -58,13 +58,15 @@ interface MapContainerProps {
 
 // 6-6a/6-13: レイヤーごとの色・パターン・表示名・区分（「航路への影響」/
 // 「航路活用の可能性」/土地利用）。design.mdの既存パレットから、まだ未使用の
-// トークンを充てる（--brand-cyan=道路、--map-caution=土砂災害、
-// --brand-blue-light=洪水浸水、--map-terrain-high=土地利用）。
+// トークンを充てる（--map-caution=土砂災害、--brand-blue-light=洪水浸水、
+// --map-terrain-high=土地利用）。道路は当初--brand-cyan（水色）を使っていたが、
+// 水面と紛らわしい（ユーザー報告2026-08-17）ため、建物（#8A96A0）より少し濃い
+// グレー系（#5C6670）に変更した。
 const GROUND_LAYER_STYLE: Record<
   GroundFeatureLayerKey,
   { color: string; hatch: boolean; label: string; group: 'impact' | 'opportunity' | 'landuse' }
 > = {
-  road: { color: '#00D2E6', hatch: false, label: '道路', group: 'impact' },
+  road: { color: '#5C6670', hatch: false, label: '道路', group: 'impact' },
   landslide: { color: '#FF8A00', hatch: true, label: '土砂災害警戒区域', group: 'opportunity' },
   flood: { color: '#3E9BE0', hatch: true, label: '洪水浸水想定区域', group: 'opportunity' },
   landuse: { color: '#8C6239', hatch: false, label: '土地利用', group: 'landuse' },
@@ -591,7 +593,7 @@ export default function MapContainer({
           <div className="font-semibold text-text-primary mb-1">航路への影響</div>
           <LegendRow color="#0B3D75" label="航路" />
           <LegendRow color="#8A96A0" label="建物" />
-          <LegendRow color="#00D2E6" label="道路" />
+          <LegendRow color="#5C6670" label="道路" />
           <LegendRow color="#E8380D" label="DID地区" hatch="cross" />
         </div>
 
