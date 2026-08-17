@@ -89,6 +89,33 @@ def mesh3_codes_in_bbox(min_lat: float, max_lat: float, min_lon: float, max_lon:
     return sorted(codes)
 
 
+def mesh3_bbox(mesh_code: str) -> tuple[float, float, float, float]:
+    """3次メッシュコード（8桁）から、そのセル自体の(min_lat, max_lat, min_lon, max_lon)を
+    返す（6-2aの土砂災害・土地利用のクリッピング用）。`_mesh3_from_row_col`の逆変換。
+    """
+    p, u2, q, v, r, w = int(mesh_code[0:2]), int(mesh_code[2:4]), int(mesh_code[4]), int(mesh_code[5]), int(
+        mesh_code[6]
+    ), int(mesh_code[7])
+    row = p * 80 + q * 10 + r
+    col = (u2 + 100) * 80 + v * 10 + w
+    min_lat = row * _LAT_ROW_UNIT_SEC / 3600
+    min_lon = col * _LON_COL_UNIT_SEC / 3600
+    max_lat = (row + 1) * _LAT_ROW_UNIT_SEC / 3600
+    max_lon = (col + 1) * _LON_COL_UNIT_SEC / 3600
+    return min_lat, max_lat, min_lon, max_lon
+
+
+def mesh2_codes_in_bbox(min_lat: float, max_lat: float, min_lon: float, max_lon: float) -> list[str]:
+    """任意のbboxと交差する2次メッシュコード（6桁）の一覧を返す（6-2aの土砂災害・
+    土地利用向け。両レイヤはPLATEAU側で2次メッシュ単位にファイルが分割されている）。
+
+    3次メッシュコードの先頭6桁がそのまま2次メッシュコードになる
+    （`_mesh3_from_row_col`のp,u,q,vの4要素がそれぞれ2次メッシュの構成要素と一致する
+    ため）。2次メッシュ用に別の行・列インデックス計算を持つ必要はない。
+    """
+    return sorted({code[:6] for code in mesh3_codes_in_bbox(min_lat, max_lat, min_lon, max_lon)})
+
+
 def target_mesh_codes() -> list[str]:
     """対象範囲（正方形bbox）と交差する3次メッシュコードの一覧を返す。"""
     return mesh3_codes_in_bbox(*target_bbox())

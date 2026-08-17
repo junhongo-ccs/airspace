@@ -54,6 +54,12 @@ HEIGHT_UNKNOWN_SENTINEL_MAX = -9000.0
 _OUTPUT_DIR = _REPO_ROOT / "viewer" / "src" / "data" / "plateau" / "bldg"
 
 
+# 小数点以下7桁（赤道上で約1.1cm）に丸める。元データはdouble精度の丸め誤差込みで
+# 15桁前後の意味のない精度を持っており、そのまま出力すると座標1点あたり十数バイト
+# 無駄になる（2026-08-17、土地利用・洪水浸水の抽出で出力サイズが肥大化したため導入）。
+_COORD_DECIMALS = 7
+
+
 def _parse_pos_list_ring(pos_list_text: str) -> list[list[float]]:
     """`gml:posList`（"lat lon z lat lon z ..."）をGeoJSON用[[lon, lat], ...]へ変換する。
 
@@ -65,7 +71,7 @@ def _parse_pos_list_ring(pos_list_text: str) -> list[list[float]]:
     ring = []
     for i in range(0, len(values), 3):
         lat, lon = values[i], values[i + 1]
-        ring.append([lon, lat])
+        ring.append([round(lon, _COORD_DECIMALS), round(lat, _COORD_DECIMALS)])
     return ring
 
 
