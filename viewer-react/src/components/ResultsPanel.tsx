@@ -32,6 +32,16 @@ const GROUP_ORDER: GroundFeatureGroup[] = ['impact', 'opportunity', 'landuse'];
 export default function ResultsPanel({ queryResult, showProhibitedAreas }: ResultsPanelProps) {
   const [queryExpanded, setQueryExpanded] = useState(true);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
+  // 判定詳細内の入れ子アコーディオン（航路への影響/航路活用の可能性/土地利用）。
+  // 既定は折りたたみ。上の概要ブロックで区分ごとの交差状況は分かるため、
+  // 内訳を見たい区分だけ開く想定。
+  const [expandedGroups, setExpandedGroups] = useState<Record<GroundFeatureGroup, boolean>>({
+    impact: false,
+    opportunity: false,
+    landuse: false,
+  });
+  const toggleGroup = (group: GroundFeatureGroup) =>
+    setExpandedGroups((prev) => ({ ...prev, [group]: !prev[group] }));
 
   const features = queryResult.features ?? [];
   const nearbySummary = queryResult.nearbySummary ?? [];
@@ -173,61 +183,69 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
               </div>
             )}
 
+            {/* 判定詳細内の入れ子アコーディオン。DID地区（ジオメトリを持たず簡易表現の
+                飛行禁止区域）は区分としては「航路への影響」に含まれるため、独立の
+                見出しにはせずimpactグループの中に加える。 */}
             {routeQueried &&
               GROUP_ORDER.map((group) => {
                 const groupFeatures = features.filter((f) => f.group === group);
                 const groupSummaries = nearbySummary.filter((s) => s.group === group);
-                if (groupFeatures.length === 0 && groupSummaries.length === 0) return null;
+                const groupProhibitedAreas =
+                  group === 'impact' && showProhibitedAreas ? (queryResult.prohibitedAreas ?? []) : [];
+                if (
+                  groupFeatures.length === 0 &&
+                  groupSummaries.length === 0 &&
+                  groupProhibitedAreas.length === 0
+                ) {
+                  return null;
+                }
+                const isOpen = expandedGroups[group];
                 return (
-                  <div key={group}>
-                    <div className="font-semibold text-text-primary text-xs mb-1">
-                      {GROUP_LABELS[group]}
-                    </div>
-                    {/* 6-12: 土砂災害・洪水浸水（opportunityグループ）は区域データで
-                        あって発災状況や飛行禁止の確定判断ではないことを明記する。
-                        行ごとの繰り返しではなく、グループ見出しに1回だけ添える。 */}
-                    {group === 'opportunity' && queryResult.landslideFloodDisclaimer && (
-                      <p className="text-xs text-status-warn mb-2">
-                        {queryResult.landslideFloodDisclaimer}
-                      </p>
+                  <div key={group} className="border border-bg-table-head rounded overflow-hidden">
+                    <button
+                      onClick={() => toggleGroup(group)}
+                      className="w-full px-3 py-2 flex items-center justify-between hover:bg-bg-panel transition-colors text-left"
+                    >
+                      <span className="font-semibold text-text-primary text-xs">{GROUP_LABELS[group]}</span>
+                      <span className="text-text-secondary text-xs">{isOpen ? '−' : '+'}</span>
+                    </button>
+                    {isOpen && (
+                      <div className="px-3 py-2 border-t border-bg-table-head bg-bg-panel">
+                        {/* 6-12: 土砂災害・洪水浸水（opportunityグループ）は区域データで
+                            あって発災状況や飛行禁止の確定判断ではないことを明記する。
+                            行ごとの繰り返しではなく、グループ見出しに1回だけ添える。 */}
+                        {group === 'opportunity' && queryResult.landslideFloodDisclaimer && (
+                          <p className="text-xs text-status-warn mb-2">
+                            {queryResult.landslideFloodDisclaimer}
+                          </p>
+                        )}
+                        <ul className="space-y-1">
+                          {groupFeatures.map((f) => (
+                            <li key={`feature-${f.id}`} className="text-text-primary">
+                              <span className="text-text-secondary">[{LAYER_LABELS[f.layer] ?? f.layer}]</span>{' '}
+                              {f.intersect}
+                            </li>
+                          ))}
+                          {groupSummaries.map((s) => (
+                            <li
+                              key={`summary-${s.layer}-${s.class_label ?? 'none'}`}
+                              className="text-text-secondary"
+                            >
+                              <span>[{LAYER_LABELS[s.layer] ?? s.layer}]</span> {s.sentence}
+                            </li>
+                          ))}
+                          {groupProhibitedAreas.map((a) => (
+                            <li key={`prohibited-${a.id}`} className="text-text-primary">
+                              <span className="text-text-secondary">[DID地区]</span> {a.name ?? a.id}:{' '}
+                              {a.intersect ?? '未検証'}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
-                    <ul className="space-y-1">
-                      {groupFeatures.map((f) => (
-                        <li key={`feature-${f.id}`} className="text-text-primary">
-                          <span className="text-text-secondary">[{LAYER_LABELS[f.layer] ?? f.layer}]</span>{' '}
-                          {f.intersect}
-                        </li>
-                      ))}
-                      {groupSummaries.map((s) => (
-                        <li
-                          key={`summary-${s.layer}-${s.class_label ?? 'none'}`}
-                          className="text-text-secondary"
-                        >
-                          <span>[{LAYER_LABELS[s.layer] ?? s.layer}]</span> {s.sentence}
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 );
               })}
-
-            {/* DID地区（人口集中地区）等の飛行禁止区域。ジオメトリを持たないため
-                交差判定は簡易表現になる（既存挙動を維持）。 */}
-            {routeQueried && showProhibitedAreas && (queryResult.prohibitedAreas?.length ?? 0) > 0 && (
-              <div>
-                <div className="font-semibold text-text-primary text-xs mb-1">
-                  {GROUP_LABELS.impact}（飛行禁止区域）
-                </div>
-                <ul className="space-y-1">
-                  {queryResult.prohibitedAreas!.map((a) => (
-                    <li key={`prohibited-${a.id}`} className="text-text-primary">
-                      <span className="text-text-secondary">[DID地区]</span> {a.name ?? a.id}:{' '}
-                      {a.intersect ?? '未検証'}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
 
             {routeQueried && (
               <div className="pt-2 border-t border-bg-table-head text-xs">
