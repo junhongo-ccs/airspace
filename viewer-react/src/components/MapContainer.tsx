@@ -378,6 +378,22 @@ export default function MapContainer({
     });
   }, [routeData, showRoute, styleReady]);
 
+  // 航路登録直後、始点・終点の中間地点を地図中心へ移動する。登録はできているのに
+  // 地図上のどこにあるか分からない、というユーザー指摘への対応。依存配列に
+  // showRouteを含めないため、レイヤーOFF/ONの切り替えでは再センタリングしない
+  // （routeDataはApp.tsx側でuseMemo化済みのため、登録操作以外の再レンダリングでは
+  // 参照が変わらずこのeffectは発火しない）。
+  useEffect(() => {
+    if (!map.current || !styleReady || !routeData) return;
+    map.current.flyTo({
+      center: [
+        (routeData.startLon + routeData.endLon) / 2,
+        (routeData.startLat + routeData.endLat) / 2,
+      ],
+      essential: true,
+    });
+  }, [routeData, styleReady]);
+
   // 建物フットプリントを描画（6-6: 表示範囲bboxで取得したGeoJSONをそのまま使う。
   // 座標は既にGeoJSON標準の[lon, lat]順のため変換不要）。
   //

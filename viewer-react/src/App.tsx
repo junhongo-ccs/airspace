@@ -328,6 +328,15 @@ function App() {
   const routeRegistered =
     queryResult.status === 'success' || queryResult.status === 'partial';
 
+  // layerVisibility・groundFeaturesByLayer（2026-08-17）と同じ理由で、この参照を
+  // 安定させる。ここが毎回新規オブジェクトだと、登録操作と無関係な再レンダリング
+  // （レイヤーOFF/ON等）のたびにMapContainer側の航路描画effect・地図中心移動effectが
+  // 無駄に再発火してしまう。
+  const routeData = useMemo(
+    () => (routeRegistered ? { startLat, startLon, endLat, endLon } : null),
+    [routeRegistered, startLat, startLon, endLat, endLon]
+  );
+
   return (
     <div className="flex flex-col h-screen bg-bg-app">
       {/* Main content */}
@@ -366,9 +375,7 @@ function App() {
         {/* Map area */}
         <div className="flex-1 flex flex-col">
           <MapContainer
-            routeData={
-              routeRegistered ? { startLat, startLon, endLat, endLon } : null
-            }
+            routeData={routeData}
             showRoute={showRoute}
             buildingFeatures={plateauBuildings}
             showBuildings={showBuildings}
