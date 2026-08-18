@@ -18,6 +18,24 @@
     font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
     font-size: 0.875rem;
   }
+
+  /* 判定詳細の入れ子アコーディオン用。建物は1件ずつの表示が最大1500件超になり得る
+     （集約は未実装、進捗ログ参照）ため、幅の狭いスクロールバー付きの領域に収めて
+     ページ全体が縦に伸び続けるのを防ぐ（ユーザー指示 2026-08-18）。 */
+  .thin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.text.secondary') theme('colors.bg.table-head');
+  }
+  .thin-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .thin-scrollbar::-webkit-scrollbar-track {
+    background: theme('colors.bg.table-head');
+  }
+  .thin-scrollbar::-webkit-scrollbar-thumb {
+    background: theme('colors.text.secondary');
+    border-radius: 9999px;
+  }
 }
 
 .maplibregl-canvas-container {

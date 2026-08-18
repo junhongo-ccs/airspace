@@ -245,7 +245,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                             {queryResult.landslideFloodDisclaimer}
                           </p>
                         )}
-                        <ul className="space-y-1">
+                        <ul className="space-y-1 max-h-64 overflow-y-auto thin-scrollbar pr-1">
                           {buildingFeatures.map((f) => (
                             <li key={`feature-${f.id}`} className="text-text-primary">
                               <span className="text-text-secondary">[{LAYER_LABELS[f.layer] ?? f.layer}]</span>{' '}
