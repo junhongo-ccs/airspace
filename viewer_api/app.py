@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from fastapi import FastAPI, HTTPException  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
-from pydantic import BaseModel  # noqa: E402
+from pydantic import BaseModel, Field  # noqa: E402
 
 from viewer.src.altitude import (  # noqa: E402
     evaluate_agl_legal_limit,
@@ -114,30 +114,30 @@ def _client() -> DigitalTwinApiClient:
 
 
 class RegisterRouteRequest(BaseModel):
-    start_latitude: float
-    start_longitude: float
-    end_latitude: float
-    end_longitude: float
-    altitude_m: float
+    start_latitude: float = Field(ge=-90, le=90, allow_inf_nan=False)
+    start_longitude: float = Field(ge=-180, le=180, allow_inf_nan=False)
+    end_latitude: float = Field(ge=-90, le=90, allow_inf_nan=False)
+    end_longitude: float = Field(ge=-180, le=180, allow_inf_nan=False)
+    altitude_m: float = Field(ge=0, allow_inf_nan=False)
     name: str = "react-route"
 
 
 class QueryFeaturesRequest(BaseModel):
-    start_latitude: float
-    start_longitude: float
-    end_latitude: float
-    end_longitude: float
-    margin_degrees: float = 0.01
+    start_latitude: float = Field(ge=-90, le=90, allow_inf_nan=False)
+    start_longitude: float = Field(ge=-180, le=180, allow_inf_nan=False)
+    end_latitude: float = Field(ge=-90, le=90, allow_inf_nan=False)
+    end_longitude: float = Field(ge=-180, le=180, allow_inf_nan=False)
+    margin_degrees: float = Field(default=0.01, ge=0, allow_inf_nan=False)
     # 判定詳細（AGL 150m判定・建物垂直判定）に使う。省略時は判定を行わない。
-    altitude_m: float | None = None
+    altitude_m: float | None = Field(default=None, ge=0, allow_inf_nan=False)
 
 
 class QueryProhibitedAreasRequest(BaseModel):
-    start_latitude: float
-    start_longitude: float
-    end_latitude: float
-    end_longitude: float
-    margin_degrees: float = 0.01
+    start_latitude: float = Field(ge=-90, le=90, allow_inf_nan=False)
+    start_longitude: float = Field(ge=-180, le=180, allow_inf_nan=False)
+    end_latitude: float = Field(ge=-90, le=90, allow_inf_nan=False)
+    end_longitude: float = Field(ge=-180, le=180, allow_inf_nan=False)
+    margin_degrees: float = Field(default=0.01, ge=0, allow_inf_nan=False)
 
 
 # 実APIのDID地区（人口集中地区）・飛行禁止区域はポリゴン座標を返さない

@@ -264,7 +264,11 @@ export async function getBuildingsInBbox(
   minLat: number,
   maxLat: number,
   minLon: number,
-  maxLon: number
+  maxLon: number,
+  // 表示範囲を素早く動かした際、後から解決した古いリクエストが新しい表示範囲の
+  // 結果を上書きしないよう、呼び出し側（App.tsx）が新しいリクエストを開始する
+  // 前に古いリクエストを中断できるようにする（2026-08-18のレビュー指摘対応）。
+  signal?: AbortSignal
 ): Promise<BboxFeatureResult<PlateauBuildingFeature>> {
   try {
     const params = new URLSearchParams({
@@ -273,13 +277,19 @@ export async function getBuildingsInBbox(
       min_lon: String(minLon),
       max_lon: String(maxLon),
     });
-    const response = await fetch(`${BFF_BASE}/buildings?${params.toString()}`);
+    const response = await fetch(`${BFF_BASE}/buildings?${params.toString()}`, { signal });
     if (!response.ok) {
       throw new Error(await describeError(response));
     }
     const data = await response.json();
     return { features: data.data || [], meta: parseDatasetMeta(data.meta) };
   } catch (error) {
+    // 中断（AbortError）は呼び出し側が意図して起こした通常の動作のため、
+    // 実際の取得失敗と違いコンソールへは出さない。呼び出し側は
+    // signal.abortedを見て、中断時はこの戻り値（空配列）を使わない。
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return { features: [], meta: null };
+    }
     // 参照レイヤの取得失敗は航路登録・照会を妨げない。空配列を返し、表示だけを省略する。
     console.error('Failed to fetch buildings in bbox:', error);
     return { features: [], meta: null };
@@ -313,7 +323,9 @@ export async function getGroundFeaturesInBbox(
   minLat: number,
   maxLat: number,
   minLon: number,
-  maxLon: number
+  maxLon: number,
+  // getBuildingsInBboxと同じ理由（呼び出し側が古いリクエストを中断できるように）。
+  signal?: AbortSignal
 ): Promise<BboxFeatureResult<PlateauGroundFeature>> {
   try {
     const params = new URLSearchParams({
@@ -323,13 +335,16 @@ export async function getGroundFeaturesInBbox(
       min_lon: String(minLon),
       max_lon: String(maxLon),
     });
-    const response = await fetch(`${BFF_BASE}/ground_features_bbox?${params.toString()}`);
+    const response = await fetch(`${BFF_BASE}/ground_features_bbox?${params.toString()}`, { signal });
     if (!response.ok) {
       throw new Error(await describeError(response));
     }
     const data = await response.json();
     return { features: data.data || [], meta: parseDatasetMeta(data.meta) };
   } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return { features: [], meta: null };
+    }
     console.error(`Failed to fetch ground features (${layer}) in bbox:`, error);
     return { features: [], meta: null };
   }

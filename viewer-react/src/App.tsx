@@ -117,6 +117,11 @@ function App() {
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   const boundsFetchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const groundFeaturesFetchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // 表示範囲を素早く動かした際、後から解決した古いリクエストが新しい表示範囲の
+  // 結果で上書きしてしまう問題への対応（2026-08-18のレビュー指摘）。次のeffect実行が
+  // 開始する前のクリーンアップで、直前に発行したリクエストをここ経由で中断する。
+  const buildingsFetchControllerRef = useRef<AbortController | null>(null);
+  const groundFeaturesFetchControllerRef = useRef<AbortController | null>(null);
   // 直近に実際取得した（バッファ込みの）bbox。次のmapBoundsがこの範囲に収まって
   // いれば、表示中のデータで足りるため取得自体をスキップする。
   const lastFetchedBuildingsBoundsRef = useRef<MapBounds | null>(null);
@@ -164,18 +169,25 @@ function App() {
     boundsFetchTimer.current = setTimeout(() => {
       const fetchBounds = padBounds(mapBounds, VIEWPORT_BUFFER_RATIO);
       lastFetchedBuildingsBoundsRef.current = fetchBounds;
+      const controller = new AbortController();
+      buildingsFetchControllerRef.current = controller;
       void getBuildingsInBbox(
         fetchBounds.minLat,
         fetchBounds.maxLat,
         fetchBounds.minLon,
-        fetchBounds.maxLon
+        fetchBounds.maxLon,
+        controller.signal
       ).then(({ features, meta }) => {
+        // 中断済み（＝この後により新しい表示範囲のリクエストが発行済み）なら、
+        // 古い結果で状態を上書きしない。
+        if (controller.signal.aborted) return;
         setPlateauBuildings(features);
         if (meta) setDatasetMeta(meta);
       });
     }, BOUNDS_FETCH_DEBOUNCE_MS);
     return () => {
       if (boundsFetchTimer.current) clearTimeout(boundsFetchTimer.current);
+      buildingsFetchControllerRef.current?.abort();
     };
   }, [showBuildings, mapBounds]);
 
@@ -229,6 +241,8 @@ function App() {
     groundFeaturesFetchTimer.current = setTimeout(() => {
       const fetchBounds = padBounds(mapBounds, VIEWPORT_BUFFER_RATIO);
       lastFetchedGroundFeaturesBoundsRef.current = { bounds: fetchBounds, layerVisibilityKey };
+      const controller = new AbortController();
+      groundFeaturesFetchControllerRef.current = controller;
       void Promise.all(
         enabledLayers.map((layer) =>
           getGroundFeaturesInBbox(
@@ -236,10 +250,12 @@ function App() {
             fetchBounds.minLat,
             fetchBounds.maxLat,
             fetchBounds.minLon,
-            fetchBounds.maxLon
+            fetchBounds.maxLon,
+            controller.signal
           ).then((result) => [layer, result] as const)
         )
       ).then((results) => {
+        if (controller.signal.aborted) return;
         setGroundFeaturesByLayer((prev) => {
           const next = { ...prev };
           for (const [layer, { features }] of results) next[layer] = features;
@@ -251,6 +267,7 @@ function App() {
     }, BOUNDS_FETCH_DEBOUNCE_MS);
     return () => {
       if (groundFeaturesFetchTimer.current) clearTimeout(groundFeaturesFetchTimer.current);
+      groundFeaturesFetchControllerRef.current?.abort();
     };
     // layerVisibilityKeyがON/OFFの組み合わせを表す安定した文字列なので、これを
     // 依存にしてlayerVisibilityオブジェクト自体（毎レンダー新規生成）は依存に入れない。
