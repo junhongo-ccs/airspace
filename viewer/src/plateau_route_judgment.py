@@ -9,7 +9,10 @@
 建物は既存のAGL・建物高比較ロジック（`altitude.py`のevaluate_building_vertical）を
 そのまま使う（改善タスク6-11「建物は既存のAGLと建物高の比較ロジックを維持する」）。
 道路・土砂災害・洪水浸水・土地利用は、分類・外形が取得できた地物だけを対象に、
-水平方向の重なり（交差）または近接（bboxのmargin範囲内）を判定する。
+水平方向の重なり（交差）または近接（bboxのmargin範囲内）を判定する。交差判定は
+`geometry.py`の線分×ポリゴン実交差（穴を考慮した内包判定つき）で行う。bbox同士の
+重なりは事前フィルタとしてのみ使い、交差の最終判定には使わない
+（2026-08-18：斜めの航路でbboxだけだと誤検知しうるとのレビュー指摘への対応）。
 
 6-13の区分（「航路への影響」/「航路活用の可能性」）をGROUP_*として結果に付与する。
 土砂災害・洪水浸水（GROUP_OPPORTUNITY）には、区域データであって発災状況や飛行禁止の
@@ -21,6 +24,7 @@
 from __future__ import annotations
 
 from .altitude import evaluate_building_vertical
+from .geometry import segment_intersects_geometry
 from .plateau_buildings import get_buildings_in_bbox
 from .plateau_ground_features import get_ground_features_in_bbox
 
@@ -129,6 +133,13 @@ def judge_route_features(
         max(start_lat, end_lat),
         max(start_lon, end_lon),
     )
+    # 実交差判定用（geometry.pyはGeoJSON標準の[lon, lat]順）。2026-08-18のレビュー
+    # 指摘：bbox同士の重なりだけでは、斜めの航路で実際には通らない地物も
+    # 「重なっています」と誤判定しうる。bboxはまず候補を絞る安価な事前フィルタとして
+    # 残し（多くの非交差地物をこの時点で除外できる）、残った候補だけ実際の線分×
+    # ポリゴン交差判定にかける。
+    route_start = (start_lon, start_lat)
+    route_end = (end_lon, end_lat)
 
     intersecting: list[dict] = []
     nearby_counts: dict[tuple[str, str, str | None], int] = {}
@@ -141,7 +152,9 @@ def judge_route_features(
     for f in buildings:
         f_bbox = _polygon_bbox(f["geometry"])
         height_m = f["properties"].get("height_m")
-        if _bbox_overlap(f_bbox, exact_bbox):
+        if _bbox_overlap(f_bbox, exact_bbox) and segment_intersects_geometry(
+            route_start, route_end, f["geometry"]
+        ):
             intersecting.append(
                 {
                     "id": f["id"],
@@ -161,7 +174,9 @@ def judge_route_features(
             f_bbox = _polygon_bbox(f["geometry"])
             props = f["properties"]
             class_label = props.get("class_label")
-            if _bbox_overlap(f_bbox, exact_bbox):
+            if _bbox_overlap(f_bbox, exact_bbox) and segment_intersects_geometry(
+                route_start, route_end, f["geometry"]
+            ):
                 intersecting.append(
                     {
                         "id": f["id"],
