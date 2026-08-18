@@ -16,13 +16,14 @@ from __future__ import annotations
 
 import os
 import sys
+import time
 from pathlib import Path
 
 # Render では repo ルートが /opt/render/project/src。viewer パッケージを解決できるよう、
 # PYTHONPATH に依存せずここでも repo ルートを sys.path に入れておく。
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from fastapi import FastAPI, HTTPException  # noqa: E402
+from fastapi import FastAPI, HTTPException, Request  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from pydantic import BaseModel, Field  # noqa: E402
 
@@ -49,10 +50,27 @@ from viewer.src.plateau_ground_features import (  # noqa: E402
 app = FastAPI(title="Airspace Viewer BFF API")
 
 # CORS: React（airspace-viewer-react）からのブラウザ直叩きを許可する。
-# PoC のため全オリジン許可。公開範囲を絞る段階でホワイトリスト化する（仕様書§9）。
+# 2026-08-18のレビュー指摘（全オリジン許可はブラウザ経由の第三者フォーム登録を
+# 防げない）を受け、既知のReactフロントエンドのオリジンのみ許可するホワイトリスト
+# 方式に変更した（仕様書§9）。ローカル開発・Render本番のURLを既定値とし、
+# 変更があった場合や追加のプレビューURL等が必要な場合はALLOWED_ORIGINS
+# （カンマ区切り）で上書きできるようにする。
+_DEFAULT_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "https://airspace-viewer-react.onrender.com",
+]
+
+
+def _allowed_origins() -> list[str]:
+    raw = os.environ.get("ALLOWED_ORIGINS")
+    if raw:
+        return [origin.strip() for origin in raw.split(",") if origin.strip()]
+    return _DEFAULT_ALLOWED_ORIGINS
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins(),
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -64,6 +82,29 @@ app.add_middleware(
 # 次のリクエストで読めない」挙動になる。あくまでローカル確認用で、
 # ワーカー間では共有されない（Render は WEB_CONCURRENCY=1）。
 _MOCK_STORE: dict = {}
+
+# /register_route の簡易レート制限（2026-08-18のレビュー指摘：認証なしで誰でも
+# 呼べるため、無制限だと第三者が航路を大量登録しDB汚染・Laravel API消費に
+# つながる）。IPごとに固定ウィンドウでカウントするだけの単純な実装で、
+# _MOCK_STOREと同じくプロセス内メモリのみ（Renderの単一ワーカー構成が前提、
+# 複数ワーカーやRedis等の共有ストアへの拡張はPoCの範囲外とする）。
+_RATE_LIMIT_WINDOW_SECONDS = 60.0
+_RATE_LIMIT_MAX_REQUESTS = 20
+_rate_limit_hits: dict[str, list[float]] = {}
+
+
+def _enforce_rate_limit(client_key: str) -> None:
+    now = time.monotonic()
+    window_start = now - _RATE_LIMIT_WINDOW_SECONDS
+    hits = [t for t in _rate_limit_hits.get(client_key, []) if t >= window_start]
+    if len(hits) >= _RATE_LIMIT_MAX_REQUESTS:
+        raise HTTPException(
+            status_code=429,
+            detail=f"リクエストが多すぎます（{_RATE_LIMIT_WINDOW_SECONDS:.0f}秒あたり上限"
+            f"{_RATE_LIMIT_MAX_REQUESTS}件）。しばらく待ってから再試行してください。",
+        )
+    hits.append(now)
+    _rate_limit_hits[client_key] = hits
 
 
 def _base_url() -> str:
@@ -269,8 +310,10 @@ async def connection_status_endpoint():
 
 
 @app.post("/register_route")
-async def register_route_endpoint(request: RegisterRouteRequest):
+async def register_route_endpoint(request: RegisterRouteRequest, http_request: Request):
     """航路を登録する。戻り値の data.id が航路の識別子。"""
+    client_ip = http_request.client.host if http_request.client else "unknown"
+    _enforce_rate_limit(client_ip)
     try:
         record = _client().register_route(
             name=request.name,

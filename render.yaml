@@ -36,6 +36,12 @@ services:
       # 「疎通できているように見えるが実データではない」状態になるため明示する。
       - key: MOCK_MODE
         value: "false"
+      # CORS許可オリジン。app.pyの既定値（airspace-viewer-react.onrender.com）と
+      # 同じ内容だが、コード変更なしで確認・変更できるよう明示的に設定する
+      # （2026-08-18のレビュー指摘：CORS全許可はブラウザ経由の第三者フォーム登録を
+      # 防げないため、既知のReactフロントエンドのオリジンのみに制限した）。
+      - key: ALLOWED_ORIGINS
+        value: https://airspace-viewer-react.onrender.com
       # airspace-drone-web（Private Service）への接続情報。
       - key: DIGITAL_TWIN_HOST
         fromService:
