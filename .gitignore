@@ -13,3 +13,7 @@ Thumbs.db
 
 # 調査用の外部リポジトリクローン（各リポジトリのライセンス下にあるため本リポジトリには含めない）
 _analysis/
+
+# Claude Codeのgit worktree（別ブランチの作業ディレクトリそのものであり、本体リポジトリへの
+# 二重取り込みを防ぐため対象外とする。個々のworktreeは各自のブランチでpushする）
+.claude/worktrees/
