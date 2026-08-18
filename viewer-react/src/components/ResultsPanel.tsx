@@ -169,7 +169,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                 })}
                 {showProhibitedAreas && (queryResult.prohibitedAreas?.length ?? 0) > 0 && (
                   <div className="flex justify-between gap-4">
-                    <span className="text-text-secondary">DID地区:</span>
+                    <span className="text-text-secondary">人口集中地区（飛行禁止）:</span>
                     <span className="text-text-primary font-medium">
                       {queryResult.prohibitedAreas!.length}件
                     </span>
@@ -231,7 +231,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                           ))}
                           {groupProhibitedAreas.map((a) => (
                             <li key={`prohibited-${a.id}`} className="text-text-primary">
-                              <span className="text-text-secondary">[DID地区]</span> {a.name ?? a.id}:{' '}
+                              <span className="text-text-secondary">[人口集中地区（飛行禁止）]</span> {a.name ?? a.id}:{' '}
                               {a.intersect ?? '未検証'}
                             </li>
                           ))}

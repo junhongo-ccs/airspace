@@ -286,7 +286,7 @@ export default function SettingsPanel({
                   onChange={(e) => setShowProhibitedAreas(e.target.checked)}
                   className="w-4 h-4 accent-action-primary"
                 />
-                <span className="text-sm text-text-primary">DID地区</span>
+                <span className="text-sm text-text-primary">人口集中地区（飛行禁止）</span>
                 <span className="text-xs text-text-secondary">（秩父市のみ地図描画対応）</span>
               </label>
             </div>

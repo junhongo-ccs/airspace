@@ -618,7 +618,7 @@ export default function MapContainer({
           <LegendRow color="#0B3D75" label="航路" />
           <LegendRow color="#8A96A0" label="建物" />
           <LegendRow color="#5C6670" label="道路" />
-          <LegendRow color="#E8380D" label="DID地区" hatch="cross" />
+          <LegendRow color="#E8380D" label="人口集中地区（飛行禁止）" hatch="cross" />
         </div>
 
         <div>
