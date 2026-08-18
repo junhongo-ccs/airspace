@@ -38,9 +38,7 @@ interface AggregatedIntersect {
 
 // 交差する地物（建物以外）は、取得順（3次メッシュのグリッド走査順）が航路の
 // 進行方向とは無関係なため、順序を保った表示ではなく（レイヤ,交差文言）単位で
-// 件数集約する（ユーザー指示 2026-08-18）。建物は1件ごとに実測の高さ値が入り
-// 集約してもほぼ揃わないため対象外とし、従来どおり1件ずつ表示する
-// （大量表示になる課題は既知、次回対応）。
+// 件数集約する（ユーザー指示 2026-08-18）。
 function aggregateNonBuildingIntersects(features: GroundFeature[]): AggregatedIntersect[] {
   const order: string[] = [];
   const byKey = new Map<string, AggregatedIntersect>();
@@ -56,6 +54,38 @@ function aggregateNonBuildingIntersects(features: GroundFeature[]): AggregatedIn
     }
   }
   return order.map((key) => byKey.get(key)!);
+}
+
+// 建物は`evaluate_building_vertical`（altitude.py）が「要確認」「交差なし」「未検証」の
+// いずれかで始まる文言を返す。「要確認」（AGLと建物高が近く実際の運航判断に関わる少数）は
+// 従来どおり1件ずつ高さ付きで残し、「交差なし」（大半を占める、個別の高さを見る意味が薄い）
+// は高さを落として1行に集約する。「未検証（高さ情報なし）」は元々全件同一文言のため、
+// 上のaggregateNonBuildingIntersectsと同じキー方式で自然に1行へ集約される
+// （ユーザー決定 2026-08-18：3区分のうち要確認だけ個別維持するハイブリッド案）。
+function splitBuildingIntersects(buildingFeatures: GroundFeature[]): {
+  critical: GroundFeature[];
+  aggregated: AggregatedIntersect[];
+} {
+  const critical: GroundFeature[] = [];
+  const rest: GroundFeature[] = [];
+  for (const f of buildingFeatures) {
+    (f.intersect.startsWith('要確認') ? critical : rest).push(f);
+  }
+  const order: string[] = [];
+  const byKey = new Map<string, AggregatedIntersect>();
+  for (const f of rest) {
+    const isNoIntersect = f.intersect.startsWith('交差なし');
+    const key = isNoIntersect ? 'no-intersect' : f.intersect;
+    const sentence = isNoIntersect ? '交差なし（高さ方向）' : f.intersect;
+    const existing = byKey.get(key);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      byKey.set(key, { key, layer: 'building', sentence, count: 1 });
+      order.push(key);
+    }
+  }
+  return { critical, aggregated: order.map((key) => byKey.get(key)!) };
 }
 
 export default function ResultsPanel({ queryResult, showProhibitedAreas }: ResultsPanelProps) {
@@ -214,6 +244,8 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
               GROUP_ORDER.map((group) => {
                 const groupFeatures = features.filter((f) => f.group === group);
                 const buildingFeatures = groupFeatures.filter((f) => f.layer === 'building');
+                const { critical: criticalBuildings, aggregated: aggregatedBuildings } =
+                  splitBuildingIntersects(buildingFeatures);
                 const aggregatedIntersects = aggregateNonBuildingIntersects(groupFeatures);
                 const groupSummaries = nearbySummary.filter((s) => s.group === group);
                 const groupProhibitedAreas =
@@ -246,10 +278,16 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                           </p>
                         )}
                         <ul className="space-y-1 max-h-64 overflow-y-auto thin-scrollbar pr-1">
-                          {buildingFeatures.map((f) => (
+                          {criticalBuildings.map((f) => (
                             <li key={`feature-${f.id}`} className="text-text-primary">
                               <span className="text-text-secondary">[{LAYER_LABELS[f.layer] ?? f.layer}]</span>{' '}
                               {f.intersect}
+                            </li>
+                          ))}
+                          {aggregatedBuildings.map((a) => (
+                            <li key={`intersect-${a.key}`} className="text-text-primary">
+                              <span className="text-text-secondary">[{LAYER_LABELS[a.layer] ?? a.layer}]</span>{' '}
+                              {a.sentence}（{a.count}件）
                             </li>
                           ))}
                           {aggregatedIntersects.map((a) => (
