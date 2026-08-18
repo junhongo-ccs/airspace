@@ -380,8 +380,12 @@ function App() {
             datasetMeta={datasetMeta}
           />
 
-          {/* Bottom results panel */}
-          <ResultsPanel queryResult={queryResult} showProhibitedAreas={showProhibitedAreas} />
+          {/* Bottom results panel: 「航路を登録して周辺データを照会」を押すまでは
+              パネル自体を出さない（ユーザー指示 2026-08-18）。押下でqueryResult.status
+              がidleから変わるので、それを表示条件にする。 */}
+          {queryResult.status !== 'idle' && (
+            <ResultsPanel queryResult={queryResult} showProhibitedAreas={showProhibitedAreas} />
+          )}
         </div>
       </div>
     </div>

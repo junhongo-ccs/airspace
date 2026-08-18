@@ -70,11 +70,6 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
         </button>
         {queryExpanded && (
           <div className="px-6 py-4 bg-bg-app text-sm text-text-secondary">
-            {queryResult.status === 'idle' && (
-              <p className="text-text-secondary">
-                「航路を登録して周辺データを照会」を押すと開始します
-              </p>
-            )}
             {queryResult.status === 'loading' && (
               <p className="text-status-idle">実行中…</p>
             )}
