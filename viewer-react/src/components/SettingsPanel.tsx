@@ -233,6 +233,17 @@ export default function SettingsPanel({
           </div>
         </div>
 
+        {/* Query button: レイヤ切り替えUIより上に配置する。会社貸与ノートPC等の
+            低解像度画面ではレイヤ一覧が長くボタンがファーストビューから完全に
+            消えていた（ユーザー報告2026-08-18）ため、座標・高度入力の直後に移動した。 */}
+        <button
+          onClick={onQuery}
+          disabled={isLoading}
+          className="w-full px-4 py-2.5 bg-action-primary text-white text-sm font-semibold rounded transition-colors hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          {isLoading ? '実行中…' : '航路を登録して周辺データを照会'}
+        </button>
+
         {/* Layer visibility */}
         <div>
           <div className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
@@ -343,15 +354,6 @@ export default function SettingsPanel({
             </label>
           </div>
         </div>
-
-        {/* Query button */}
-        <button
-          onClick={onQuery}
-          disabled={isLoading}
-          className="w-full px-4 py-2.5 bg-action-primary text-white text-sm font-semibold rounded transition-colors hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {isLoading ? '実行中…' : '航路を登録して周辺データを照会'}
-        </button>
       </div>
     </div>
   );
