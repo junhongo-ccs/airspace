@@ -82,10 +82,10 @@ export interface QueryResult {
 
 function App() {
   const [connection, setConnection] = useState<ConnectionStatus | null>(null);
-  const [startLat, setStartLat] = useState(35.9683357);
-  const [startLon, setStartLon] = useState(139.0313939);
-  const [endLat, setEndLat] = useState(35.9699357);
-  const [endLon, setEndLon] = useState(139.0333939);
+  const [startLat, setStartLat] = useState(35.975841);
+  const [startLon, setStartLon] = useState(139.065854);
+  const [endLat, setEndLat] = useState(35.988390);
+  const [endLon, setEndLon] = useState(139.046579);
   const [aglM, setAglM] = useState(100.0);
   const [showRoute, setShowRoute] = useState(true);
   const [showBuildings, setShowBuildings] = useState(true);
@@ -94,7 +94,10 @@ function App() {
   const [showRoad, setShowRoad] = useState(true);
   const [showLandslide, setShowLandslide] = useState(true);
   const [showFlood, setShowFlood] = useState(true);
-  const [showLanduse, setShowLanduse] = useState(true);
+  // 土地利用は隙間なく面を埋め尽くす描画で他レイヤより体感が重いため（2026-08-17実測、
+  // 進捗ログ参照）、初期状態は非表示にしてユーザーが必要な時だけチェックを入れる運用にする
+  // （ユーザー指示 2026-08-18）。
+  const [showLanduse, setShowLanduse] = useState(false);
   const [queryResult, setQueryResult] = useState<QueryResult>({ status: 'idle' });
   const [isLoading, setIsLoading] = useState(false);
   // 座標入力・航路登録に依存しない参照レイヤ。ルートを引いてから交差を確認する
