@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { QueryResult } from '../App';
-import type { GroundFeature, GroundFeatureGroup } from '../api/client';
+import type { GroundFeatureGroup } from '../api/client';
 
 interface ResultsPanelProps {
   queryResult: QueryResult;
@@ -28,65 +28,6 @@ const GROUP_LABELS: Record<GroundFeatureGroup, string> = {
   landuse: '土地利用（影響/活用は分類による）',
 };
 const GROUP_ORDER: GroundFeatureGroup[] = ['impact', 'opportunity', 'landuse'];
-
-interface AggregatedIntersect {
-  key: string;
-  layer: string;
-  sentence: string;
-  count: number;
-}
-
-// 交差する地物（建物以外）は、取得順（3次メッシュのグリッド走査順）が航路の
-// 進行方向とは無関係なため、順序を保った表示ではなく（レイヤ,交差文言）単位で
-// 件数集約する（ユーザー指示 2026-08-18）。
-function aggregateNonBuildingIntersects(features: GroundFeature[]): AggregatedIntersect[] {
-  const order: string[] = [];
-  const byKey = new Map<string, AggregatedIntersect>();
-  for (const f of features) {
-    if (f.layer === 'building') continue;
-    const key = `${f.layer}|${f.intersect}`;
-    const existing = byKey.get(key);
-    if (existing) {
-      existing.count += 1;
-    } else {
-      byKey.set(key, { key, layer: f.layer, sentence: f.intersect, count: 1 });
-      order.push(key);
-    }
-  }
-  return order.map((key) => byKey.get(key)!);
-}
-
-// 建物は`evaluate_building_vertical`（altitude.py）が「要確認」「交差なし」「未検証」の
-// いずれかで始まる文言を返す。「要確認」（AGLと建物高が近く実際の運航判断に関わる少数）は
-// 従来どおり1件ずつ高さ付きで残し、「交差なし」（大半を占める、個別の高さを見る意味が薄い）
-// は高さを落として1行に集約する。「未検証（高さ情報なし）」は元々全件同一文言のため、
-// 上のaggregateNonBuildingIntersectsと同じキー方式で自然に1行へ集約される
-// （ユーザー決定 2026-08-18：3区分のうち要確認だけ個別維持するハイブリッド案）。
-function splitBuildingIntersects(buildingFeatures: GroundFeature[]): {
-  critical: GroundFeature[];
-  aggregated: AggregatedIntersect[];
-} {
-  const critical: GroundFeature[] = [];
-  const rest: GroundFeature[] = [];
-  for (const f of buildingFeatures) {
-    (f.intersect.startsWith('要確認') ? critical : rest).push(f);
-  }
-  const order: string[] = [];
-  const byKey = new Map<string, AggregatedIntersect>();
-  for (const f of rest) {
-    const isNoIntersect = f.intersect.startsWith('交差なし');
-    const key = isNoIntersect ? 'no-intersect' : f.intersect;
-    const sentence = isNoIntersect ? '交差なし（高さ方向）' : f.intersect;
-    const existing = byKey.get(key);
-    if (existing) {
-      existing.count += 1;
-    } else {
-      byKey.set(key, { key, layer: 'building', sentence, count: 1 });
-      order.push(key);
-    }
-  }
-  return { critical, aggregated: order.map((key) => byKey.get(key)!) };
-}
 
 export default function ResultsPanel({ queryResult, showProhibitedAreas }: ResultsPanelProps) {
   const [queryExpanded, setQueryExpanded] = useState(true);
@@ -243,10 +184,6 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
             {routeQueried &&
               GROUP_ORDER.map((group) => {
                 const groupFeatures = features.filter((f) => f.group === group);
-                const buildingFeatures = groupFeatures.filter((f) => f.layer === 'building');
-                const { critical: criticalBuildings, aggregated: aggregatedBuildings } =
-                  splitBuildingIntersects(buildingFeatures);
-                const aggregatedIntersects = aggregateNonBuildingIntersects(groupFeatures);
                 const groupSummaries = nearbySummary.filter((s) => s.group === group);
                 const groupProhibitedAreas =
                   group === 'impact' && showProhibitedAreas ? (queryResult.prohibitedAreas ?? []) : [];
@@ -278,22 +215,10 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                           </p>
                         )}
                         <ul className="space-y-1 max-h-64 overflow-y-auto thin-scrollbar pr-1">
-                          {criticalBuildings.map((f) => (
+                          {groupFeatures.map((f) => (
                             <li key={`feature-${f.id}`} className="text-text-primary">
                               <span className="text-text-secondary">[{LAYER_LABELS[f.layer] ?? f.layer}]</span>{' '}
                               {f.intersect}
-                            </li>
-                          ))}
-                          {aggregatedBuildings.map((a) => (
-                            <li key={`intersect-${a.key}`} className="text-text-primary">
-                              <span className="text-text-secondary">[{LAYER_LABELS[a.layer] ?? a.layer}]</span>{' '}
-                              {a.sentence}（{a.count}件）
-                            </li>
-                          ))}
-                          {aggregatedIntersects.map((a) => (
-                            <li key={`intersect-${a.key}`} className="text-text-primary">
-                              <span className="text-text-secondary">[{LAYER_LABELS[a.layer] ?? a.layer}]</span>{' '}
-                              {a.sentence}（{a.count}件）
                             </li>
                           ))}
                           {groupSummaries.map((s) => (
