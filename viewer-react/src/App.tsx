@@ -375,6 +375,11 @@ function App() {
         {/* Map area */}
         <div className="flex-1 flex flex-col">
           <MapContainer
+            // 地図の初期表示位置。従来は秩父市中心付近の固定値だったが、始点・終点の
+            // デフォルト値を変更した際に無関係な位置になってしまったため、デフォルトの
+            // 始点・終点の中間地点を初期中心にする（ユーザー指示 2026-08-18、PoCのため
+            // 簡易対応）。マウント時の1回だけ使われる値なのでuseMemo等は不要。
+            initialCenter={[(startLon + endLon) / 2, (startLat + endLat) / 2]}
             routeData={routeData}
             showRoute={showRoute}
             buildingFeatures={plateauBuildings}

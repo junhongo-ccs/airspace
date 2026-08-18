@@ -34,6 +34,9 @@ interface RouteData {
 }
 
 interface MapContainerProps {
+  // 地図初期表示の中心（[lon, lat]）。マウント時の1回だけ使う（地図初期化effectの
+  // 依存配列は[]のため、以降このpropが変わっても再初期化はしない）。
+  initialCenter?: [number, number];
   routeData?: RouteData | null;
   // 左パネルの「航路」レイヤ切り替え。false のときは描画しない。
   showRoute?: boolean;
@@ -183,6 +186,7 @@ const ALL_LAYERS_VISIBLE: Record<GroundFeatureLayerKey, boolean> = {
 };
 
 export default function MapContainer({
+  initialCenter = [139.0313939, 35.9683357],
   routeData,
   showRoute = true,
   buildingFeatures = [],
@@ -205,6 +209,10 @@ export default function MapContainer({
   // 作り直すことになってしまう。refで最新値だけ追従させ、古いクロージャを避ける。
   const onBoundsChangeRef = useRef(onBoundsChange);
   onBoundsChangeRef.current = onBoundsChange;
+  // initialCenterはマウント時の1回しか使わないため、後続レンダーで値が変わっても
+  // 追従しない（onBoundsChangeRefと違い.currentを更新しない）。exhaustive-depsの
+  // 警告を避けつつ「意図的に1回だけ読む」ことを明示する目的でrefに包む。
+  const initialCenterRef = useRef(initialCenter);
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -231,7 +239,7 @@ export default function MapContainer({
           },
         ],
       },
-      center: [139.0313939, 35.9683357],
+      center: initialCenterRef.current,
       zoom: 15,
       // MapLibre が既定で付与する英語のaria-label等を日本語にする。
       locale: {
