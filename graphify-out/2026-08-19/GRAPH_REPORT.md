@@ -1,116 +1,156 @@
 # Graph Report - airspace  (2026-08-19)
 
 ## Corpus Check
-- 85 files · ~56,048 words
+- 90 files · ~57,096 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 493 nodes · 776 edges · 47 communities (24 shown, 23 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.55)
+- 902 nodes · 1191 edges · 89 communities (62 shown, 27 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.54)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `90d690d8`
+- Built from commit: `ecb048e7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - viewer_api/app.py
 - MapContainer.tsx
-- DigitalTwinApiClient
+- api_client.py
 - extract_ground_features.py
 - devDependencies
-- status_panel.py
-- altitude.py
+- results_table.py
+- query_features_endpoint
 - compilerOptions
 - compilerOptions
 - geometry.py
-- extract_buildings.py
-- graphify skill
-- _CachedRegionFile
-- plugins
-- design
-- airway-reservation
-- tsconfig.json
-- log-today
-- ODS-IS-UASL implementation research
-- DIPS 2.0
-- ODS-IS-UASL
-- project guidance
-- 秩父市周辺PLATEAU建物レイヤー改善タスク
-- 空域デジタルツイン活用・ドローン航路GIS-PoC 仕様書
+- What You Must Do When Invoked
+- What You Must Do When Invoked
 - 空域デジタルツイン活用・ドローン航路GIS-PoC 実装タスクリスト
-- 進捗ログ
-- Render deployment
+- plugins
+- 空域デジタルツインGIS Viewer デザインガイドライン
+- 実装進捗ログ
+- tsconfig.json
+- 空域デジタルツイン活用・ドローン航路GIS-PoC 仕様書
+- ドローン航路システム（ODS-IS-UASL）調査メモ
+- ODS-IS-UASL コード実装調査
+- 改善タスク：秩父市周辺PLATEAU地物レイヤーと航路影響表示の拡張
+- client.ts
+- CLAUDE.md
+- graphify reference: extra exports and benchmark
+- altitude.py
+- Streamlit Viewer（PoC）
+- graphify reference: query, path, explain
 - airspace PoC
-- Render Blueprint
-- FastAPI BFF Python Dependencies
-- Layered isometric platform illustration
-- React logo
-- Vite logo
-- React Viewer HTML Entry
-- Vite favicon
-- Social and documentation icon sprite
-- React + TypeScript + Vite README
-- Streamlit Viewer Python Dependencies
-- Streamlit Viewer README
+- reviewer.md
+- graphify reference: extra exports and benchmark
+- low-level-designer.md
+- task-check.md
+- graphify reference: add a URL and watch a folder
+- graphify reference: commit hook and native CLAUDE.md integration
+- graphify reference: incremental update and cluster-only
+- log-today.md
+- graphify reference: GitHub clone and cross-repo merge
+- graphify reference: transcribe video and audio
+- AGENTS.md
+- .codex/skills/graphify/references/extraction-spec.md
+- graphify reference: query, path, explain
+- Q: Why does DigitalTwinApiClient connect Extraction error handling to API data models?
+- graphify reference: add a URL and watch a folder
+- graphify reference: commit hook and native CLAUDE.md integration
+- graphify reference: incremental update and cluster-only
+- graphify reference: GitHub clone and cross-repo merge
+- graphify reference: transcribe video and audio
+- extraction-spec.md
+- App.tsx
+- ResultsPanel.stories.tsx
+- SettingsPanel.stories.tsx
+- package.json
+- main.ts
+- preview.tsx
+- status_panel.py
+- DigitalTwinApiClient
+- route_form.py
+- get
+- ApiError
+- dependencies
+- _client
+- get_ground_features_in_bbox
+- get_buildings_in_bbox
+- React + TypeScript + Vite
+- autoprefixer
+- oxlint
+- playwright
+- @storybook/addon-a11y
+- @storybook/addon-docs
+- @storybook/addon-vitest
+- @storybook/react-vite
+- @types/geojson
+- @types/react-dom
+- typescript
+- tailwindcss
+- vite
+- @vitejs/plugin-react
+- vitest
+- @vitest/coverage-v8
 
 ## God Nodes (most connected - your core abstractions)
 1. `DigitalTwinApiClient` - 23 edges
 2. `compilerOptions` - 18 edges
-3. `compilerOptions` - 15 edges
-4. `fetch_entry_bytes()` - 13 edges
-5. `judge_route_features()` - 12 edges
-6. `mesh3_codes_in_bbox()` - 12 edges
-7. `App()` - 11 edges
-8. `_CachedRegionFile` - 10 edges
-9. `RemoteZipIndex` - 10 edges
-10. `get_ground_features_in_bbox()` - 10 edges
+3. `空域デジタルツインGIS Viewer デザインガイドライン` - 18 edges
+4. `compilerOptions` - 15 edges
+5. `空域デジタルツイン活用・ドローン航路GIS-PoC 仕様書` - 15 edges
+6. `fetch_entry_bytes()` - 13 edges
+7. `judge_route_features()` - 12 edges
+8. `mesh3_codes_in_bbox()` - 12 edges
+9. `What You Must Do When Invoked` - 12 edges
+10. `What You Must Do When Invoked` - 12 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `query_prohibited_areas_endpoint()` --uses--> `ApiError`  [INFERRED]
   viewer_api/app.py → viewer/src/api_client.py
 - `register_route_endpoint()` --uses--> `ApiError`  [INFERRED]
   viewer_api/app.py → viewer/src/api_client.py
-- `buildings_endpoint()` --uses--> `BboxTooLargeError`  [INFERRED]
-  viewer_api/app.py → viewer/src/plateau_buildings.py
 - `query_features_endpoint()` --uses--> `BboxTooLargeError`  [INFERRED]
   viewer_api/app.py → viewer/src/plateau_buildings.py
-- `ground_features_bbox_endpoint()` --uses--> `BboxTooLargeError`  [INFERRED]
+- `query_features_endpoint()` --uses--> `BboxTooLargeError`  [INFERRED]
   viewer_api/app.py → viewer/src/plateau_ground_features.py
+- `_client()` --calls--> `DigitalTwinApiClient`  [EXTRACTED]
+  viewer_api/app.py → viewer/src/api_client.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (47 total, 23 thin omitted)
+## Communities (89 total, 27 thin omitted)
 
 ### Community 0 - "viewer_api/app.py"
-Cohesion: 0.05
-Nodes (65): BaseModel, get, post, Request, _base_url(), _bbox(), _bbox_overlap(), buildings_endpoint() (+57 more)
+Cohesion: 0.18
+Nodes (15): BaseModel, Request, _bbox(), _bbox_overlap(), _enforce_rate_limit(), query_prohibited_areas_endpoint(), QueryFeaturesRequest, QueryProhibitedAreasRequest (+7 more)
 
 ### Community 1 - "MapContainer.tsx"
-Cohesion: 0.06
-Nodes (58): react, ApiResponse, BboxFeatureResult, ConnectionStatus, describeError(), DroneRoute, getBuildingsInBbox(), getConnectionStatus() (+50 more)
+Cohesion: 0.13
+Nodes (20): ALL_LAYERS_VISIBLE, BUILDING_LAYER_IDS, BUILDING_SOURCE_IDS, EMPTY_GROUND_FEATURES, ensureDiagonalHatchPattern(), ensureHatchPattern(), GROUND_FEATURE_LAYER_KEYS, GROUND_LAYER_STYLE (+12 more)
 
-### Community 2 - "DigitalTwinApiClient"
-Cohesion: 0.05
-Nodes (46): Exception, Response, extract_building_id(), extract_prohibited_area_id(), lookup_building_footprint(), lookup_building_height(), lookup_prohibited_area_geometry(), voxelBitFileName（`flight_prohibited_area/{flightProhibitedAreaId}.json`）から… (+38 more)
+### Community 2 - "api_client.py"
+Cohesion: 0.12
+Nodes (17): extract_building_id(), extract_prohibited_area_id(), lookup_building_footprint(), lookup_prohibited_area_geometry(), voxelBitFileName（`flight_prohibited_area/{flightProhibitedAreaId}.json`）から…, flightProhibitedAreaIdから[lat, lon]の閉じたリングのリスト（MultiPolygon、…, voxelBitFileName（`.../plateau/{mesh}/{buildingId}.json`）からbuildingIdを取り出す。, buildingIdから[lat, lon]の閉じたリング（地図描画用）を返す。 (+9 more)
 
 ### Community 3 - "extract_ground_features.py"
-Cohesion: 0.08
-Nodes (53): Pattern, load_codelist(), parse_codelist(), PLATEAU CityGMLのコードリスト（`codelists/*.xml`）を読み、コード→日本語名の辞書にする。…, gml:Dictionaryのbytesから{コード値: 日本語名}を返す。, `codelists/{codelist_name}.xml`を取得してパースする。, _clip_and_collect(), _clip_edge() (+45 more)
+Cohesion: 0.05
+Nodes (66): Pattern, RawIOBase, load_codelist(), parse_codelist(), PLATEAU CityGMLのコードリスト（`codelists/*.xml`）を読み、コード→日本語名の辞書にする。…, gml:Dictionaryのbytesから{コード値: 日本語名}を返す。, `codelists/{codelist_name}.xml`を取得してパースする。, _building_to_feature() (+58 more)
 
 ### Community 4 - "devDependencies"
-Cohesion: 0.05
-Nodes (39): autoprefixer, maplibre-gl, oxlint, postcss, react, react-dom, @types/geojson, @types/node (+31 more)
+Cohesion: 0.13
+Nodes (15): @chromatic-com/storybook, postcss, storybook, @storybook/addon-mcp, @types/node, @types/react, devDependencies, @chromatic-com/storybook (+7 more)
 
-### Community 5 - "status_panel.py"
-Cohesion: 0.09
-Nodes (19): 空域デジタルツインGIS Viewer（PoC） design.md（v1.2）のレイアウト・カラー・タイポグラフィ・状態表示規定と、 `ドローン航路GIS-…, 簡易アクセスゲート。 仕様書§9「公開範囲：初期はアクセス制限を掛けた検証環境とする」に対応する。…, design.md §7, §8: 地図表示。 レイヤ色は design.md §5-3 のトークンをそのまま使用する。ただし塗りパターン…, design.md §9-1〜§9-3: API接続状態／空間ID表示／評価状態（高度基準）／PoC識別バッジ。, design.md §9-1: 左設定パネル最上部に常時表示。色だけに依存せず状態文字列を併記する。, design.md §9-2: 仕様書§5-3の高度基準統一と受入基準#9に対応する。…, design.md §9-3: 画面右上に常時表示（仕様書§6-1）。, render_altitude_verification_status() (+11 more)
+### Community 5 - "results_table.py"
+Cohesion: 0.07
+Nodes (24): DataFrame, 空域デジタルツインGIS Viewer（PoC） design.md（v1.2）のレイアウト・カラー・タイポグラフィ・状態表示規定と、 `ドローン航路GIS-…, 簡易アクセスゲート。 仕様書§9「公開範囲：初期はアクセス制限を掛けた検証環境とする」に対応する。…, design.md §7, §8: 地図表示。 レイヤ色は design.md §5-3 のトークンをそのまま使用する。ただし塗りパターン…, _bbox(), _bbox_overlap(), build_result_rows(), design.md §7・§7-1: 結果テーブル。§10-1: 空状態・エラー・処理中表示。 §4-1:… (+16 more)
 
-### Community 6 - "altitude.py"
-Cohesion: 0.12
-Nodes (22): DataFrame, evaluate_agl_legal_limit(), evaluate_building_vertical(), _load_json(), Path, 仕様書§5-3: 高度基準の統一。 前提条件（§5-3の1〜3）の記録: 1. 座標参照系・単位・時点 -…, 建物のmeasuredHeightとAGLを比較し、交差・詳細表の「交差判定」文言を返す。…, AGLが航空法上の150m高度制限に抵触するかを判定する（空間データ不要）。 (+14 more)
+### Community 6 - "query_features_endpoint"
+Cohesion: 0.25
+Nodes (7): post, query_features_endpoint(), 航路（始点・終点）周辺の建物・道路・土砂災害・洪水浸水・土地利用を判定する（6-11）。…, evaluate_agl_legal_limit(), AGLが航空法上の150m高度制限に抵触するかを判定する（空間データ不要）。, plateau_dataset_meta(), 6-6a/6-10: PLATEAU秩父市2025データセットの出典・データ時点。…
 
 ### Community 7 - "compilerOptions"
 Cohesion: 0.08
@@ -124,49 +164,193 @@ Nodes (19): node, vite.config.ts, compilerOptions, allowImportingTsExtensions, e
 Cohesion: 0.25
 Nodes (14): Point, _cross(), _on_segment(), _point_in_ring(), _point_in_rings(), 線分（航路）とGeoJSON Polygon/MultiPolygonの実交差判定。…, p・r と共線であることが分かっている点qが、線分p-r上（bbox内）にあるか。, 線分p1-p2と線分p3-p4が交差するか（端点での接触・共線上の重なりも交差とみなす）。 (+6 more)
 
-### Community 10 - "extract_buildings.py"
-Cohesion: 0.31
-Nodes (10): _building_to_feature(), _extract_building_geometry(), _extract_height_m(), extract_mesh_geojson(), main(), _parse_pos_list_ring(), Element, 改善タスク_秩父市周辺PLATEAU建物レイヤー.md 6-2: 建物データの再抽出。 PLATEAU秩父市2025のCityGML… (+2 more)
+### Community 10 - "What You Must Do When Invoked"
+Cohesion: 0.08
+Nodes (24): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+16 more)
 
-### Community 11 - "graphify skill"
-Cohesion: 0.20
-Nodes (10): project knowledge graph, Graphify add and watch reference, Graphify exports reference, Graphify extraction specification, Graphify GitHub and merge reference, Graphify hooks reference, Graphify query reference, Graphify transcription reference (+2 more)
+### Community 11 - "What You Must Do When Invoked"
+Cohesion: 0.08
+Nodes (24): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+16 more)
 
-### Community 12 - "_CachedRegionFile"
-Cohesion: 0.22
-Nodes (3): RawIOBase, _CachedRegionFile, ZIPの実サイズを保ったまま、キャッシュ済み領域だけを読める仮想ファイル。…
+### Community 12 - "空域デジタルツイン活用・ドローン航路GIS-PoC 実装タスクリスト"
+Cohesion: 0.05
+Nodes (38): 1. Blueprintを同期する, 2. 環境変数を設定する, 3. マイグレーションの確認, 4. 動作確認, 5. 既知の制約・今後の課題, airspace-drone-web, airspace-mysql, airspace-viewer (+30 more)
 
 ### Community 13 - "plugins"
 Cohesion: 0.22
 Nodes (8): oxc, typescript, warn, plugins, rules, react/only-export-components, react/rules-of-hooks, $schema
 
-### Community 14 - "design"
-Cohesion: 0.67
-Nodes (3): low-level-designer, reviewer, design
+### Community 14 - "空域デジタルツインGIS Viewer デザインガイドライン"
+Cohesion: 0.05
+Nodes (44): 10-1. 空状態・エラー・処理中, 10. フォームと操作, 11. 判断基準, 12. アクセシビリティ, 13-1. カード, 13-2. アイコン, 13. カード・アイコンの利用, 14. Streamlit実装時の許容差 (+36 more)
 
-### Community 15 - "airway-reservation"
-Cohesion: 0.67
-Nodes (3): airway-design, airway-reservation, safety-management
+### Community 15 - "実装進捗ログ"
+Cohesion: 0.05
+Nodes (39): 2026-08-05, 2026-08-06, 2026-08-06（続き）, 2026-08-06（続き・その2）, 2026-08-06（続き・その3）, 2026-08-06（続き・その4）, 2026-08-07, 2026-08-17 (+31 more)
+
+### Community 17 - "空域デジタルツイン活用・ドローン航路GIS-PoC 仕様書"
+Cohesion: 0.05
+Nodes (37): 10-1. ローカル検証, 10-2. Render配備, 10-3. フォールバックと撤退基準, 10. 配備方針, 11. 受入基準, 12. 未決定事項と事前調査項目, 13. 参照先, 14-1. 初回コードリーディングによる根拠 (+29 more)
+
+### Community 18 - "ドローン航路システム（ODS-IS-UASL）調査メモ"
+Cohesion: 0.08
+Nodes (25): 0. 3行サマリ, 10. 出典, 1-1. 推進体制, 1-2. 用語, 1-3. ODS-RAM の構成（GitHub `open-dataspaces` の記載より）, 1. 背景 — ウラノス・エコシステムとOpen Data Spaces, 2. ODS-IS-UASL の基本情報, 3. 全18リポジトリ (+17 more)
+
+### Community 19 - "ODS-IS-UASL コード実装調査"
+Cohesion: 0.09
+Nodes (22): 1. 結論, 2. 実装上の全体像, 3-1. 航路予約：`airway-reservation`, 3-2. 航路画定：`airway-design`, 3-3. 安全管理：`safety-management`, 3-4. 機体・離着陸場資産：`asset`, 3-5. 外部連携：`external`, 3-6. ユーザ・事業者管理：`user-management` (+14 more)
+
+### Community 20 - "改善タスク：秩父市周辺PLATEAU地物レイヤーと航路影響表示の拡張"
+Cohesion: 0.15
+Nodes (12): 1. 背景, 2. 目的, 3. 完了後の利用イメージ, 4. 対象範囲, 5. 着手前に決めること, 6. 実装タスク, 7. 受入条件, 8. 技術方針と留意点 (+4 more)
+
+### Community 24 - "client.ts"
+Cohesion: 0.23
+Nodes (11): ApiResponse, BboxFeatureResult, DroneRoute, GroundFeatureLayerKey, GroundFeatureResult, KnownProhibitedArea, PlateauBuildingFeature, PlateauBuildingGeometry (+3 more)
+
+### Community 25 - "CLAUDE.md"
+Cohesion: 0.20
+Nodes (8): 1. セッション開始時に必ずやること, 2. ドキュメントの役割と更新ルール, 3. システム構成（詳細は仕様書 §4）, 4. 開発コマンド, 5. 既知の落とし穴（再発防止）, 6. やらないこと, コミット, 進捗ログの書き方（厳守）
+
+### Community 26 - "graphify reference: extra exports and benchmark"
+Cohesion: 0.22
+Nodes (8): graphify reference: extra exports and benchmark, Step 6b - Wiki (only if --wiki flag), Step 7 - Neo4j export (only if --neo4j or --neo4j-push flag), Step 7a - FalkorDB export (only if --falkordb or --falkordb-push flag), Step 7b - SVG export (only if --svg flag), Step 7c - GraphML export (only if --graphml flag), Step 7d - MCP server (only if --mcp flag), Step 8 - Token reduction benchmark (only if total_words > 5000)
+
+### Community 27 - "altitude.py"
+Cohesion: 0.16
+Nodes (15): evaluate_building_vertical(), _load_json(), Path, 仕様書§5-3: 高度基準の統一。 前提条件（§5-3の1〜3）の記録: 1. 座標参照系・単位・時点 -…, 建物のmeasuredHeightとAGLを比較し、交差・詳細表の「交差判定」文言を返す。…, _bbox_overlap(), _ground_feature_sentence(), judge_route_features() (+7 more)
+
+### Community 28 - "Streamlit Viewer（PoC）"
+Cohesion: 0.29
+Nodes (6): Streamlit Viewer（PoC）, セットアップ, ディレクトリ構成, 未実装・既知の制約（`docs/実装タスクリスト.md` 参照）, 現在の状態, 起動
+
+### Community 29 - "graphify reference: query, path, explain"
+Cohesion: 0.33
+Nodes (5): For /graphify explain, For /graphify path, graphify reference: query, path, explain, Step 0 — Constrained query expansion (REQUIRED before traversal), Step 1 — Traversal
+
+### Community 31 - "reviewer.md"
+Cohesion: 0.40
+Nodes (4): 一般観点, 出力形式, 手順, 観点（本プロジェクト固有・優先）
+
+### Community 32 - "graphify reference: extra exports and benchmark"
+Cohesion: 0.22
+Nodes (8): graphify reference: extra exports and benchmark, Step 6b - Wiki (only if --wiki flag), Step 7 - Neo4j export (only if --neo4j or --neo4j-push flag), Step 7a - FalkorDB export (only if --falkordb or --falkordb-push flag), Step 7b - SVG export (only if --svg flag), Step 7c - GraphML export (only if --graphml flag), Step 7d - MCP server (only if --mcp flag), Step 8 - Token reduction benchmark (only if total_words > 5000)
+
+### Community 34 - "low-level-designer.md"
+Cohesion: 0.50
+Nodes (3): 出力形式, 守るべき構造上の制約, 手順
+
+### Community 36 - "task-check.md"
+Cohesion: 0.50
+Nodes (3): 出力形式, 報告する乖離, 手順
+
+### Community 37 - "graphify reference: add a URL and watch a folder"
+Cohesion: 0.50
+Nodes (3): For /graphify add, For --watch, graphify reference: add a URL and watch a folder
+
+### Community 38 - "graphify reference: commit hook and native CLAUDE.md integration"
+Cohesion: 0.50
+Nodes (3): For git commit hook, For native CLAUDE.md integration, graphify reference: commit hook and native CLAUDE.md integration
+
+### Community 39 - "graphify reference: incremental update and cluster-only"
+Cohesion: 0.50
+Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
+
+### Community 48 - "graphify reference: query, path, explain"
+Cohesion: 0.33
+Nodes (5): For /graphify explain, For /graphify path, graphify reference: query, path, explain, Step 0 — Constrained query expansion (REQUIRED before traversal), Step 1 — Traversal
+
+### Community 49 - "Q: Why does DigitalTwinApiClient connect Extraction error handling to API data models?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Why does DigitalTwinApiClient connect Extraction error handling to API data models?, Source Nodes
+
+### Community 50 - "graphify reference: add a URL and watch a folder"
+Cohesion: 0.50
+Nodes (3): For /graphify add, For --watch, graphify reference: add a URL and watch a folder
+
+### Community 51 - "graphify reference: commit hook and native CLAUDE.md integration"
+Cohesion: 0.50
+Nodes (3): For git commit hook, For native CLAUDE.md integration, graphify reference: commit hook and native CLAUDE.md integration
+
+### Community 52 - "graphify reference: incremental update and cluster-only"
+Cohesion: 0.50
+Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
+
+### Community 56 - "App.tsx"
+Cohesion: 0.30
+Nodes (13): describeError(), getBuildingsInBbox(), getConnectionStatus(), getFlightProhibitedAreas(), getGroundFeatures(), getGroundFeaturesInBbox(), getKnownProhibitedAreas(), parseDatasetMeta() (+5 more)
+
+### Community 57 - "ResultsPanel.stories.tsx"
+Cohesion: 0.11
+Nodes (21): GroundFeature, GroundFeatureGroup, NearbyFeatureSummary, ProhibitedArea, QueryResult, GROUP_LABELS, GROUP_ORDER, LAYER_LABELS (+13 more)
+
+### Community 58 - "SettingsPanel.stories.tsx"
+Cohesion: 0.11
+Nodes (19): react, ConnectionStatus, describeConnection(), SettingsPanel(), SettingsPanelProps, Connected, connectedStatus, ConnectionChecking (+11 more)
+
+### Community 59 - "package.json"
+Cohesion: 0.17
+Nodes (11): name, private, scripts, build, build-storybook, dev, lint, preview (+3 more)
+
+### Community 63 - "status_panel.py"
+Cohesion: 0.15
+Nodes (15): design.md §9-1〜§9-3: API接続状態／空間ID表示／評価状態（高度基準）／PoC識別バッジ。, design.md §9-1: 左設定パネル最上部に常時表示。色だけに依存せず状態文字列を併記する。, design.md §9-1: 対象空間ID／ボクセル解像度を表示する。ユーザー入力ではなく、 始点・終点・AGLから算出した値を表示する（仕様書§8）。…, design.md §9-2: 仕様書§5-3の高度基準統一と受入基準#9に対応する。…, design.md §9-3: 画面右上に常時表示（仕様書§6-1）。, render_altitude_verification_status(), render_connection_status(), render_poc_badge() (+7 more)
+
+### Community 65 - "DigitalTwinApiClient"
+Cohesion: 0.21
+Nodes (7): lookup_building_height(), _center_spatial_id(), DigitalTwinApiClient, ('connected' / 'disconnected' / 'error', 理由) を返す。 実コード確認済み: GET /drone_route は…, connected' / 'disconnected' / 'error' のいずれかを返す。, bbox = (min_lat, min_lon, max_lat, max_lon) Phase…, api_key を指定すると、Drone-web側の簡易APIキー認証（junhongo-ccs/airway-digitaltwin-db の…
+
+### Community 66 - "route_form.py"
+Cohesion: 0.23
+Nodes (11): _bbox_from_route(), _default_base_url(), _handle_query(), _handle_register(), _handle_register_area(), design.md §4-1・§10: 左設定パネル（API状態・評価状態・航路設定・レイヤ選択・登録・照会）。, design.md §10: 実行前の件数・対象レイヤはサイドバーのcaptionで既に明示済み。 ここでは実行後の結果件数とAPI応答時刻を記録する。, 4つの取得元（航路・地物ボクセル・注意区域・禁止区域）はそれぞれ独立したAPI… (+3 more)
+
+### Community 67 - "get"
+Cohesion: 0.18
+Nodes (11): get, health_check(), known_buildings_endpoint(), known_prohibited_areas_endpoint(), Render のヘルスチェック用。Laravel には触らない。, ジオメトリを再取得済みの飛行禁止区域を、Laravelへの照会なしで返す。 航路を登録・照会する前から地図に危険区域を表示できるようにするための…, 地図描画可能な建物を、Laravelへの照会なしで返す。 PLATEAU秩父市2025から抽出したPhase B投入分29件（mesh…, list_known_buildings() (+3 more)
+
+### Community 68 - "ApiError"
+Cohesion: 0.20
+Nodes (6): Exception, Response, ApiError, 実コード確認済み（FlightProhibitedAreaController::set_flight_prohibited_area）:…, 実コード確認済み: drone_route の登録成功時など、本文が空のレスポンスがある （DroneRouteController::drone_route…, _safe_json()
+
+### Community 69 - "dependencies"
+Cohesion: 0.22
+Nodes (9): maplibre-gl, react, react-dom, react-icons, dependencies, maplibre-gl, react, react-dom (+1 more)
+
+### Community 70 - "_client"
+Cohesion: 0.28
+Nodes (9): _base_url(), _client(), connection_status_endpoint(), mock_mode(), Laravel のベースURL。 優先順位: 1. DIGITAL_TWIN_BASE_URL（ローカルで実Laravelへ向ける場合に使う） 2.…, モックで動かすかどうか。 MOCK_MODE を明示指定した場合は必ずそれに従う。ローカルで…, リクエストごとにクライアントを作る。BFF 自体は永続層を持たず、 Laravel が唯一の真実（mock 時のみ _MOCK_STORE がその代役）。, Laravel API への到達可否。'connected' / 'disconnected' / 'error'。 mock と base_url… (+1 more)
+
+### Community 71 - "get_ground_features_in_bbox"
+Cohesion: 0.39
+Nodes (8): ground_features_bbox_endpoint(), 地図表示範囲（bbox）内の道路・土砂災害・洪水浸水・土地利用を返す（6-6a）。…, BboxTooLargeError, get_ground_features_in_bbox(), ValueError, 6-6a: 地図表示範囲（bbox）に対応した道路・土砂災害・洪水浸水・土地利用の読み込み。 `plateau_buildings.py`（6-…, bboxと交差する3次メッシュの指定レイヤーGeoJSON Featureを結合して返す。, UnknownLayerError
+
+### Community 72 - "get_buildings_in_bbox"
+Cohesion: 0.36
+Nodes (7): buildings_endpoint(), 地図表示範囲（bbox）内の建物を返す（6-5）。 `/known_buildings`（固定29件、mesh 53397062限定）を置き換える、秩父市周辺…, BboxTooLargeError, get_buildings_in_bbox(), ValueError, 6-5: 地図表示範囲（bbox）に対応した建物データの読み込み。 `scripts/plateau/extract_buildings.py`が生成した…, bboxと交差する3次メッシュの建物GeoJSON Featureを結合して返す。
+
+### Community 73 - "React + TypeScript + Vite"
+Cohesion: 0.50
+Nodes (3): Expanding the Oxlint configuration, React Compiler, React + TypeScript + Vite
 
 ## Knowledge Gaps
-- **109 isolated node(s):** `GROUND_FEATURE_LAYERS`, `DroneRoute`, `GroundFeatureResult`, `ApiResponse`, `PlateauBuildingGeometry` (+104 more)
+- **405 isolated node(s):** `$schema`, `typescript`, `oxc`, `react/rules-of-hooks`, `warn` (+400 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **23 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **27 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `DigitalTwinApiClient` connect `DigitalTwinApiClient` to `viewer_api/app.py`?**
-  _High betweenness centrality (0.052) - this node is a cross-community bridge._
-- **Why does `mesh3_codes_in_bbox()` connect `extract_ground_features.py` to `viewer_api/app.py`?**
-  _High betweenness centrality (0.041) - this node is a cross-community bridge._
-- **Why does `_CachedRegionFile` connect `_CachedRegionFile` to `extract_ground_features.py`?**
-  _High betweenness centrality (0.018) - this node is a cross-community bridge._
-- **What connects `GROUND_FEATURE_LAYERS`, `DroneRoute`, `GroundFeatureResult` to the rest of the system?**
-  _109 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `viewer_api/app.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.052313883299798795 - nodes in this community are weakly interconnected._
+- **Why does `DigitalTwinApiClient` connect `DigitalTwinApiClient` to `viewer_api/app.py`, `api_client.py`, `route_form.py`, `ApiError`, `_client`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `空域デジタルツインGIS Viewer デザインガイドライン` connect `空域デジタルツインGIS Viewer デザインガイドライン` to `空域デジタルツイン活用・ドローン航路GIS-PoC 実装タスクリスト`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
+- **Why does `実装進捗ログ` connect `実装進捗ログ` to `空域デジタルツイン活用・ドローン航路GIS-PoC 実装タスクリスト`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **What connects `$schema`, `typescript`, `oxc` to the rest of the system?**
+  _405 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `MapContainer.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.06386946386946386 - nodes in this community are weakly interconnected._
-- **Should `DigitalTwinApiClient` be split into smaller, more focused modules?**
-  _Cohesion score 0.05432692307692308 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.12554112554112554 - nodes in this community are weakly interconnected._
+- **Should `api_client.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.12105263157894737 - nodes in this community are weakly interconnected._
+- **Should `extract_ground_features.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.05297334244702666 - nodes in this community are weakly interconnected._

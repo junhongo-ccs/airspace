@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import type { QueryResult } from '../App';
 import type { GroundFeatureGroup } from '../api/client';
 
@@ -64,9 +65,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
           <h2 className="text-sm font-semibold text-text-primary">
             照会結果
           </h2>
-          <span className="text-text-secondary">
-            {queryExpanded ? '−' : '+'}
-          </span>
+          <AccordionIcon expanded={queryExpanded} />
         </button>
         {queryExpanded && (
           <div className="px-6 py-4 bg-bg-app text-sm text-text-secondary">
@@ -131,9 +130,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
           <h2 className="text-sm font-semibold text-text-primary">
             判定詳細
           </h2>
-          <span className="text-text-secondary">
-            {detailsExpanded ? '−' : '+'}
-          </span>
+          <AccordionIcon expanded={detailsExpanded} />
         </button>
         {detailsExpanded && (
           <div className="px-6 py-4 bg-bg-app text-sm text-text-secondary border-t border-bg-table-head space-y-4">
@@ -202,7 +199,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                       className="w-full px-3 py-2 flex items-center justify-between hover:bg-bg-panel transition-colors text-left"
                     >
                       <span className="font-semibold text-text-primary text-xs">{GROUP_LABELS[group]}</span>
-                      <span className="text-text-secondary text-xs">{isOpen ? '−' : '+'}</span>
+                      <AccordionIcon expanded={isOpen} />
                     </button>
                     {isOpen && (
                       <div className="px-3 py-2 border-t border-bg-table-head bg-bg-panel">
@@ -256,5 +253,13 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
         )}
       </div>
     </div>
+  );
+}
+
+function AccordionIcon({ expanded }: { expanded: boolean }) {
+  return expanded ? (
+    <FiChevronUp aria-hidden="true" className="h-4 w-4 shrink-0 text-text-secondary" />
+  ) : (
+    <FiChevronDown aria-hidden="true" className="h-4 w-4 shrink-0 text-text-secondary" />
   );
 }

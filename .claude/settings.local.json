@@ -58,7 +58,12 @@
       "Skill(log-today)",
       "Bash(taskkill //PID 25612 //F)",
       "Bash(taskkill //PID 4016 //F)",
-      "Bash(taskkill *)"
+      "Bash(taskkill *)",
+      "Bash(npx storybook *)",
+      "Bash(tee /c/Users/hongouj/AppData/Local/Temp/claude/C--github-airspace/68d5b5b3-d864-4d7f-9e13-65e641693c51/scratchpad/storybook-ai-setup.log)",
+      "Bash(echo \"started pid $!\")",
+      "Read(//tmp/**)",
+      "Bash(break)"
     ]
   }
 }

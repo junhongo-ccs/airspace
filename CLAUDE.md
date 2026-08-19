@@ -77,6 +77,8 @@ cd viewer-react && npm run lint     # oxlint
 cd viewer-react && npm run build    # tsc -b && vite build
 ```
 
+- **ローカルで実画面を確認するときは React だけを起動しない。** React（`:5173`）に加え、BFF（`:8001`）も起動し、`GET http://localhost:8001/connection_status` が成功することを確認してからブラウザを案内する。BFF が停止していると、ベースマップは表示されても建物・道路・災害等の追加レイヤーはすべて `Failed to fetch` になる。ローカル確認では、Laravel を必要としない `MOCK_MODE` の BFF 起動でよい。
+
 - 依存は `viewer/requirements.txt` で**推移的依存まで固定**している。Render のビルド時だけ新しい版が解決されて環境差分バグを踏んだ実績があるため、勝手に緩めない。
 - 配備は Render（`render.yaml` の Blueprint）。`airspace-viewer-react` / `airspace-viewer-api` / `airspace-viewer` / `airspace-drone-web` / `airspace-mysql`。
 

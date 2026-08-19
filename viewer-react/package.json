@@ -7,24 +7,38 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "maplibre-gl": "^6.1.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-icons": "^5.7.0"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "latest",
+    "@storybook/addon-a11y": "^10.5.9",
+    "@storybook/addon-docs": "^10.5.9",
+    "@storybook/addon-mcp": "latest",
+    "@storybook/addon-vitest": "^10.5.9",
+    "@storybook/react-vite": "^10.5.9",
     "@types/geojson": "^7946.0.16",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.2.0",
+    "@vitest/browser-playwright": "latest",
+    "@vitest/coverage-v8": "latest",
     "autoprefixer": "^10.5.4",
     "oxlint": "^1.75.0",
+    "playwright": "latest",
     "postcss": "^8.5.25",
+    "storybook": "^10.5.9",
     "tailwindcss": "^3.4.19",
     "typescript": "~6.0.2",
-    "vite": "^7.3.6"
+    "vite": "^7.3.6",
+    "vitest": "latest"
   }
 }

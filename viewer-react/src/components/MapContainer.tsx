@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type {
@@ -204,6 +205,9 @@ export default function MapContainer({
   // "Style is not done loading." を投げ、未捕捉例外で画面全体が白くなる。
   // 準備完了を state で持ち、描画side effectの依存に入れて待ち合わせる。
   const [styleReady, setStyleReady] = useState(false);
+  // 凡例は地図の表示領域をなるべく広く保てるよう、初期状態では見出しだけに畳む。
+  // 開いた場合も従来のカード内の内容・幅は変えず、同じ場所で展開する。
+  const [legendExpanded, setLegendExpanded] = useState(false);
   // 地図初期化effect（依存配列[]、マウント時に1回だけ実行）からは常に最新の
   // onBoundsChangeを呼びたいが、依存に入れると親の再レンダリングのたびに地図を
   // 作り直すことになってしまう。refで最新値だけ追従させ、古いクロージャを避ける。
@@ -607,34 +611,53 @@ export default function MapContainer({
           近い見た目を作る（実データの塗りとは別レンダリング経路だが凡例用途では
           十分）。z-10はMapLibreの内部canvas/コントロール類より確実に前面へ出す
           ためで、ResultsPanel（z-20、App.tsx側）より下に固定する。 */}
-      <div className="absolute top-4 right-4 z-10 bg-bg-panel rounded shadow-lg p-3 text-xs text-text-secondary max-w-56 space-y-2">
-        <div>
-          <p className="font-semibold text-text-primary">地図：MapLibre GL</p>
-          <p>ズーム15・秩父市周辺</p>
-        </div>
+      <div className="absolute top-4 right-4 z-10 w-56 overflow-hidden rounded bg-bg-panel text-xs text-text-secondary shadow-lg">
+        <button
+          type="button"
+          className="flex w-full items-center justify-between px-3 py-2 text-left font-semibold text-text-primary hover:bg-bg-table-head focus:outline-none focus-visible:ring-2 focus-visible:ring-action-primary"
+          aria-expanded={legendExpanded}
+          aria-controls="map-legend-content"
+          onClick={() => setLegendExpanded((expanded) => !expanded)}
+        >
+          <span>凡例</span>
+          {legendExpanded ? (
+            <FiChevronUp aria-hidden="true" className="h-4 w-4" />
+          ) : (
+            <FiChevronDown aria-hidden="true" className="h-4 w-4" />
+          )}
+        </button>
 
-        <div>
-          <div className="font-semibold text-text-primary mb-1">航路への影響</div>
-          <LegendRow color="#0B3D75" label="航路" />
-          <LegendRow color="#8A96A0" label="建物" />
-          <LegendRow color="#5C6670" label="道路" />
-          <LegendRow color="#E8380D" label="人口集中地区（飛行禁止）" hatch="cross" />
-        </div>
+        {legendExpanded && (
+          <div id="map-legend-content" className="space-y-2 border-t border-gray-200 px-3 pb-3 pt-2">
+            <div>
+              <p className="font-semibold text-text-primary">地図：MapLibre GL</p>
+              <p>ズーム15・秩父市周辺</p>
+            </div>
 
-        <div>
-          <div className="font-semibold text-text-primary mb-1">航路活用の可能性</div>
-          <LegendRow color="#FF8A00" label="土砂災害警戒区域" hatch="diagonal" />
-          <LegendRow color="#3E9BE0" label="洪水浸水想定区域" hatch="diagonal" />
-        </div>
+            <div>
+              <div className="mb-1 font-semibold text-text-primary">航路への影響</div>
+              <LegendRow color="#0B3D75" label="航路" />
+              <LegendRow color="#8A96A0" label="建物" />
+              <LegendRow color="#5C6670" label="道路" />
+              <LegendRow color="#E8380D" label="人口集中地区（飛行禁止）" hatch="cross" />
+            </div>
 
-        <div>
-          <div className="font-semibold text-text-primary mb-1">その他</div>
-          <LegendRow color="#8C6239" label="土地利用（影響/活用は分類による）" />
-        </div>
+            <div>
+              <div className="mb-1 font-semibold text-text-primary">航路活用の可能性</div>
+              <LegendRow color="#FF8A00" label="土砂災害警戒区域" hatch="diagonal" />
+              <LegendRow color="#3E9BE0" label="洪水浸水想定区域" hatch="diagonal" />
+            </div>
 
-        {datasetMeta && (
-          <div className="pt-1 border-t border-gray-200 text-[10px] text-text-secondary">
-            出典: {datasetMeta.source}（{datasetMeta.dataDate}時点）
+            <div>
+              <div className="mb-1 font-semibold text-text-primary">その他</div>
+              <LegendRow color="#8C6239" label="土地利用（影響/活用は分類による）" />
+            </div>
+
+            {datasetMeta && (
+              <div className="border-t border-gray-200 pt-1 text-[10px] text-text-secondary">
+                出典: {datasetMeta.source}（{datasetMeta.dataDate}時点）
+              </div>
+            )}
           </div>
         )}
       </div>
