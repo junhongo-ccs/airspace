@@ -38,3 +38,13 @@ export const CollapsibleLegend: Story = {
     await expect(legendButton).toHaveAttribute('aria-expanded', 'false');
   },
 };
+
+// 初期レイヤーの取得中は、地図の中央に進行中であることを伝えるローダーを表示する。
+export const LoadingLayers: Story = {
+  args: {
+    initialLayersReady: false,
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('status')).toHaveTextContent('地図データを読み込んでいます...');
+  },
+};

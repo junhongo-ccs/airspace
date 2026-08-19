@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp, FiLoader } from 'react-icons/fi';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type {
@@ -58,6 +58,9 @@ interface MapContainerProps {
   layerVisibility?: Record<GroundFeatureLayerKey, boolean>;
   // 6-10: 凡例・ポップアップに表示する出典・データ時点。
   datasetMeta?: PlateauDatasetMeta | null;
+  // 親で取得する初期表示用データ（建物・有効な地物・禁止区域）が揃ったことを示す。
+  // MapLibreの描画完了と組み合わせ、地図上のローダーを消すタイミングに使う。
+  initialLayersReady?: boolean;
 }
 
 // 6-6a/6-13: レイヤーごとの色・パターン・表示名・区分（「航路への影響」/
@@ -198,6 +201,7 @@ export default function MapContainer({
   groundFeaturesByLayer = EMPTY_GROUND_FEATURES,
   layerVisibility = ALL_LAYERS_VISIBLE,
   datasetMeta = null,
+  initialLayersReady = true,
 }: MapContainerProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
@@ -205,6 +209,9 @@ export default function MapContainer({
   // "Style is not done loading." を投げ、未捕捉例外で画面全体が白くなる。
   // 準備完了を state で持ち、描画side effectの依存に入れて待ち合わせる。
   const [styleReady, setStyleReady] = useState(false);
+  const [mapLayersLoaded, setMapLayersLoaded] = useState(false);
+  const [showLoadingOverlay, setShowLoadingOverlay] = useState(true);
+  const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(true);
   // 凡例は地図の表示領域をなるべく広く保てるよう、初期状態では見出しだけに畳む。
   // 開いた場合も従来のカード内の内容・幅は変えず、同じ場所で展開する。
   const [legendExpanded, setLegendExpanded] = useState(false);
@@ -609,6 +616,41 @@ export default function MapContainer({
     }
   }, [groundFeaturesByLayer, layerVisibility, styleReady]);
 
+  // 必要なデータが親から届いた後、MapLibreがそのソース・タイルの描画を終えた
+  // idle状態になって初めてローダーを消す。loaded()が真なら既にidleイベントを
+  // 通過しているため、その場合も次フレームで完了として扱う。
+  useEffect(() => {
+    if (!map.current || !styleReady || !initialLayersReady) return;
+
+    const mapInstance = map.current;
+    const markLoaded = () => setMapLayersLoaded(true);
+    if (mapInstance.loaded()) {
+      const frame = requestAnimationFrame(markLoaded);
+      return () => cancelAnimationFrame(frame);
+    }
+
+    mapInstance.once('idle', markLoaded);
+    return () => mapInstance.off('idle', markLoaded);
+  }, [
+    buildingFeatures,
+    groundFeaturesByLayer,
+    initialLayersReady,
+    layerVisibility,
+    prohibitedAreas,
+    showBuildings,
+    showProhibitedAreas,
+    styleReady,
+  ]);
+
+  // opacityを先に0へ遷移させ、200ms後にDOMから外す。初回ロード専用なので、
+  // 以後のレイヤーON/OFFでローダーが再表示されることはない。
+  useEffect(() => {
+    if (!mapLayersLoaded) return;
+    setLoadingOverlayVisible(false);
+    const timer = window.setTimeout(() => setShowLoadingOverlay(false), 200);
+    return () => window.clearTimeout(timer);
+  }, [mapLayersLoaded]);
+
   return (
     // overflow-hidden: 凡例（absolute）や地図canvasが、判定詳細アコーディオンを
     // 開いてこのflexボックスが縮んだ際にも自身の領域内に留まるようにする。
@@ -616,6 +658,18 @@ export default function MapContainer({
     // z軸では並列）に重なって操作できなくなる不具合があった（2026-08-17報告）。
     <div className="flex-1 relative bg-bg-app overflow-hidden">
       <div ref={mapContainer} className="w-full h-full" />
+      {showLoadingOverlay && (
+        <div
+          className={`absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-bg-app/55 text-text-secondary transition-opacity duration-200 ${
+            loadingOverlayVisible ? 'opacity-100' : 'opacity-0'
+          }`}
+          role="status"
+          aria-live="polite"
+        >
+          <FiLoader aria-hidden="true" className="h-7 w-7 animate-spin text-brand-blue" />
+          <p className="text-sm">地図データを読み込んでいます...</p>
+        </div>
+      )}
       {/* 6-6a/6-13: 凡例。「航路への影響」/「航路活用の可能性」の見出しを分け、
           災害リスク区域を障害物・飛行禁止区域と同じ意味で誤認させない
           （改善タスク§2）。ハッチはCSSのrepeating-linear-gradientでcanvas版と

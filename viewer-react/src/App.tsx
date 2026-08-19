@@ -105,13 +105,16 @@ function App() {
   // のではなく、危険区域を先に見せてルート設計時に避けられるようにするため、
   // 起動時に一度だけ取得して常に地図へ表示する。
   const [knownProhibitedAreas, setKnownProhibitedAreas] = useState<KnownProhibitedArea[]>([]);
+  const [knownProhibitedAreasLoaded, setKnownProhibitedAreasLoaded] = useState(false);
   // 秩父市周辺の表示範囲（bbox）内の建物（6-5/6-6）。地図移動・ズームに応じて
   // 現在の表示範囲だけ取得し直す。固定29件だった旧`/known_buildings`は廃止（6-9）。
   const [plateauBuildings, setPlateauBuildings] = useState<PlateauBuildingFeature[]>([]);
+  const [initialBuildingsLoaded, setInitialBuildingsLoaded] = useState(false);
   // 6-6a: レイヤーキーごとの地物（道路・土砂災害・洪水浸水・土地利用）。
   const [groundFeaturesByLayer, setGroundFeaturesByLayer] = useState<
     Record<GroundFeatureLayerKey, PlateauGroundFeature[]>
   >({ road: [], landslide: [], flood: [], landuse: [] });
+  const [initialGroundFeaturesLoaded, setInitialGroundFeaturesLoaded] = useState(false);
   // 6-10: データ出典・データ時点。bboxエンドポイントのレスポンスから得る
   // （建物・地物のどのレイヤーから来ても同じ値のため、最後に取得できたものを保持）。
   const [datasetMeta, setDatasetMeta] = useState<PlateauDatasetMeta | null>(null);
@@ -143,7 +146,20 @@ function App() {
   }, [refreshConnection]);
 
   useEffect(() => {
-    void getKnownProhibitedAreas().then(setKnownProhibitedAreas);
+    let active = true;
+    void getKnownProhibitedAreas()
+      .then((areas) => {
+        if (active) setKnownProhibitedAreas(areas);
+      })
+      .catch(() => {
+        // ローダーを永久に残さず、取得失敗時も地図本体は表示する。
+      })
+      .finally(() => {
+        if (active) setKnownProhibitedAreasLoaded(true);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   // MapContainerから表示範囲（bbox）の変化を受け取る（初回表示・移動・ズーム）。
@@ -159,13 +175,18 @@ function App() {
     // しない。破棄すると同じ範囲でON/OFFを繰り返すだけで毎回再取得が発生していた
     // （ユーザー指摘2026-08-19）。非表示自体はMapContainer側がshowBuildingsで
     // 行うため、ここでは取得を止めるだけでよい。
-    if (!showBuildings || !mapBounds) return;
+    if (!showBuildings) {
+      setInitialBuildingsLoaded(true);
+      return;
+    }
+    if (!mapBounds) return;
     // 既に読み込み済みのバッファ範囲に収まる移動なら、表示中のデータで足りるため
     // 取得しない（手でわずかにドラッグするたびに再取得・再描画が走る問題への対応）。
     if (
       lastFetchedBuildingsBoundsRef.current &&
       boundsContain(lastFetchedBuildingsBoundsRef.current, mapBounds)
     ) {
+      setInitialBuildingsLoaded(true);
       return;
     }
     if (boundsFetchTimer.current) clearTimeout(boundsFetchTimer.current);
@@ -179,7 +200,8 @@ function App() {
         fetchBounds.minLon,
         fetchBounds.maxLon,
         controller.signal
-      ).then(({ features, meta, ok }) => {
+      )
+        .then(({ features, meta, ok }) => {
         // 中断済み（＝この後により新しい表示範囲のリクエストが発行済み）なら、
         // 古い結果で状態を上書きしない。キャッシュへの書き込みも成功後にのみ行う
         // （2026-08-19、reviewer(Codex)指摘：成功前にキャッシュへ書くと、abortされた
@@ -189,11 +211,17 @@ function App() {
         // signal.abortedだけでは通信失敗を「成功・0件」と区別できないため
         // （2026-08-19、reviewer(Codex)指摘）。失敗時は表示を空にせず、直前の
         // データを残したまま次回に再取得を試みる。
-        if (controller.signal.aborted || !ok) return;
-        lastFetchedBuildingsBoundsRef.current = fetchBounds;
-        setPlateauBuildings(features);
-        if (meta) setDatasetMeta(meta);
-      });
+          if (controller.signal.aborted) return;
+          if (ok) {
+            lastFetchedBuildingsBoundsRef.current = fetchBounds;
+            setPlateauBuildings(features);
+            if (meta) setDatasetMeta(meta);
+          }
+          setInitialBuildingsLoaded(true);
+        })
+        .catch(() => {
+          if (!controller.signal.aborted) setInitialBuildingsLoaded(true);
+        });
     }, BOUNDS_FETCH_DEBOUNCE_MS);
     return () => {
       if (boundsFetchTimer.current) clearTimeout(boundsFetchTimer.current);
@@ -221,7 +249,11 @@ function App() {
 
   useEffect(() => {
     const enabledLayers = GROUND_FEATURE_LAYERS.filter((l) => layerVisibility[l]);
-    if (enabledLayers.length === 0 || !mapBounds) return;
+    if (enabledLayers.length === 0) {
+      setInitialGroundFeaturesLoaded(true);
+      return;
+    }
+    if (!mapBounds) return;
 
     // 有効なレイヤーのうち、直近取得済みのbboxが現在の表示範囲をカバーしていない
     // ものだけ取得対象にする（手で少し動かすたびに再取得・再描画が走る問題への
@@ -230,7 +262,10 @@ function App() {
       const cached = lastFetchedGroundFeaturesBoundsRef.current[layer];
       return !(cached && boundsContain(cached, mapBounds));
     });
-    if (layersToFetch.length === 0) return;
+    if (layersToFetch.length === 0) {
+      setInitialGroundFeaturesLoaded(true);
+      return;
+    }
 
     if (groundFeaturesFetchTimer.current) clearTimeout(groundFeaturesFetchTimer.current);
     groundFeaturesFetchTimer.current = setTimeout(() => {
@@ -248,30 +283,36 @@ function App() {
             controller.signal
           ).then((result) => [layer, result] as const)
         )
-      ).then((results) => {
+      )
+        .then((results) => {
         // abort済みならキャッシュにも書かない（2026-08-19、reviewer(Codex)指摘：
         // 成功前にキャッシュへ書き込んでいたため、abortされたレイヤーが「取得済みだが
         // 中身は空」のまま固定され、道路・建物を含め何も表示されなくなるバグがあった。
         // 建物取得effectも同じ理由で同様に修正済み）。
-        if (controller.signal.aborted) return;
+          if (controller.signal.aborted) return;
         // レイヤーごとにokを見る（Promise.allは一括だが、通信失敗した個別のレイヤーは
         // `getGroundFeaturesInBbox`が例外を投げず空配列で解決するため、abortと同様
         // signal.abortedだけでは区別できない。2026-08-19、reviewer(Codex)指摘）。
         // 失敗したレイヤーはキャッシュも表示も更新せず、直前のデータを残したまま
         // 次回に再取得を試みる。
-        const succeeded = results.filter(([, r]) => r.ok);
-        if (succeeded.length === 0) return;
-        for (const [layer] of succeeded) {
-          lastFetchedGroundFeaturesBoundsRef.current[layer] = fetchBounds;
-        }
-        setGroundFeaturesByLayer((prev) => {
-          const next = { ...prev };
-          for (const [layer, { features }] of succeeded) next[layer] = features;
-          return next;
+          const succeeded = results.filter(([, r]) => r.ok);
+          for (const [layer] of succeeded) {
+            lastFetchedGroundFeaturesBoundsRef.current[layer] = fetchBounds;
+          }
+          if (succeeded.length > 0) {
+            setGroundFeaturesByLayer((prev) => {
+              const next = { ...prev };
+              for (const [layer, { features }] of succeeded) next[layer] = features;
+              return next;
+            });
+            const lastMeta = succeeded.map(([, r]) => r.meta).find((m) => m !== null);
+            if (lastMeta) setDatasetMeta(lastMeta);
+          }
+          setInitialGroundFeaturesLoaded(true);
+        })
+        .catch(() => {
+          if (!controller.signal.aborted) setInitialGroundFeaturesLoaded(true);
         });
-        const lastMeta = succeeded.map(([, r]) => r.meta).find((m) => m !== null);
-        if (lastMeta) setDatasetMeta(lastMeta);
-      });
     }, BOUNDS_FETCH_DEBOUNCE_MS);
     return () => {
       if (groundFeaturesFetchTimer.current) clearTimeout(groundFeaturesFetchTimer.current);
@@ -361,6 +402,11 @@ function App() {
     () => (routeRegistered ? { startLat, startLon, endLat, endLon } : null),
     [routeRegistered, startLat, startLon, endLat, endLon]
   );
+  const initialMapLayersReady =
+    mapBounds !== null &&
+    knownProhibitedAreasLoaded &&
+    initialBuildingsLoaded &&
+    initialGroundFeaturesLoaded;
 
   return (
     <div className="flex flex-col h-screen bg-bg-app">
@@ -417,6 +463,7 @@ function App() {
             groundFeaturesByLayer={groundFeaturesByLayer}
             layerVisibility={layerVisibility}
             datasetMeta={datasetMeta}
+            initialLayersReady={initialMapLayersReady}
           />
 
           {/* Bottom results panel: 「航路を登録して周辺データを照会」を押すまでは
