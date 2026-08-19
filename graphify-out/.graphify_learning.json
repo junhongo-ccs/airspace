@@ -1,6 +1,86 @@
 {
-  "generated_at": "2026-08-19T04:00:04.807873+00:00",
+  "generated_at": "2026-08-19T08:24:27.232833+00:00",
   "nodes": {
+    "viewer_react_src_app_app": {
+      "code_fingerprint": "4c78ef77bc5de9b09dd65a74da00b1e22f2b554b9011cef3d5696d5fc7da05a1",
+      "label": "App()",
+      "last": "2026-08-19T08:23:19.303343+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-19T08:23:19.303343+00:00",
+          "outcome": "useful",
+          "q": "When the application is loading map layers, show a loading indicator in the center of the map area."
+        }
+      ],
+      "score": 0.999981835,
+      "source_file": "viewer-react/src/App.tsx",
+      "status": "tentative",
+      "uses": 1
+    },
+    "viewer_react_src_components_mapcontainer_mapcontainer": {
+      "code_fingerprint": "9bdd75822c2950d556aa87c08003c5fec6dc819bcd03034c97d12672f56a7417",
+      "label": "MapContainer()",
+      "last": "2026-08-19T08:23:19.303343+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-19T08:23:19.303343+00:00",
+          "outcome": "useful",
+          "q": "When the application is loading map layers, show a loading indicator in the center of the map area."
+        }
+      ],
+      "score": 0.999981835,
+      "source_file": "viewer-react/src/components/MapContainer.tsx",
+      "status": "tentative",
+      "uses": 1
+    },
+    "viewer_react_src_components_resultspanel_accordionicon": {
+      "code_fingerprint": "658d3bb63011345da5ba29fadf1c881cb5fa026965fc08f752c6e4e4c783343a",
+      "label": "AccordionIcon()",
+      "last": "2026-08-19T08:05:15.238434+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-19T08:05:15.238434+00:00",
+          "outcome": "useful",
+          "q": "照会結果・判定結果の アコーディオンについて graphifyで確認して"
+        }
+      ],
+      "score": 0.999691984,
+      "source_file": "viewer-react/src/components/ResultsPanel.tsx",
+      "status": "tentative",
+      "uses": 1
+    },
+    "viewer_react_src_components_resultspanel_resultspanel": {
+      "code_fingerprint": "658d3bb63011345da5ba29fadf1c881cb5fa026965fc08f752c6e4e4c783343a",
+      "label": "ResultsPanel()",
+      "last": "2026-08-19T08:05:15.238434+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-19T08:05:15.238434+00:00",
+          "outcome": "useful",
+          "q": "照会結果・判定結果の アコーディオンについて graphifyで確認して"
+        }
+      ],
+      "score": 0.999691984,
+      "source_file": "viewer-react/src/components/ResultsPanel.tsx",
+      "status": "tentative",
+      "uses": 1
+    },
+    "viewer_react_src_components_resultspanel_resultspanelprops": {
+      "code_fingerprint": "658d3bb63011345da5ba29fadf1c881cb5fa026965fc08f752c6e4e4c783343a",
+      "label": "ResultsPanelProps",
+      "last": "2026-08-19T08:05:15.238434+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-19T08:05:15.238434+00:00",
+          "outcome": "useful",
+          "q": "照会結果・判定結果の アコーディオンについて graphifyで確認して"
+        }
+      ],
+      "score": 0.999691984,
+      "source_file": "viewer-react/src/components/ResultsPanel.tsx",
+      "status": "tentative",
+      "uses": 1
+    },
     "viewer_src_api_client_apierror": {
       "code_fingerprint": "64668d27c112812d2f0293678ec681cc100727f9bb2ce033203e5c352f43f382",
       "label": "ApiError",
@@ -12,7 +92,7 @@
           "q": "Why does DigitalTwinApiClient connect Extraction error handling to API data models?"
         }
       ],
-      "score": 0.99969035,
+      "score": 0.995458749,
       "source_file": "viewer/src/api_client.py",
       "status": "tentative",
       "uses": 1
@@ -28,7 +108,7 @@
           "q": "Why does DigitalTwinApiClient connect Extraction error handling to API data models?"
         }
       ],
-      "score": 0.99969035,
+      "score": 0.995458749,
       "source_file": "viewer/src/api_client.py",
       "status": "tentative",
       "uses": 1
