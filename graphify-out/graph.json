@@ -89,10 +89,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_apiresponse",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "apiresponse"
+      "norm_label": "apiresponse",
+      "id": "viewer_react_src_api_client_apiresponse"
     },
     {
       "label": "BboxFeatureResult",
@@ -102,10 +102,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_bboxfeatureresult",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "bboxfeatureresult"
+      "norm_label": "bboxfeatureresult",
+      "id": "viewer_react_src_api_client_bboxfeatureresult"
     },
     {
       "label": "ConnectionStatus",
@@ -115,10 +115,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_connectionstatus",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "connectionstatus"
+      "norm_label": "connectionstatus",
+      "id": "viewer_react_src_api_client_connectionstatus"
     },
     {
       "label": "DroneRoute",
@@ -128,10 +128,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_droneroute",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "droneroute"
+      "norm_label": "droneroute",
+      "id": "viewer_react_src_api_client_droneroute"
     },
     {
       "label": "GroundFeature",
@@ -141,10 +141,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_groundfeature",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "groundfeature"
+      "norm_label": "groundfeature",
+      "id": "viewer_react_src_api_client_groundfeature"
     },
     {
       "label": "GroundFeatureGroup",
@@ -154,10 +154,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_groundfeaturegroup",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "groundfeaturegroup"
+      "norm_label": "groundfeaturegroup",
+      "id": "viewer_react_src_api_client_groundfeaturegroup"
     },
     {
       "label": "GroundFeatureLayerKey",
@@ -167,10 +167,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_groundfeaturelayerkey",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "groundfeaturelayerkey"
+      "norm_label": "groundfeaturelayerkey",
+      "id": "viewer_react_src_api_client_groundfeaturelayerkey"
     },
     {
       "label": "GroundFeatureResult",
@@ -180,10 +180,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_groundfeatureresult",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "groundfeatureresult"
+      "norm_label": "groundfeatureresult",
+      "id": "viewer_react_src_api_client_groundfeatureresult"
     },
     {
       "label": "KnownProhibitedArea",
@@ -193,10 +193,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_knownprohibitedarea",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "knownprohibitedarea"
+      "norm_label": "knownprohibitedarea",
+      "id": "viewer_react_src_api_client_knownprohibitedarea"
     },
     {
       "label": "NearbyFeatureSummary",
@@ -206,10 +206,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_nearbyfeaturesummary",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "nearbyfeaturesummary"
+      "norm_label": "nearbyfeaturesummary",
+      "id": "viewer_react_src_api_client_nearbyfeaturesummary"
     },
     {
       "label": "PlateauBuildingFeature",
@@ -219,10 +219,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_plateaubuildingfeature",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "plateaubuildingfeature"
+      "norm_label": "plateaubuildingfeature",
+      "id": "viewer_react_src_api_client_plateaubuildingfeature"
     },
     {
       "label": "PlateauBuildingGeometry",
@@ -232,10 +232,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_plateaubuildinggeometry",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "plateaubuildinggeometry"
+      "norm_label": "plateaubuildinggeometry",
+      "id": "viewer_react_src_api_client_plateaubuildinggeometry"
     },
     {
       "label": "PlateauDatasetMeta",
@@ -245,10 +245,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_plateaudatasetmeta",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "plateaudatasetmeta"
+      "norm_label": "plateaudatasetmeta",
+      "id": "viewer_react_src_api_client_plateaudatasetmeta"
     },
     {
       "label": "PlateauGroundFeature",
@@ -258,10 +258,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_plateaugroundfeature",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "plateaugroundfeature"
+      "norm_label": "plateaugroundfeature",
+      "id": "viewer_react_src_api_client_plateaugroundfeature"
     },
     {
       "label": "ProhibitedArea",
@@ -271,10 +271,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_prohibitedarea",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "prohibitedarea"
+      "norm_label": "prohibitedarea",
+      "id": "viewer_react_src_api_client_prohibitedarea"
     },
     {
       "label": "QueryResult",
@@ -284,10 +284,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_app_queryresult",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "queryresult"
+      "norm_label": "queryresult",
+      "id": "viewer_react_src_app_queryresult"
     },
     {
       "label": "MapBounds",
@@ -683,76 +683,16 @@
       "id": "viewer_src_plateau_metadata_plateau_dataset_meta"
     },
     {
-      "label": "_bbox_overlap()",
-      "file_type": "code",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L63",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "_bbox_overlap()",
-      "id": "viewer_src_plateau_route_judgment_bbox_overlap"
-    },
-    {
-      "label": "_ground_feature_sentence()",
-      "file_type": "code",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L67",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "_ground_feature_sentence()",
-      "id": "viewer_src_plateau_route_judgment_ground_feature_sentence"
-    },
-    {
-      "label": "judge_route_features()",
-      "file_type": "code",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L111",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "judge_route_features()",
-      "id": "viewer_src_plateau_route_judgment_judge_route_features"
-    },
-    {
-      "label": "_nearby_summary_sentence()",
-      "file_type": "code",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L92",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "_nearby_summary_sentence()",
-      "id": "viewer_src_plateau_route_judgment_nearby_summary_sentence"
-    },
-    {
-      "label": "_polygon_bbox()",
-      "file_type": "code",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L52",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "_polygon_bbox()",
-      "id": "viewer_src_plateau_route_judgment_polygon_bbox"
-    },
-    {
       "label": "describeError()",
       "file_type": "code",
       "source_file": "viewer-react/src/api/client.ts",
       "source_location": "L65",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_describeerror",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "describeerror()"
+      "norm_label": "describeerror()",
+      "id": "viewer_react_src_api_client_describeerror"
     },
     {
       "label": "getBuildingsInBbox()",
@@ -761,10 +701,10 @@
       "source_location": "L268",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_getbuildingsinbbox",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "getbuildingsinbbox()"
+      "norm_label": "getbuildingsinbbox()",
+      "id": "viewer_react_src_api_client_getbuildingsinbbox"
     },
     {
       "label": "getConnectionStatus()",
@@ -773,10 +713,10 @@
       "source_location": "L387",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_getconnectionstatus",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "getconnectionstatus()"
+      "norm_label": "getconnectionstatus()",
+      "id": "viewer_react_src_api_client_getconnectionstatus"
     },
     {
       "label": "getFlightProhibitedAreas()",
@@ -785,10 +725,10 @@
       "source_location": "L177",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_getflightprohibitedareas",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "getflightprohibitedareas()"
+      "norm_label": "getflightprohibitedareas()",
+      "id": "viewer_react_src_api_client_getflightprohibitedareas"
     },
     {
       "label": "getGroundFeatures()",
@@ -797,10 +737,10 @@
       "source_location": "L115",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_getgroundfeatures",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "getgroundfeatures()"
+      "norm_label": "getgroundfeatures()",
+      "id": "viewer_react_src_api_client_getgroundfeatures"
     },
     {
       "label": "getGroundFeaturesInBbox()",
@@ -809,10 +749,10 @@
       "source_location": "L326",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_getgroundfeaturesinbbox",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "getgroundfeaturesinbbox()"
+      "norm_label": "getgroundfeaturesinbbox()",
+      "id": "viewer_react_src_api_client_getgroundfeaturesinbbox"
     },
     {
       "label": "getKnownProhibitedAreas()",
@@ -821,10 +761,10 @@
       "source_location": "L359",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_getknownprohibitedareas",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "getknownprohibitedareas()"
+      "norm_label": "getknownprohibitedareas()",
+      "id": "viewer_react_src_api_client_getknownprohibitedareas"
     },
     {
       "label": "parseDatasetMeta()",
@@ -833,10 +773,10 @@
       "source_location": "L262",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_parsedatasetmeta",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "parsedatasetmeta()"
+      "norm_label": "parsedatasetmeta()",
+      "id": "viewer_react_src_api_client_parsedatasetmeta"
     },
     {
       "label": "registerRoute()",
@@ -845,10 +785,10 @@
       "source_location": "L76",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_registerroute",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "registerroute()"
+      "norm_label": "registerroute()",
+      "id": "viewer_react_src_api_client_registerroute"
     },
     {
       "label": "App()",
@@ -857,10 +797,10 @@
       "source_location": "L83",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_app_app",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "app()"
+      "norm_label": "app()",
+      "id": "viewer_react_src_app_app"
     },
     {
       "label": "boundsContain()",
@@ -869,10 +809,10 @@
       "source_location": "L52",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_app_boundscontain",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "boundscontain()"
+      "norm_label": "boundscontain()",
+      "id": "viewer_react_src_app_boundscontain"
     },
     {
       "label": "padBounds()",
@@ -881,10 +821,10 @@
       "source_location": "L41",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_react_src_app_padbounds",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "padbounds()"
+      "norm_label": "padbounds()",
+      "id": "viewer_react_src_app_padbounds"
     },
     {
       "label": "ensureDiagonalHatchPattern()",
@@ -1029,78 +969,6 @@
       "community_name": "MapContainer.tsx",
       "norm_label": "settingspanel()",
       "id": "viewer_react_src_components_settingspanel_settingspanel"
-    },
-    {
-      "label": "_building_to_feature()",
-      "file_type": "code",
-      "source_file": "scripts/plateau/extract_buildings.py",
-      "source_location": "L108",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "_building_to_feature()",
-      "id": "scripts_plateau_extract_buildings_building_to_feature"
-    },
-    {
-      "label": "_extract_building_geometry()",
-      "file_type": "code",
-      "source_file": "scripts/plateau/extract_buildings.py",
-      "source_location": "L78",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "_extract_building_geometry()",
-      "id": "scripts_plateau_extract_buildings_extract_building_geometry"
-    },
-    {
-      "label": "_extract_height_m()",
-      "file_type": "code",
-      "source_file": "scripts/plateau/extract_buildings.py",
-      "source_location": "L98",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "_extract_height_m()",
-      "id": "scripts_plateau_extract_buildings_extract_height_m"
-    },
-    {
-      "label": "extract_mesh_geojson()",
-      "file_type": "code",
-      "source_file": "scripts/plateau/extract_buildings.py",
-      "source_location": "L124",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "extract_mesh_geojson()",
-      "id": "scripts_plateau_extract_buildings_extract_mesh_geojson"
-    },
-    {
-      "label": "main()",
-      "file_type": "code",
-      "source_file": "scripts/plateau/extract_buildings.py",
-      "source_location": "L142",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "main()",
-      "id": "scripts_plateau_extract_buildings_main"
-    },
-    {
-      "label": "_parse_pos_list_ring()",
-      "file_type": "code",
-      "source_file": "scripts/plateau/extract_buildings.py",
-      "source_location": "L63",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "_parse_pos_list_ring()",
-      "id": "scripts_plateau_extract_buildings_parse_pos_list_ring"
     },
     {
       "label": ".__init__()",
@@ -1617,6 +1485,78 @@
       "community_name": "extract_ground_features.py",
       "norm_label": "parse_codelist()",
       "id": "scripts_plateau_codelists_parse_codelist"
+    },
+    {
+      "label": "_building_to_feature()",
+      "file_type": "code",
+      "source_file": "scripts/plateau/extract_buildings.py",
+      "source_location": "L108",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "_building_to_feature()",
+      "id": "scripts_plateau_extract_buildings_building_to_feature"
+    },
+    {
+      "label": "_extract_building_geometry()",
+      "file_type": "code",
+      "source_file": "scripts/plateau/extract_buildings.py",
+      "source_location": "L78",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "_extract_building_geometry()",
+      "id": "scripts_plateau_extract_buildings_extract_building_geometry"
+    },
+    {
+      "label": "_extract_height_m()",
+      "file_type": "code",
+      "source_file": "scripts/plateau/extract_buildings.py",
+      "source_location": "L98",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "_extract_height_m()",
+      "id": "scripts_plateau_extract_buildings_extract_height_m"
+    },
+    {
+      "label": "extract_mesh_geojson()",
+      "file_type": "code",
+      "source_file": "scripts/plateau/extract_buildings.py",
+      "source_location": "L124",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "extract_mesh_geojson()",
+      "id": "scripts_plateau_extract_buildings_extract_mesh_geojson"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "scripts/plateau/extract_buildings.py",
+      "source_location": "L142",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "main()",
+      "id": "scripts_plateau_extract_buildings_main"
+    },
+    {
+      "label": "_parse_pos_list_ring()",
+      "file_type": "code",
+      "source_file": "scripts/plateau/extract_buildings.py",
+      "source_location": "L63",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "_parse_pos_list_ring()",
+      "id": "scripts_plateau_extract_buildings_parse_pos_list_ring"
     },
     {
       "label": "_clip_and_collect()",
@@ -2195,6 +2135,66 @@
       "id": "viewer_src_components_results_table_to_geojson"
     },
     {
+      "label": "_bbox_overlap()",
+      "file_type": "code",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L63",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "_bbox_overlap()",
+      "id": "viewer_src_plateau_route_judgment_bbox_overlap"
+    },
+    {
+      "label": "_ground_feature_sentence()",
+      "file_type": "code",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L67",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "_ground_feature_sentence()",
+      "id": "viewer_src_plateau_route_judgment_ground_feature_sentence"
+    },
+    {
+      "label": "judge_route_features()",
+      "file_type": "code",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L111",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "judge_route_features()",
+      "id": "viewer_src_plateau_route_judgment_judge_route_features"
+    },
+    {
+      "label": "_nearby_summary_sentence()",
+      "file_type": "code",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L92",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "_nearby_summary_sentence()",
+      "id": "viewer_src_plateau_route_judgment_nearby_summary_sentence"
+    },
+    {
+      "label": "_polygon_bbox()",
+      "file_type": "code",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L52",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "_polygon_bbox()",
+      "id": "viewer_src_plateau_route_judgment_polygon_bbox"
+    },
+    {
       "label": "_cross()",
       "file_type": "code",
       "source_file": "viewer/src/geometry.py",
@@ -2387,17 +2387,6 @@
       "community_name": "viewer_api/app.py",
       "norm_label": "plateau_metadata.py",
       "id": "viewer_src_plateau_metadata"
-    },
-    {
-      "label": "plateau_route_judgment.py",
-      "file_type": "code",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "plateau_route_judgment.py",
-      "id": "viewer_src_plateau_route_judgment"
     },
     {
       "label": "BFF\uff08Backend for Frontend\uff09API \u30b5\u30fc\u30d0\u30fc\u3002 React \u30d5\u30ed\u30f3\u30c8\u30a8\u30f3\u30c9\uff08viewer-react\uff09\u304b\u3089\u306e\u552f\u4e00\u306e\u63a5\u7d9a\u5148\u3002Laravel\u2026",
@@ -2631,70 +2620,15 @@
       "id": "viewer_src_plateau_metadata_rationale_1"
     },
     {
-      "label": "6-11\u301c6-13: \u822a\u8def\u7167\u4f1a\u7d50\u679c\u306e\u6587\u7ae0\u5316\u3002\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "6-11\u301c6-13: \u822a\u8def\u7167\u4f1a\u7d50\u679c\u306e\u6587\u7ae0\u5316\u3002...",
-      "id": "viewer_src_plateau_route_judgment_rationale_1"
-    },
-    {
-      "label": "\u822a\u8def\u5468\u8fba\uff08bbox\uff09\u306e\u5efa\u7269\u30fb\u9053\u8def\u30fb\u571f\u7802\u707d\u5bb3\u30fb\u6d2a\u6c34\u6d78\u6c34\u30fb\u571f\u5730\u5229\u7528\u3092\u53d6\u5f97\u3057\u3001\u6587\u7ae0\u5316\u3059\u308b\u3002\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L119",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "\u822a\u8def\u5468\u8fba(bbox)\u306e\u5efa\u7269\u30fb\u9053\u8def\u30fb\u571f\u7802\u707d\u5bb3\u30fb\u6d2a\u6c34\u6d78\u6c34\u30fb\u571f\u5730\u5229\u7528\u3092\u53d6\u5f97\u3057\u3001\u6587\u7ae0\u5316\u3059\u308b\u3002...",
-      "id": "viewer_src_plateau_route_judgment_rationale_119"
-    },
-    {
-      "label": "GeoJSON Polygon/MultiPolygon\uff08[lon, lat]\u5ea7\u6a19\uff09\u304b\u3089(min_lat, min_lon, max_lat,\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L53",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "geojson polygon/multipolygon([lon, lat]\u5ea7\u6a19)\u304b\u3089(min_lat, min_lon, max_lat,...",
-      "id": "viewer_src_plateau_route_judgment_rationale_53"
-    },
-    {
-      "label": "\u4ea4\u5dee\u3057\u3066\u3044\u308b\u5730\u7269\uff081\u4ef6\u305a\u3064\u8868\u793a\uff09\u5411\u3051\u306e\u6587\u7ae0\u3002",
-      "file_type": "rationale",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L68",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "\u4ea4\u5dee\u3057\u3066\u3044\u308b\u5730\u7269(1\u4ef6\u3059\u3064\u8868\u793a)\u5411\u3051\u306e\u6587\u7ae0\u3002",
-      "id": "viewer_src_plateau_route_judgment_rationale_68"
-    },
-    {
-      "label": "\u4ea4\u5dee\u3057\u3066\u3044\u306a\u3044\u5730\u7269\uff08\u5206\u985e\u3054\u3068\u306b\u96c6\u7d04\u3057\u30661\u6587\u3067\u8868\u793a\uff09\u5411\u3051\u306e\u6587\u7ae0\u3002 \u500b\u3005\u306e\u30dd\u30ea\u30b4\u30f3\u3092\u884c\u3068\u3057\u3066\u4e26\u3079\u308b\u3068\u3001\u5bc6\u96c6\u30ec\u30a4\u30e4\uff08\u6d2a\u6c34\u6d78\u6c34\u7b49\uff09\u3067margin\u7bc4\u56f2\u5185\u306b\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/plateau_route_judgment.py",
-      "source_location": "L93",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "viewer_api/app.py",
-      "norm_label": "\u4ea4\u5dee\u3057\u3066\u3044\u306a\u3044\u5730\u7269(\u5206\u985e\u3053\u3068\u306b\u96c6\u7d04\u3057\u30661\u6587\u3066\u8868\u793a)\u5411\u3051\u306e\u6587\u7ae0\u3002 \u500b\u3005\u306e\u30db\u30ea\u30b3\u30f3\u3092\u884c\u3068\u3057\u3066\u4e26\u3078\u308b\u3068\u3001\u5bc6\u96c6\u30ec\u30a4\u30e4(\u6d2a\u6c34\u6d78\u6c34\u7b49)\u3066margin\u7bc4\u56f2\u5185\u306b...",
-      "id": "viewer_src_plateau_route_judgment_rationale_93"
-    },
-    {
       "label": "client.ts",
       "file_type": "code",
       "source_file": "viewer-react/src/api/client.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "viewer_react_src_api_client",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "client.ts"
+      "norm_label": "client.ts",
+      "id": "viewer_react_src_api_client"
     },
     {
       "label": "App.tsx",
@@ -2702,10 +2636,10 @@
       "source_file": "viewer-react/src/App.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "viewer_react_src_app",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "app.tsx"
+      "norm_label": "app.tsx",
+      "id": "viewer_react_src_app"
     },
     {
       "label": "GROUND_FEATURE_LAYERS",
@@ -2713,10 +2647,10 @@
       "source_file": "viewer-react/src/App.tsx",
       "source_location": "L30",
       "_origin": "ast",
-      "id": "viewer_react_src_app_ground_feature_layers",
       "community": 1,
       "community_name": "MapContainer.tsx",
-      "norm_label": "ground_feature_layers"
+      "norm_label": "ground_feature_layers",
+      "id": "viewer_react_src_app_ground_feature_layers"
     },
     {
       "label": "MapContainer.tsx",
@@ -2917,59 +2851,308 @@
       "id": "ref_react"
     },
     {
-      "label": "extract_buildings.py",
-      "file_type": "code",
-      "source_file": "scripts/plateau/extract_buildings.py",
+      "label": "SKILL.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": ".claude/skills/graphify/SKILL.md",
       "source_location": "L1",
+      "frontmatter": {
+        "name": "graphify",
+        "description": "Use for any question about a codebase, its architecture, file relationships, or project content \u2014 especially when graphify-out/ exists, where the question should be treated as a graphify query first. Turns any input (code, docs, papers, images, videos) into a persistent knowledge graph with god nodes, community detection, and query/path/explain tools."
+      },
       "_origin": "ast",
+      "id": "claude_skills_graphify_skill",
       "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "extract_buildings.py",
-      "id": "scripts_plateau_extract_buildings"
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "skill.md"
     },
     {
-      "label": "Element",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
+      "label": "For /graphify add and --watch",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L692",
       "_origin": "ast",
+      "id": "claude_skills_graphify_skill_for_graphify_add_and_watch",
       "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "element",
-      "id": "scripts_plateau_extract_buildings_py_element"
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "for /graphify add and --watch"
     },
     {
-      "label": "\u6539\u5584\u30bf\u30b9\u30af_\u79e9\u7236\u5e02\u5468\u8fbaPLATEAU\u5efa\u7269\u30ec\u30a4\u30e4\u30fc.md 6-2: \u5efa\u7269\u30c7\u30fc\u30bf\u306e\u518d\u62bd\u51fa\u3002 PLATEAU\u79e9\u7236\u5e022025\u306eCityGML\u2026",
-      "file_type": "rationale",
-      "source_file": "scripts/plateau/extract_buildings.py",
-      "source_location": "L1",
+      "label": "For /graphify query",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L680",
       "_origin": "ast",
+      "id": "claude_skills_graphify_skill_for_graphify_query",
       "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "\u6539\u5584\u30bf\u30b9\u30af_\u79e9\u7236\u5e02\u5468\u8fbaplateau\u5efa\u7269\u30ec\u30a4\u30e4\u30fc.md 6-2: \u5efa\u7269\u30c6\u30fc\u30bf\u306e\u518d\u62bd\u51fa\u3002 plateau\u79e9\u7236\u5e022025\u306ecitygml...",
-      "id": "scripts_plateau_extract_buildings_rationale_1"
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "for /graphify query"
     },
     {
-      "label": "`gml:posList`\uff08\"lat lon z lat lon z ...\"\uff09\u3092GeoJSON\u7528[[lon, lat], ...]\u3078\u5909\u63db\u3059\u308b\u3002\u2026",
-      "file_type": "rationale",
-      "source_file": "scripts/plateau/extract_buildings.py",
-      "source_location": "L64",
+      "label": "For the commit hook and native CLAUDE.md integration",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L698",
       "_origin": "ast",
+      "id": "claude_skills_graphify_skill_for_the_commit_hook_and_native_claude_md_integration",
       "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "`gml:poslist`(\"lat lon z lat lon z ...\")\u3092geojson\u7528[[lon, lat], ...]\u3078\u5909\u63db\u3059\u308b\u3002...",
-      "id": "scripts_plateau_extract_buildings_rationale_64"
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "for the commit hook and native claude.md integration"
     },
     {
-      "label": "`lod0RoofEdge`\u304b\u3089 GeoJSON Polygon/MultiPolygon geometry \u3092\u4f5c\u308b\u3002\u2026",
-      "file_type": "rationale",
-      "source_file": "scripts/plateau/extract_buildings.py",
-      "source_location": "L79",
+      "label": "For --update and --cluster-only",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L674",
       "_origin": "ast",
+      "id": "claude_skills_graphify_skill_for_update_and_cluster_only",
       "community": 10,
-      "community_name": "extract_buildings.py",
-      "norm_label": "`lod0roofedge`\u304b\u3089 geojson polygon/multipolygon geometry \u3092\u4f5c\u308b\u3002...",
-      "id": "scripts_plateau_extract_buildings_rationale_79"
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "for --update and --cluster-only"
+    },
+    {
+      "label": "/graphify",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_graphify",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "/graphify"
+    },
+    {
+      "label": "Honesty Rules",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L704",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_honesty_rules",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "honesty rules"
+    },
+    {
+      "label": "Interpreter guard for subcommands",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L656",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_interpreter_guard_for_subcommands",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "interpreter guard for subcommands"
+    },
+    {
+      "label": "Part A - Structural extraction for code files",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L170",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_part_a_structural_extraction_for_code_files",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "part a - structural extraction for code files"
+    },
+    {
+      "label": "Part B - Semantic extraction (parallel subagents)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L196",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_part_b_semantic_extraction_parallel_subagents",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "part b - semantic extraction (parallel subagents)"
+    },
+    {
+      "label": "Part C - Merge AST + semantic into final extraction",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L356",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_part_c_merge_ast_semantic_into_final_extraction",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "part c - merge ast + semantic into final extraction"
+    },
+    {
+      "label": "Step 0 - GitHub repos and multi-path merge (only if a URL or several paths)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L61",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_step_0_github_repos_and_multi_path_merge_only_if_a_url_or_several_paths",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "step 0 - github repos and multi-path merge (only if a url or several paths)"
+    },
+    {
+      "label": "Step 1 - Ensure graphify is installed",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L65",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_step_1_ensure_graphify_is_installed",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "step 1 - ensure graphify is installed"
+    },
+    {
+      "label": "Step 2.5 - Video and audio (only if video files detected)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L147",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_step_2_5_video_and_audio_only_if_video_files_detected",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "step 2.5 - video and audio (only if video files detected)"
+    },
+    {
+      "label": "Step 2 - Detect files",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L107",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_step_2_detect_files",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "step 2 - detect files"
+    },
+    {
+      "label": "Step 3 - Extract entities and relationships",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L151",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_step_3_extract_entities_and_relationships",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "step 3 - extract entities and relationships"
+    },
+    {
+      "label": "Step 4.5 - Graph health check (read-only integrity gate)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L453",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_step_4_5_graph_health_check_read_only_integrity_gate",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "step 4.5 - graph health check (read-only integrity gate)"
+    },
+    {
+      "label": "Step 4 - Build graph, cluster, analyze, generate outputs",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L390",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_step_4_build_graph_cluster_analyze_generate_outputs",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "step 4 - build graph, cluster, analyze, generate outputs"
+    },
+    {
+      "label": "Step 5 - Label communities",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L479",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_step_5_label_communities",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "step 5 - label communities"
+    },
+    {
+      "label": "Step 6 - Generate Obsidian vault (opt-in) + HTML",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L528",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_step_6_generate_obsidian_vault_opt_in_html",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "step 6 - generate obsidian vault (opt-in) + html"
+    },
+    {
+      "label": "Step 9 - Save manifest, update cost tracker, clean up, and report",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L554",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_step_9_save_manifest_update_cost_tracker_clean_up_and_report",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "step 9 - save manifest, update cost tracker, clean up, and report"
+    },
+    {
+      "label": "Steps 6b-8 - Wiki, Neo4j, FalkorDB, SVG, GraphML, MCP, benchmark (only on their flags)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L548",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_steps_6b_8_wiki_neo4j_falkordb_svg_graphml_mcp_benchmark_only_on_their_flags",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "steps 6b-8 - wiki, neo4j, falkordb, svg, graphml, mcp, benchmark (only on their flags)"
+    },
+    {
+      "label": "Usage",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_usage",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "usage"
+    },
+    {
+      "label": "What graphify is for",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_what_graphify_is_for",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "what graphify is for"
+    },
+    {
+      "label": "What You Must Do When Invoked",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "community": 10,
+      "community_name": "What You Must Do When Invoked",
+      "norm_label": "what you must do when invoked"
     },
     {
       "label": "RawIOBase",
@@ -3472,10 +3655,10 @@
       "source_file": ".claude/hooks/stop-log-reminder.ps1",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "claude_hooks_stop_log_reminder",
       "community": 23,
       "community_name": "stop-log-reminder.ps1",
-      "norm_label": "stop-log-reminder.ps1",
-      "id": "claude_hooks_stop_log_reminder"
+      "norm_label": "stop-log-reminder.ps1"
     },
     {
       "label": "Pattern",
@@ -3498,6 +3681,28 @@
       "community_name": "extract_ground_features.py",
       "norm_label": "codelists.py",
       "id": "scripts_plateau_codelists"
+    },
+    {
+      "label": "extract_buildings.py",
+      "file_type": "code",
+      "source_file": "scripts/plateau/extract_buildings.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "extract_buildings.py",
+      "id": "scripts_plateau_extract_buildings"
+    },
+    {
+      "label": "Element",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "element",
+      "id": "scripts_plateau_extract_buildings_py_element"
     },
     {
       "label": "extract_ground_features.py",
@@ -3597,6 +3802,39 @@
       "community_name": "extract_ground_features.py",
       "norm_label": "`codelists/{codelist_name}.xml`\u3092\u53d6\u5f97\u3057\u3066\u30cf\u30fc\u30b9\u3059\u308b\u3002",
       "id": "scripts_plateau_codelists_rationale_31"
+    },
+    {
+      "label": "\u6539\u5584\u30bf\u30b9\u30af_\u79e9\u7236\u5e02\u5468\u8fbaPLATEAU\u5efa\u7269\u30ec\u30a4\u30e4\u30fc.md 6-2: \u5efa\u7269\u30c7\u30fc\u30bf\u306e\u518d\u62bd\u51fa\u3002 PLATEAU\u79e9\u7236\u5e022025\u306eCityGML\u2026",
+      "file_type": "rationale",
+      "source_file": "scripts/plateau/extract_buildings.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "\u6539\u5584\u30bf\u30b9\u30af_\u79e9\u7236\u5e02\u5468\u8fbaplateau\u5efa\u7269\u30ec\u30a4\u30e4\u30fc.md 6-2: \u5efa\u7269\u30c6\u30fc\u30bf\u306e\u518d\u62bd\u51fa\u3002 plateau\u79e9\u7236\u5e022025\u306ecitygml...",
+      "id": "scripts_plateau_extract_buildings_rationale_1"
+    },
+    {
+      "label": "`gml:posList`\uff08\"lat lon z lat lon z ...\"\uff09\u3092GeoJSON\u7528[[lon, lat], ...]\u3078\u5909\u63db\u3059\u308b\u3002\u2026",
+      "file_type": "rationale",
+      "source_file": "scripts/plateau/extract_buildings.py",
+      "source_location": "L64",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "`gml:poslist`(\"lat lon z lat lon z ...\")\u3092geojson\u7528[[lon, lat], ...]\u3078\u5909\u63db\u3059\u308b\u3002...",
+      "id": "scripts_plateau_extract_buildings_rationale_64"
+    },
+    {
+      "label": "`lod0RoofEdge`\u304b\u3089 GeoJSON Polygon/MultiPolygon geometry \u3092\u4f5c\u308b\u3002\u2026",
+      "file_type": "rationale",
+      "source_file": "scripts/plateau/extract_buildings.py",
+      "source_location": "L79",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "extract_ground_features.py",
+      "norm_label": "`lod0roofedge`\u304b\u3089 geojson polygon/multipolygon geometry \u3092\u4f5c\u308b\u3002...",
+      "id": "scripts_plateau_extract_buildings_rationale_79"
     },
     {
       "label": "\u6539\u5584\u30bf\u30b9\u30af_\u79e9\u7236\u5e02\u5468\u8fbaPLATEAU\u5efa\u7269\u30ec\u30a4\u30e4\u30fc.md 6-2a: \u9053\u8def\u30fb\u571f\u7802\u707d\u5bb3\u30fb\u6d2a\u6c34\u6d78\u6c34\u30fb \u571f\u5730\u5229\u7528\u30c7\u30fc\u30bf\u306e\u518d\u62bd\u51fa\u3002\u2026",
@@ -3773,6 +4011,114 @@
       "community_name": "extract_ground_features.py",
       "norm_label": "3\u6b21\u30e1\u30c3\u30b7\u30e5\u30b3\u30fc\u30c8(8\u6841)\u304b\u3089\u3001\u305d\u306e\u30bb\u30eb\u81ea\u4f53\u306e(min_lat, max_lat, min_lon, max_lon)\u3092...",
       "id": "viewer_src_target_area_rationale_93"
+    },
+    {
+      "label": "exports.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_exports",
+      "community": 32,
+      "community_name": "graphify reference: extra exports and benchmark",
+      "norm_label": "exports.md"
+    },
+    {
+      "label": "graphify reference: extra exports and benchmark",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_exports_graphify_reference_extra_exports_and_benchmark",
+      "community": 32,
+      "community_name": "graphify reference: extra exports and benchmark",
+      "norm_label": "graphify reference: extra exports and benchmark"
+    },
+    {
+      "label": "Step 6b - Wiki (only if --wiki flag)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_exports_step_6b_wiki_only_if_wiki_flag",
+      "community": 32,
+      "community_name": "graphify reference: extra exports and benchmark",
+      "norm_label": "step 6b - wiki (only if --wiki flag)"
+    },
+    {
+      "label": "Step 7 - Neo4j export (only if --neo4j or --neo4j-push flag)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_exports_step_7_neo4j_export_only_if_neo4j_or_neo4j_push_flag",
+      "community": 32,
+      "community_name": "graphify reference: extra exports and benchmark",
+      "norm_label": "step 7 - neo4j export (only if --neo4j or --neo4j-push flag)"
+    },
+    {
+      "label": "Step 7a - FalkorDB export (only if --falkordb or --falkordb-push flag)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_exports_step_7a_falkordb_export_only_if_falkordb_or_falkordb_push_flag",
+      "community": 32,
+      "community_name": "graphify reference: extra exports and benchmark",
+      "norm_label": "step 7a - falkordb export (only if --falkordb or --falkordb-push flag)"
+    },
+    {
+      "label": "Step 7b - SVG export (only if --svg flag)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_exports_step_7b_svg_export_only_if_svg_flag",
+      "community": 32,
+      "community_name": "graphify reference: extra exports and benchmark",
+      "norm_label": "step 7b - svg export (only if --svg flag)"
+    },
+    {
+      "label": "Step 7c - GraphML export (only if --graphml flag)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_exports_step_7c_graphml_export_only_if_graphml_flag",
+      "community": 32,
+      "community_name": "graphify reference: extra exports and benchmark",
+      "norm_label": "step 7c - graphml export (only if --graphml flag)"
+    },
+    {
+      "label": "Step 7d - MCP server (only if --mcp flag)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_exports_step_7d_mcp_server_only_if_mcp_flag",
+      "community": 32,
+      "community_name": "graphify reference: extra exports and benchmark",
+      "norm_label": "step 7d - mcp server (only if --mcp flag)"
+    },
+    {
+      "label": "Step 8 - Token reduction benchmark (only if total_words > 5000)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L79",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_exports_step_8_token_reduction_benchmark_only_if_total_words_5000",
+      "community": 32,
+      "community_name": "graphify reference: extra exports and benchmark",
+      "norm_label": "step 8 - token reduction benchmark (only if total_words > 5000)"
     },
     {
       "label": "viewer_api/__init__.py",
@@ -4270,6 +4616,146 @@
       "id": "viewer_src_init"
     },
     {
+      "label": "query.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_query",
+      "community": 48,
+      "community_name": "graphify reference: query, path, explain",
+      "norm_label": "query.md"
+    },
+    {
+      "label": "For /graphify explain",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L254",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_query_for_graphify_explain",
+      "community": 48,
+      "community_name": "graphify reference: query, path, explain",
+      "norm_label": "for /graphify explain"
+    },
+    {
+      "label": "For /graphify path",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L186",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_query_for_graphify_path",
+      "community": 48,
+      "community_name": "graphify reference: query, path, explain",
+      "norm_label": "for /graphify path"
+    },
+    {
+      "label": "graphify reference: query, path, explain",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_query_graphify_reference_query_path_explain",
+      "community": 48,
+      "community_name": "graphify reference: query, path, explain",
+      "norm_label": "graphify reference: query, path, explain"
+    },
+    {
+      "label": "Step 0 \u2014 Constrained query expansion (REQUIRED before traversal)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_query_step_0_constrained_query_expansion_required_before_traversal",
+      "community": 48,
+      "community_name": "graphify reference: query, path, explain",
+      "norm_label": "step 0 \u2014 constrained query expansion (required before traversal)"
+    },
+    {
+      "label": "Step 1 \u2014 Traversal",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L61",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_query_step_1_traversal",
+      "community": 48,
+      "community_name": "graphify reference: query, path, explain",
+      "norm_label": "step 1 \u2014 traversal"
+    },
+    {
+      "label": "query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": "graphify-out/memory/query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md",
+      "source_location": "L1",
+      "frontmatter": {
+        "type": "query",
+        "date": "2026-08-19T03:40:46.703389+00:00",
+        "question": "Why does DigitalTwinApiClient connect Extraction error handling to API data models?",
+        "contributor": "graphify",
+        "outcome": "useful",
+        "source_nodes": "[&quot;DigitalTwinApiClient&quot;, &quot;ApiError&quot;, &quot;_client&quot;]"
+      },
+      "_origin": "ast",
+      "id": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e",
+      "community": 49,
+      "community_name": "Q: Why does DigitalTwinApiClient connect Extraction error handling to API data models?",
+      "norm_label": "query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md"
+    },
+    {
+      "label": "Answer",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "graphify-out/memory/query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_answer",
+      "community": 49,
+      "community_name": "Q: Why does DigitalTwinApiClient connect Extraction error handling to API data models?",
+      "norm_label": "answer"
+    },
+    {
+      "label": "Outcome",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "graphify-out/memory/query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_outcome",
+      "community": 49,
+      "community_name": "Q: Why does DigitalTwinApiClient connect Extraction error handling to API data models?",
+      "norm_label": "outcome"
+    },
+    {
+      "label": "Q: Why does DigitalTwinApiClient connect Extraction error handling to API data models?",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "graphify-out/memory/query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_q_why_does_digitaltwinapiclient_connect_extraction_error_handling_to_api_data_models",
+      "community": 49,
+      "community_name": "Q: Why does DigitalTwinApiClient connect Extraction error handling to API data models?",
+      "norm_label": "q: why does digitaltwinapiclient connect extraction error handling to api data models?"
+    },
+    {
+      "label": "Source Nodes",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "graphify-out/memory/query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_source_nodes",
+      "community": 49,
+      "community_name": "Q: Why does DigitalTwinApiClient connect Extraction error handling to API data models?",
+      "norm_label": "source nodes"
+    },
+    {
       "label": "viewer/app.py",
       "file_type": "code",
       "source_file": "viewer/app.py",
@@ -4468,6 +4954,246 @@
       "id": "viewer_src_theme_rationale_237"
     },
     {
+      "label": "add-watch.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": ".claude/skills/graphify/references/add-watch.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_add_watch",
+      "community": 50,
+      "community_name": "graphify reference: add a URL and watch a folder",
+      "norm_label": "add-watch.md"
+    },
+    {
+      "label": "For /graphify add",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/add-watch.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_add_watch_for_graphify_add",
+      "community": 50,
+      "community_name": "graphify reference: add a URL and watch a folder",
+      "norm_label": "for /graphify add"
+    },
+    {
+      "label": "For --watch",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/add-watch.md",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_add_watch_for_watch",
+      "community": 50,
+      "community_name": "graphify reference: add a URL and watch a folder",
+      "norm_label": "for --watch"
+    },
+    {
+      "label": "graphify reference: add a URL and watch a folder",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/add-watch.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_add_watch_graphify_reference_add_a_url_and_watch_a_folder",
+      "community": 50,
+      "community_name": "graphify reference: add a URL and watch a folder",
+      "norm_label": "graphify reference: add a url and watch a folder"
+    },
+    {
+      "label": "hooks.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": ".claude/skills/graphify/references/hooks.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_hooks",
+      "community": 51,
+      "community_name": "graphify reference: commit hook and native CLAUDE.md integration",
+      "norm_label": "hooks.md"
+    },
+    {
+      "label": "For git commit hook",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/hooks.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_hooks_for_git_commit_hook",
+      "community": 51,
+      "community_name": "graphify reference: commit hook and native CLAUDE.md integration",
+      "norm_label": "for git commit hook"
+    },
+    {
+      "label": "For native CLAUDE.md integration",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/hooks.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_hooks_for_native_claude_md_integration",
+      "community": 51,
+      "community_name": "graphify reference: commit hook and native CLAUDE.md integration",
+      "norm_label": "for native claude.md integration"
+    },
+    {
+      "label": "graphify reference: commit hook and native CLAUDE.md integration",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/hooks.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_hooks_graphify_reference_commit_hook_and_native_claude_md_integration",
+      "community": 51,
+      "community_name": "graphify reference: commit hook and native CLAUDE.md integration",
+      "norm_label": "graphify reference: commit hook and native claude.md integration"
+    },
+    {
+      "label": "update.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": ".claude/skills/graphify/references/update.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_update",
+      "community": 52,
+      "community_name": "graphify reference: incremental update and cluster-only",
+      "norm_label": "update.md"
+    },
+    {
+      "label": "For --cluster-only",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/update.md",
+      "source_location": "L202",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_update_for_cluster_only",
+      "community": 52,
+      "community_name": "graphify reference: incremental update and cluster-only",
+      "norm_label": "for --cluster-only"
+    },
+    {
+      "label": "For --update (incremental re-extraction)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/update.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_update_for_update_incremental_re_extraction",
+      "community": 52,
+      "community_name": "graphify reference: incremental update and cluster-only",
+      "norm_label": "for --update (incremental re-extraction)"
+    },
+    {
+      "label": "graphify reference: incremental update and cluster-only",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/update.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_update_graphify_reference_incremental_update_and_cluster_only",
+      "community": 52,
+      "community_name": "graphify reference: incremental update and cluster-only",
+      "norm_label": "graphify reference: incremental update and cluster-only"
+    },
+    {
+      "label": "github-and-merge.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": ".claude/skills/graphify/references/github-and-merge.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_github_and_merge",
+      "community": 53,
+      "community_name": "graphify reference: GitHub clone and cross-repo merge",
+      "norm_label": "github-and-merge.md"
+    },
+    {
+      "label": "graphify reference: GitHub clone and cross-repo merge",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/github-and-merge.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_github_and_merge_graphify_reference_github_clone_and_cross_repo_merge",
+      "community": 53,
+      "community_name": "graphify reference: GitHub clone and cross-repo merge",
+      "norm_label": "graphify reference: github clone and cross-repo merge"
+    },
+    {
+      "label": "Step 0 - Clone GitHub repo(s) (only if a GitHub URL was given)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/github-and-merge.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_github_and_merge_step_0_clone_github_repo_s_only_if_a_github_url_was_given",
+      "community": 53,
+      "community_name": "graphify reference: GitHub clone and cross-repo merge",
+      "norm_label": "step 0 - clone github repo(s) (only if a github url was given)"
+    },
+    {
+      "label": "transcribe.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": ".claude/skills/graphify/references/transcribe.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_transcribe",
+      "community": 54,
+      "community_name": "graphify reference: transcribe video and audio",
+      "norm_label": "transcribe.md"
+    },
+    {
+      "label": "graphify reference: transcribe video and audio",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/transcribe.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_transcribe_graphify_reference_transcribe_video_and_audio",
+      "community": 54,
+      "community_name": "graphify reference: transcribe video and audio",
+      "norm_label": "graphify reference: transcribe video and audio"
+    },
+    {
+      "label": "Step 2.5 - Transcribe video / audio files (only if video files detected)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/transcribe.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_transcribe_step_2_5_transcribe_video_audio_files_only_if_video_files_detected",
+      "community": 54,
+      "community_name": "graphify reference: transcribe video and audio",
+      "norm_label": "step 2.5 - transcribe video / audio files (only if video files detected)"
+    },
+    {
+      "label": "extraction-spec.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": ".claude/skills/graphify/references/extraction-spec.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_extraction_spec",
+      "community": 55,
+      "community_name": "extraction-spec.md",
+      "norm_label": "extraction-spec.md"
+    },
+    {
+      "label": "graphify reference: extraction subagent prompt (compact)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": ".claude/skills/graphify/references/extraction-spec.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_skills_graphify_references_extraction_spec_graphify_reference_extraction_subagent_prompt_compact",
+      "community": 55,
+      "community_name": "extraction-spec.md",
+      "norm_label": "graphify reference: extraction subagent prompt (compact)"
+    },
+    {
       "label": "DataFrame",
       "file_type": "code",
       "source_file": "",
@@ -4510,6 +5236,17 @@
       "community_name": "altitude.py",
       "norm_label": "results_table.py",
       "id": "viewer_src_components_results_table"
+    },
+    {
+      "label": "plateau_route_judgment.py",
+      "file_type": "code",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "plateau_route_judgment.py",
+      "id": "viewer_src_plateau_route_judgment"
     },
     {
       "label": "\u4ed5\u69d8\u66f8\u00a75-3: \u9ad8\u5ea6\u57fa\u6e96\u306e\u7d71\u4e00\u3002 \u524d\u63d0\u6761\u4ef6\uff08\u00a75-3\u306e1\u301c3\uff09\u306e\u8a18\u9332: 1. \u5ea7\u6a19\u53c2\u7167\u7cfb\u30fb\u5358\u4f4d\u30fb\u6642\u70b9 -\u2026",
@@ -4609,6 +5346,61 @@
       "community_name": "altitude.py",
       "norm_label": "design.md \u00a77-1 \u5fc5\u9808\u5217\u3092\u6e80\u305f\u3059\u884c\u30c6\u30fc\u30bf\u3092\u7d44\u307f\u7acb\u3066\u308b\u3002 \u300c\u4ea4\u5dee\u5224\u5b9a\u300d\u306f\u57fa\u672c\u7684\u306b\u6c34\u5e73\u65b9\u5411\u306e\u30cf\u30a6\u30f3\u30c6\u30a3\u30f3\u30af\u30db\u30c3\u30af\u30b9\u91cd\u306a\u308a\u306e\u307f\u3092\u898b\u305f\u7c21\u6613\u5224\u5b9a\u3066\u3042\u308b\u3002...",
       "id": "viewer_src_components_results_table_rationale_87"
+    },
+    {
+      "label": "6-11\u301c6-13: \u822a\u8def\u7167\u4f1a\u7d50\u679c\u306e\u6587\u7ae0\u5316\u3002\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "6-11\u301c6-13: \u822a\u8def\u7167\u4f1a\u7d50\u679c\u306e\u6587\u7ae0\u5316\u3002...",
+      "id": "viewer_src_plateau_route_judgment_rationale_1"
+    },
+    {
+      "label": "\u822a\u8def\u5468\u8fba\uff08bbox\uff09\u306e\u5efa\u7269\u30fb\u9053\u8def\u30fb\u571f\u7802\u707d\u5bb3\u30fb\u6d2a\u6c34\u6d78\u6c34\u30fb\u571f\u5730\u5229\u7528\u3092\u53d6\u5f97\u3057\u3001\u6587\u7ae0\u5316\u3059\u308b\u3002\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L119",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "\u822a\u8def\u5468\u8fba(bbox)\u306e\u5efa\u7269\u30fb\u9053\u8def\u30fb\u571f\u7802\u707d\u5bb3\u30fb\u6d2a\u6c34\u6d78\u6c34\u30fb\u571f\u5730\u5229\u7528\u3092\u53d6\u5f97\u3057\u3001\u6587\u7ae0\u5316\u3059\u308b\u3002...",
+      "id": "viewer_src_plateau_route_judgment_rationale_119"
+    },
+    {
+      "label": "GeoJSON Polygon/MultiPolygon\uff08[lon, lat]\u5ea7\u6a19\uff09\u304b\u3089(min_lat, min_lon, max_lat,\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L53",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "geojson polygon/multipolygon([lon, lat]\u5ea7\u6a19)\u304b\u3089(min_lat, min_lon, max_lat,...",
+      "id": "viewer_src_plateau_route_judgment_rationale_53"
+    },
+    {
+      "label": "\u4ea4\u5dee\u3057\u3066\u3044\u308b\u5730\u7269\uff081\u4ef6\u305a\u3064\u8868\u793a\uff09\u5411\u3051\u306e\u6587\u7ae0\u3002",
+      "file_type": "rationale",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L68",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "\u4ea4\u5dee\u3057\u3066\u3044\u308b\u5730\u7269(1\u4ef6\u3059\u3064\u8868\u793a)\u5411\u3051\u306e\u6587\u7ae0\u3002",
+      "id": "viewer_src_plateau_route_judgment_rationale_68"
+    },
+    {
+      "label": "\u4ea4\u5dee\u3057\u3066\u3044\u306a\u3044\u5730\u7269\uff08\u5206\u985e\u3054\u3068\u306b\u96c6\u7d04\u3057\u30661\u6587\u3067\u8868\u793a\uff09\u5411\u3051\u306e\u6587\u7ae0\u3002 \u500b\u3005\u306e\u30dd\u30ea\u30b4\u30f3\u3092\u884c\u3068\u3057\u3066\u4e26\u3079\u308b\u3068\u3001\u5bc6\u96c6\u30ec\u30a4\u30e4\uff08\u6d2a\u6c34\u6d78\u6c34\u7b49\uff09\u3067margin\u7bc4\u56f2\u5185\u306b\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/plateau_route_judgment.py",
+      "source_location": "L93",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "altitude.py",
+      "norm_label": "\u4ea4\u5dee\u3057\u3066\u3044\u306a\u3044\u5730\u7269(\u5206\u985e\u3053\u3068\u306b\u96c6\u7d04\u3057\u30661\u6587\u3066\u8868\u793a)\u5411\u3051\u306e\u6587\u7ae0\u3002 \u500b\u3005\u306e\u30db\u30ea\u30b3\u30f3\u3092\u884c\u3068\u3057\u3066\u4e26\u3078\u308b\u3068\u3001\u5bc6\u96c6\u30ec\u30a4\u30e4(\u6d2a\u6c34\u6d78\u6c34\u7b49)\u3066margin\u7bc4\u56f2\u5185\u306b...",
+      "id": "viewer_src_plateau_route_judgment_rationale_93"
     },
     {
       "label": "tsconfig.app.json",
@@ -6674,9 +7466,9 @@
       "source_location": "L287",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client_getbuildingsinbbox",
-      "target": "viewer_react_src_api_client_describeerror",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_describeerror"
     },
     {
       "relation": "calls",
@@ -6686,9 +7478,9 @@
       "source_location": "L290",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client_getbuildingsinbbox",
-      "target": "viewer_react_src_api_client_parsedatasetmeta",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_parsedatasetmeta"
     },
     {
       "relation": "calls",
@@ -6698,9 +7490,9 @@
       "source_location": "L395",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client_getconnectionstatus",
-      "target": "viewer_react_src_api_client_describeerror",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_describeerror"
     },
     {
       "relation": "calls",
@@ -6710,9 +7502,9 @@
       "source_location": "L202",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client_getflightprohibitedareas",
-      "target": "viewer_react_src_api_client_describeerror",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_describeerror"
     },
     {
       "relation": "calls",
@@ -6722,9 +7514,9 @@
       "source_location": "L142",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client_getgroundfeatures",
-      "target": "viewer_react_src_api_client_describeerror",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_describeerror"
     },
     {
       "relation": "calls",
@@ -6734,9 +7526,9 @@
       "source_location": "L150",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client_getgroundfeatures",
-      "target": "viewer_react_src_api_client_parsedatasetmeta",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_parsedatasetmeta"
     },
     {
       "relation": "calls",
@@ -6746,9 +7538,9 @@
       "source_location": "L345",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client_getgroundfeaturesinbbox",
-      "target": "viewer_react_src_api_client_describeerror",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_describeerror"
     },
     {
       "relation": "calls",
@@ -6758,9 +7550,9 @@
       "source_location": "L348",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client_getgroundfeaturesinbbox",
-      "target": "viewer_react_src_api_client_parsedatasetmeta",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_parsedatasetmeta"
     },
     {
       "relation": "calls",
@@ -6770,9 +7562,9 @@
       "source_location": "L363",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client_getknownprohibitedareas",
-      "target": "viewer_react_src_api_client_describeerror",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_describeerror"
     },
     {
       "relation": "calls",
@@ -6782,9 +7574,9 @@
       "source_location": "L101",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client_registerroute",
-      "target": "viewer_react_src_api_client_describeerror",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_describeerror"
     },
     {
       "relation": "calls",
@@ -6794,9 +7586,9 @@
       "source_location": "L135",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_app",
-      "target": "viewer_react_src_api_client_getconnectionstatus",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getconnectionstatus"
     },
     {
       "relation": "calls",
@@ -6806,9 +7598,9 @@
       "source_location": "L145",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_app",
-      "target": "viewer_react_src_api_client_getknownprohibitedareas",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getknownprohibitedareas"
     },
     {
       "relation": "calls",
@@ -6818,9 +7610,9 @@
       "source_location": "L166",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_app",
-      "target": "viewer_react_src_app_boundscontain",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_app_boundscontain"
     },
     {
       "relation": "calls",
@@ -6830,9 +7622,9 @@
       "source_location": "L172",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_app",
-      "target": "viewer_react_src_app_padbounds",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_app_padbounds"
     },
     {
       "relation": "calls",
@@ -6842,9 +7634,9 @@
       "source_location": "L175",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_app",
-      "target": "viewer_react_src_api_client_getbuildingsinbbox",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getbuildingsinbbox"
     },
     {
       "relation": "calls",
@@ -6854,9 +7646,9 @@
       "source_location": "L241",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_app",
-      "target": "viewer_react_src_api_client_getgroundfeaturesinbbox",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getgroundfeaturesinbbox"
     },
     {
       "relation": "calls",
@@ -6866,9 +7658,9 @@
       "source_location": "L291",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_app",
-      "target": "viewer_react_src_api_client_registerroute",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_registerroute"
     },
     {
       "relation": "calls",
@@ -6878,9 +7670,9 @@
       "source_location": "L309",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_app",
-      "target": "viewer_react_src_api_client_getgroundfeatures",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getgroundfeatures"
     },
     {
       "relation": "calls",
@@ -6890,9 +7682,9 @@
       "source_location": "L316",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_app",
-      "target": "viewer_react_src_api_client_getflightprohibitedareas",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getflightprohibitedareas"
     },
     {
       "relation": "calls",
@@ -8138,9 +8930,9 @@
       "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_queryresult",
-      "target": "viewer_react_src_api_client_groundfeature",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_groundfeature"
     },
     {
       "relation": "references",
@@ -8150,9 +8942,9 @@
       "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_queryresult",
-      "target": "viewer_react_src_api_client_nearbyfeaturesummary",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_nearbyfeaturesummary"
     },
     {
       "relation": "references",
@@ -8162,9 +8954,9 @@
       "source_location": "L73",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_queryresult",
-      "target": "viewer_react_src_api_client_prohibitedarea",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_prohibitedarea"
     },
     {
       "relation": "references",
@@ -8174,9 +8966,9 @@
       "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app_queryresult",
-      "target": "viewer_react_src_api_client_plateaudatasetmeta",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_plateaudatasetmeta"
     },
     {
       "relation": "references",
@@ -8858,9 +9650,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_components_mapcontainer_mapbounds",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_components_mapcontainer_mapbounds"
     },
     {
       "relation": "imports",
@@ -8870,9 +9662,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_connectionstatus",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_connectionstatus"
     },
     {
       "relation": "imports",
@@ -8882,9 +9674,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_getbuildingsinbbox",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getbuildingsinbbox"
     },
     {
       "relation": "imports",
@@ -8894,9 +9686,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_getconnectionstatus",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getconnectionstatus"
     },
     {
       "relation": "imports",
@@ -8906,9 +9698,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_getflightprohibitedareas",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getflightprohibitedareas"
     },
     {
       "relation": "imports",
@@ -8918,9 +9710,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_getgroundfeatures",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getgroundfeatures"
     },
     {
       "relation": "imports",
@@ -8930,9 +9722,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_getgroundfeaturesinbbox",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getgroundfeaturesinbbox"
     },
     {
       "relation": "imports",
@@ -8942,9 +9734,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_getknownprohibitedareas",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getknownprohibitedareas"
     },
     {
       "relation": "imports",
@@ -8954,9 +9746,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_groundfeature",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_groundfeature"
     },
     {
       "relation": "imports",
@@ -8966,9 +9758,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_groundfeaturelayerkey",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_groundfeaturelayerkey"
     },
     {
       "relation": "imports",
@@ -8978,9 +9770,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_knownprohibitedarea",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_knownprohibitedarea"
     },
     {
       "relation": "imports",
@@ -8990,9 +9782,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_nearbyfeaturesummary",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_nearbyfeaturesummary"
     },
     {
       "relation": "imports",
@@ -9002,9 +9794,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_plateaubuildingfeature",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_plateaubuildingfeature"
     },
     {
       "relation": "imports",
@@ -9014,9 +9806,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_plateaudatasetmeta",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_plateaudatasetmeta"
     },
     {
       "relation": "imports",
@@ -9026,9 +9818,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_plateaugroundfeature",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_plateaugroundfeature"
     },
     {
       "relation": "imports",
@@ -9038,9 +9830,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_prohibitedarea",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_prohibitedarea"
     },
     {
       "relation": "imports",
@@ -9050,9 +9842,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client_registerroute",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_registerroute"
     },
     {
       "relation": "imports",
@@ -9578,9 +10370,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "ref_react",
-      "confidence_score": 1.0
+      "target": "ref_react"
     },
     {
       "relation": "imports_from",
@@ -9590,9 +10382,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_components_settingspanel",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_components_settingspanel"
     },
     {
       "relation": "imports_from",
@@ -9602,9 +10394,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_components_mapcontainer",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_components_mapcontainer"
     },
     {
       "relation": "imports_from",
@@ -9614,9 +10406,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_components_resultspanel",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_components_resultspanel"
     },
     {
       "relation": "imports_from",
@@ -9626,9 +10418,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_api_client",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client"
     },
     {
       "relation": "imports_from",
@@ -10265,6 +11057,611 @@
       "confidence_score": 1.0,
       "source": "viewer_src_components_route_form",
       "target": "viewer_src_components_status_panel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/add-watch.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_add_watch",
+      "target": "claude_skills_graphify_references_add_watch_graphify_reference_add_a_url_and_watch_a_folder",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/add-watch.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_add_watch_graphify_reference_add_a_url_and_watch_a_folder",
+      "target": "claude_skills_graphify_references_add_watch_for_watch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/add-watch.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_add_watch_graphify_reference_add_a_url_and_watch_a_folder",
+      "target": "claude_skills_graphify_references_add_watch_for_graphify_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_exports",
+      "target": "claude_skills_graphify_references_exports_graphify_reference_extra_exports_and_benchmark",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_exports_graphify_reference_extra_exports_and_benchmark",
+      "target": "claude_skills_graphify_references_exports_step_7_neo4j_export_only_if_neo4j_or_neo4j_push_flag",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_exports_graphify_reference_extra_exports_and_benchmark",
+      "target": "claude_skills_graphify_references_exports_step_7a_falkordb_export_only_if_falkordb_or_falkordb_push_flag",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_exports_graphify_reference_extra_exports_and_benchmark",
+      "target": "claude_skills_graphify_references_exports_step_7b_svg_export_only_if_svg_flag",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_exports_graphify_reference_extra_exports_and_benchmark",
+      "target": "claude_skills_graphify_references_exports_step_6b_wiki_only_if_wiki_flag",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_exports_graphify_reference_extra_exports_and_benchmark",
+      "target": "claude_skills_graphify_references_exports_step_7c_graphml_export_only_if_graphml_flag",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_exports_graphify_reference_extra_exports_and_benchmark",
+      "target": "claude_skills_graphify_references_exports_step_7d_mcp_server_only_if_mcp_flag",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/exports.md",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_exports_graphify_reference_extra_exports_and_benchmark",
+      "target": "claude_skills_graphify_references_exports_step_8_token_reduction_benchmark_only_if_total_words_5000",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/extraction-spec.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_extraction_spec",
+      "target": "claude_skills_graphify_references_extraction_spec_graphify_reference_extraction_subagent_prompt_compact",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/github-and-merge.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_github_and_merge",
+      "target": "claude_skills_graphify_references_github_and_merge_graphify_reference_github_clone_and_cross_repo_merge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/github-and-merge.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_github_and_merge_graphify_reference_github_clone_and_cross_repo_merge",
+      "target": "claude_skills_graphify_references_github_and_merge_step_0_clone_github_repo_s_only_if_a_github_url_was_given",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/hooks.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_hooks",
+      "target": "claude_skills_graphify_references_hooks_graphify_reference_commit_hook_and_native_claude_md_integration",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/hooks.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_hooks_graphify_reference_commit_hook_and_native_claude_md_integration",
+      "target": "claude_skills_graphify_references_hooks_for_native_claude_md_integration",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/hooks.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_hooks_graphify_reference_commit_hook_and_native_claude_md_integration",
+      "target": "claude_skills_graphify_references_hooks_for_git_commit_hook",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_query",
+      "target": "claude_skills_graphify_references_query_graphify_reference_query_path_explain",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L186",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_query_graphify_reference_query_path_explain",
+      "target": "claude_skills_graphify_references_query_for_graphify_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_query_graphify_reference_query_path_explain",
+      "target": "claude_skills_graphify_references_query_step_0_constrained_query_expansion_required_before_traversal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L254",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_query_graphify_reference_query_path_explain",
+      "target": "claude_skills_graphify_references_query_for_graphify_explain",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/query.md",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_query_graphify_reference_query_path_explain",
+      "target": "claude_skills_graphify_references_query_step_1_traversal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/transcribe.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_transcribe",
+      "target": "claude_skills_graphify_references_transcribe_graphify_reference_transcribe_video_and_audio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/transcribe.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_transcribe_graphify_reference_transcribe_video_and_audio",
+      "target": "claude_skills_graphify_references_transcribe_step_2_5_transcribe_video_audio_files_only_if_video_files_detected",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/update.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_update",
+      "target": "claude_skills_graphify_references_update_graphify_reference_incremental_update_and_cluster_only",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/update.md",
+      "source_location": "L202",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_update_graphify_reference_incremental_update_and_cluster_only",
+      "target": "claude_skills_graphify_references_update_for_cluster_only",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/references/update.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_references_update_graphify_reference_incremental_update_and_cluster_only",
+      "target": "claude_skills_graphify_references_update_for_update_incremental_re_extraction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill",
+      "target": "claude_skills_graphify_skill_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_graphify",
+      "target": "claude_skills_graphify_skill_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_graphify",
+      "target": "claude_skills_graphify_skill_what_graphify_is_for",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_graphify",
+      "target": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L656",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_graphify",
+      "target": "claude_skills_graphify_skill_interpreter_guard_for_subcommands",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L674",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_graphify",
+      "target": "claude_skills_graphify_skill_for_update_and_cluster_only",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L680",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_graphify",
+      "target": "claude_skills_graphify_skill_for_graphify_query",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L692",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_graphify",
+      "target": "claude_skills_graphify_skill_for_graphify_add_and_watch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L698",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_graphify",
+      "target": "claude_skills_graphify_skill_for_the_commit_hook_and_native_claude_md_integration",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L704",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_graphify",
+      "target": "claude_skills_graphify_skill_honesty_rules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L170",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_step_3_extract_entities_and_relationships",
+      "target": "claude_skills_graphify_skill_part_a_structural_extraction_for_code_files",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L196",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_step_3_extract_entities_and_relationships",
+      "target": "claude_skills_graphify_skill_part_b_semantic_extraction_parallel_subagents",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L356",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_step_3_extract_entities_and_relationships",
+      "target": "claude_skills_graphify_skill_part_c_merge_ast_semantic_into_final_extraction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_step_2_detect_files",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L147",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_step_2_5_video_and_audio_only_if_video_files_detected",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L151",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_step_3_extract_entities_and_relationships",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L390",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_step_4_build_graph_cluster_analyze_generate_outputs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L453",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_step_4_5_graph_health_check_read_only_integrity_gate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L479",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_step_5_label_communities",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L528",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_step_6_generate_obsidian_vault_opt_in_html",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L548",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_steps_6b_8_wiki_neo4j_falkordb_svg_graphml_mcp_benchmark_only_on_their_flags",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L554",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_step_9_save_manifest_update_cost_tracker_clean_up_and_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_step_0_github_repos_and_multi_path_merge_only_if_a_url_or_several_paths",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/skills/graphify/SKILL.md",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "claude_skills_graphify_skill_what_you_must_do_when_invoked",
+      "target": "claude_skills_graphify_skill_step_1_ensure_graphify_is_installed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "graphify-out/memory/query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e",
+      "target": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_q_why_does_digitaltwinapiclient_connect_extraction_error_handling_to_api_data_models",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "graphify-out/memory/query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_q_why_does_digitaltwinapiclient_connect_extraction_error_handling_to_api_data_models",
+      "target": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_answer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "graphify-out/memory/query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_q_why_does_digitaltwinapiclient_connect_extraction_error_handling_to_api_data_models",
+      "target": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_outcome",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "graphify-out/memory/query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_q_why_does_digitaltwinapiclient_connect_extraction_error_handling_to_api_data_models",
+      "target": "graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e_source_nodes",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11142,9 +12539,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_droneroute",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_droneroute"
     },
     {
       "relation": "contains",
@@ -11153,9 +12550,9 @@
       "source_location": "L115",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_getgroundfeatures",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getgroundfeatures"
     },
     {
       "relation": "contains",
@@ -11164,9 +12561,9 @@
       "source_location": "L163",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_prohibitedarea",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_prohibitedarea"
     },
     {
       "relation": "contains",
@@ -11175,9 +12572,9 @@
       "source_location": "L177",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_getflightprohibitedareas",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getflightprohibitedareas"
     },
     {
       "relation": "contains",
@@ -11186,9 +12583,9 @@
       "source_location": "L216",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_knownprohibitedarea",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_knownprohibitedarea"
     },
     {
       "relation": "contains",
@@ -11197,9 +12594,9 @@
       "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_groundfeaturegroup",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_groundfeaturegroup"
     },
     {
       "relation": "contains",
@@ -11208,9 +12605,9 @@
       "source_location": "L228",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_plateaubuildinggeometry",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_plateaubuildinggeometry"
     },
     {
       "relation": "contains",
@@ -11219,9 +12616,9 @@
       "source_location": "L233",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_plateaubuildingfeature",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_plateaubuildingfeature"
     },
     {
       "relation": "contains",
@@ -11230,9 +12627,9 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_groundfeature",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_groundfeature"
     },
     {
       "relation": "contains",
@@ -11241,9 +12638,9 @@
       "source_location": "L247",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_plateaudatasetmeta",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_plateaudatasetmeta"
     },
     {
       "relation": "contains",
@@ -11252,9 +12649,9 @@
       "source_location": "L252",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_bboxfeatureresult",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_bboxfeatureresult"
     },
     {
       "relation": "contains",
@@ -11263,9 +12660,9 @@
       "source_location": "L262",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_parsedatasetmeta",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_parsedatasetmeta"
     },
     {
       "relation": "contains",
@@ -11274,9 +12671,9 @@
       "source_location": "L268",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_getbuildingsinbbox",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getbuildingsinbbox"
     },
     {
       "relation": "contains",
@@ -11285,9 +12682,9 @@
       "source_location": "L307",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_groundfeaturelayerkey",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_groundfeaturelayerkey"
     },
     {
       "relation": "contains",
@@ -11296,9 +12693,9 @@
       "source_location": "L309",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_plateaugroundfeature",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_plateaugroundfeature"
     },
     {
       "relation": "contains",
@@ -11307,9 +12704,9 @@
       "source_location": "L326",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_getgroundfeaturesinbbox",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getgroundfeaturesinbbox"
     },
     {
       "relation": "contains",
@@ -11318,9 +12715,9 @@
       "source_location": "L359",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_getknownprohibitedareas",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getknownprohibitedareas"
     },
     {
       "relation": "contains",
@@ -11329,9 +12726,9 @@
       "source_location": "L375",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_connectionstatus",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_connectionstatus"
     },
     {
       "relation": "contains",
@@ -11340,9 +12737,9 @@
       "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_nearbyfeaturesummary",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_nearbyfeaturesummary"
     },
     {
       "relation": "contains",
@@ -11351,9 +12748,9 @@
       "source_location": "L387",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_getconnectionstatus",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_getconnectionstatus"
     },
     {
       "relation": "contains",
@@ -11362,9 +12759,9 @@
       "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_groundfeatureresult",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_groundfeatureresult"
     },
     {
       "relation": "contains",
@@ -11373,9 +12770,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_apiresponse",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_apiresponse"
     },
     {
       "relation": "contains",
@@ -11384,9 +12781,9 @@
       "source_location": "L65",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_describeerror",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_describeerror"
     },
     {
       "relation": "contains",
@@ -11395,9 +12792,9 @@
       "source_location": "L76",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_api_client",
-      "target": "viewer_react_src_api_client_registerroute",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_api_client_registerroute"
     },
     {
       "relation": "contains",
@@ -11406,9 +12803,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_app_ground_feature_layers",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_app_ground_feature_layers"
     },
     {
       "relation": "contains",
@@ -11417,9 +12814,9 @@
       "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_app_padbounds",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_app_padbounds"
     },
     {
       "relation": "contains",
@@ -11428,9 +12825,9 @@
       "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_app_boundscontain",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_app_boundscontain"
     },
     {
       "relation": "contains",
@@ -11439,9 +12836,9 @@
       "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_app_queryresult",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_app_queryresult"
     },
     {
       "relation": "contains",
@@ -11450,9 +12847,9 @@
       "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_src_app",
-      "target": "viewer_react_src_app_app",
-      "confidence_score": 1.0
+      "target": "viewer_react_src_app_app"
     },
     {
       "relation": "contains",
@@ -14729,5 +16126,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "90d690d8e143ab60e7f60ddeb80954da6a5b12c4"
+  "built_at_commit": "4479767bb486d6e0ea868ff1090d8dd0bf2f8069"
 }
