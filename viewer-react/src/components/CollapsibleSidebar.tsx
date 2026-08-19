@@ -16,7 +16,7 @@ export default function CollapsibleSidebar({
 
   return (
     <aside
-      className={`relative shrink-0 transition-[width] duration-250 ease-in-out ${
+      className={`relative h-full shrink-0 transition-[width] duration-250 ease-in-out ${
         expanded ? 'w-80' : 'w-0'
       }`}
     >

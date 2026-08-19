@@ -115,7 +115,7 @@ export default function SettingsPanel({
   }, [startLat, startLon]);
 
   return (
-    <div className="w-80 bg-bg-panel border-r border-brand-blue-light/20 flex flex-col overflow-y-auto">
+    <div className="h-full w-80 bg-bg-panel border-r border-brand-blue-light/20 flex flex-col overflow-y-auto">
       {/* Connection status */}
       <div className="px-5 py-2.5 border-b border-bg-table-head">
         <div className="flex items-center gap-2">
