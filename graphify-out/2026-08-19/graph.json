@@ -43,6 +43,19 @@
       "norm_label": "registerrouterequest"
     },
     {
+      "label": "ApiError",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L45",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_apierror",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "apierror"
+    },
+    {
       "label": "MapBounds",
       "file_type": "code",
       "source_file": "src/components/MapContainer.tsx",
@@ -69,43 +82,30 @@
       "norm_label": "routedata"
     },
     {
-      "label": "ApiResponse",
+      "label": "Story",
       "file_type": "code",
-      "source_file": "src/api/client.ts",
-      "source_location": "L57",
+      "source_file": "src/components/MapContainer.stories.tsx",
+      "source_location": "L24",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_apiresponse",
-      "community": 24,
-      "community_name": "client.ts",
-      "norm_label": "apiresponse"
+      "id": "viewer_react_src_components_mapcontainer_stories_story",
+      "community": 1,
+      "community_name": "MapContainer.tsx",
+      "norm_label": "story"
     },
     {
-      "label": "BboxFeatureResult",
+      "label": "DigitalTwinApiClient",
       "file_type": "code",
-      "source_file": "src/api/client.ts",
-      "source_location": "L252",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L97",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_react_src_api_client_bboxfeatureresult",
-      "community": 24,
-      "community_name": "client.ts",
-      "norm_label": "bboxfeatureresult"
-    },
-    {
-      "label": "DroneRoute",
-      "file_type": "code",
-      "source_file": "src/api/client.ts",
-      "source_location": "L10",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "viewer_react_src_api_client_droneroute",
-      "community": 24,
-      "community_name": "client.ts",
-      "norm_label": "droneroute"
+      "id": "viewer_src_api_client_digitaltwinapiclient",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "digitaltwinapiclient"
     },
     {
       "label": "GroundFeatureLayerKey",
@@ -117,21 +117,8 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_groundfeaturelayerkey",
       "community": 24,
-      "community_name": "client.ts",
+      "community_name": "App.tsx",
       "norm_label": "groundfeaturelayerkey"
-    },
-    {
-      "label": "GroundFeatureResult",
-      "file_type": "code",
-      "source_file": "src/api/client.ts",
-      "source_location": "L46",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "viewer_react_src_api_client_groundfeatureresult",
-      "community": 24,
-      "community_name": "client.ts",
-      "norm_label": "groundfeatureresult"
     },
     {
       "label": "KnownProhibitedArea",
@@ -143,7 +130,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_knownprohibitedarea",
       "community": 24,
-      "community_name": "client.ts",
+      "community_name": "App.tsx",
       "norm_label": "knownprohibitedarea"
     },
     {
@@ -156,21 +143,8 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_plateaubuildingfeature",
       "community": 24,
-      "community_name": "client.ts",
+      "community_name": "App.tsx",
       "norm_label": "plateaubuildingfeature"
-    },
-    {
-      "label": "PlateauBuildingGeometry",
-      "file_type": "code",
-      "source_file": "src/api/client.ts",
-      "source_location": "L228",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "viewer_react_src_api_client_plateaubuildinggeometry",
-      "community": 24,
-      "community_name": "client.ts",
-      "norm_label": "plateaubuildinggeometry"
     },
     {
       "label": "PlateauDatasetMeta",
@@ -182,7 +156,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_plateaudatasetmeta",
       "community": 24,
-      "community_name": "client.ts",
+      "community_name": "App.tsx",
       "norm_label": "plateaudatasetmeta"
     },
     {
@@ -195,7 +169,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_plateaugroundfeature",
       "community": 24,
-      "community_name": "client.ts",
+      "community_name": "App.tsx",
       "norm_label": "plateaugroundfeature"
     },
     {
@@ -208,7 +182,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_components_mapcontainer_mapcontainerprops",
       "community": 24,
-      "community_name": "client.ts",
+      "community_name": "App.tsx",
       "norm_label": "mapcontainerprops"
     },
     {
@@ -236,6 +210,71 @@
       "community": 3,
       "community_name": "extract_ground_features.py",
       "norm_label": "remotezipindex"
+    },
+    {
+      "label": "ApiResponse",
+      "file_type": "code",
+      "source_file": "src/api/client.ts",
+      "source_location": "L57",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "viewer_react_src_api_client_apiresponse",
+      "community": 56,
+      "community_name": "client.ts",
+      "norm_label": "apiresponse"
+    },
+    {
+      "label": "BboxFeatureResult",
+      "file_type": "code",
+      "source_file": "src/api/client.ts",
+      "source_location": "L252",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "viewer_react_src_api_client_bboxfeatureresult",
+      "community": 56,
+      "community_name": "client.ts",
+      "norm_label": "bboxfeatureresult"
+    },
+    {
+      "label": "DroneRoute",
+      "file_type": "code",
+      "source_file": "src/api/client.ts",
+      "source_location": "L10",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "viewer_react_src_api_client_droneroute",
+      "community": 56,
+      "community_name": "client.ts",
+      "norm_label": "droneroute"
+    },
+    {
+      "label": "GroundFeatureResult",
+      "file_type": "code",
+      "source_file": "src/api/client.ts",
+      "source_location": "L46",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "viewer_react_src_api_client_groundfeatureresult",
+      "community": 56,
+      "community_name": "client.ts",
+      "norm_label": "groundfeatureresult"
+    },
+    {
+      "label": "PlateauBuildingGeometry",
+      "file_type": "code",
+      "source_file": "src/api/client.ts",
+      "source_location": "L228",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "viewer_react_src_api_client_plateaubuildinggeometry",
+      "community": 56,
+      "community_name": "client.ts",
+      "norm_label": "plateaubuildinggeometry"
     },
     {
       "label": "GroundFeature",
@@ -329,32 +368,6 @@
       "norm_label": "story"
     },
     {
-      "label": "ConnectionStatus",
-      "file_type": "code",
-      "source_file": "src/api/client.ts",
-      "source_location": "L375",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "viewer_react_src_api_client_connectionstatus",
-      "community": 58,
-      "community_name": "SettingsPanel.stories.tsx",
-      "norm_label": "connectionstatus"
-    },
-    {
-      "label": "SettingsPanelProps",
-      "file_type": "code",
-      "source_file": "src/components/SettingsPanel.tsx",
-      "source_location": "L4",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "viewer_react_src_components_settingspanel_settingspanelprops",
-      "community": 58,
-      "community_name": "SettingsPanel.stories.tsx",
-      "norm_label": "settingspanelprops"
-    },
-    {
       "label": "Story",
       "file_type": "code",
       "source_file": "src/components/SettingsPanel.stories.tsx",
@@ -368,30 +381,30 @@
       "norm_label": "story"
     },
     {
-      "label": "DigitalTwinApiClient",
+      "label": "ConnectionStatus",
       "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L97",
+      "source_file": "src/api/client.ts",
+      "source_location": "L375",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient",
+      "id": "viewer_react_src_api_client_connectionstatus",
       "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": "digitaltwinapiclient"
+      "community_name": "SettingsPanel.tsx",
+      "norm_label": "connectionstatus"
     },
     {
-      "label": "ApiError",
+      "label": "SettingsPanelProps",
       "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L45",
+      "source_file": "src/components/SettingsPanel.tsx",
+      "source_location": "L4",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "viewer_src_api_client_apierror",
-      "community": 68,
-      "community_name": "ApiError",
-      "norm_label": "apierror"
+      "id": "viewer_react_src_components_settingspanel_settingspanelprops",
+      "community": 65,
+      "community_name": "SettingsPanel.tsx",
+      "norm_label": "settingspanelprops"
     },
     {
       "label": "BboxTooLargeError",
@@ -445,6 +458,18 @@
       "norm_label": "_allowed_origins()"
     },
     {
+      "label": "_base_url()",
+      "file_type": "code",
+      "source_file": "viewer_api/app.py",
+      "source_location": "L110",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_api_app_base_url",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "_base_url()"
+    },
+    {
       "label": "_bbox()",
       "file_type": "code",
       "source_file": "viewer_api/app.py",
@@ -469,6 +494,30 @@
       "norm_label": "_bbox_overlap()"
     },
     {
+      "label": "_client()",
+      "file_type": "code",
+      "source_file": "viewer_api/app.py",
+      "source_location": "L146",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_api_app_client",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "_client()"
+    },
+    {
+      "label": "connection_status_endpoint()",
+      "file_type": "code",
+      "source_file": "viewer_api/app.py",
+      "source_location": "L281",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_api_app_connection_status_endpoint",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "connection_status_endpoint()"
+    },
+    {
       "label": "_enforce_rate_limit()",
       "file_type": "code",
       "source_file": "viewer_api/app.py",
@@ -479,6 +528,18 @@
       "community": 0,
       "community_name": "viewer_api/app.py",
       "norm_label": "_enforce_rate_limit()"
+    },
+    {
+      "label": "mock_mode()",
+      "file_type": "code",
+      "source_file": "viewer_api/app.py",
+      "source_location": "L132",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_api_app_mock_mode",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "mock_mode()"
     },
     {
       "label": "query_prohibited_areas_endpoint()",
@@ -515,6 +576,18 @@
       "community": 0,
       "community_name": "viewer_api/app.py",
       "norm_label": "_route_bbox()"
+    },
+    {
+      "label": "_truthy()",
+      "file_type": "code",
+      "source_file": "viewer_api/app.py",
+      "source_location": "L128",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_api_app_truthy",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "_truthy()"
     },
     {
       "label": "ensureDiagonalHatchPattern()",
@@ -633,7 +706,7 @@
       "_origin": "ast",
       "id": "viewer_src_altitude_extract_building_id",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "extract_building_id()"
     },
     {
@@ -645,7 +718,7 @@
       "_origin": "ast",
       "id": "viewer_src_altitude_extract_prohibited_area_id",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "extract_prohibited_area_id()"
     },
     {
@@ -657,8 +730,20 @@
       "_origin": "ast",
       "id": "viewer_src_altitude_lookup_building_footprint",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "lookup_building_footprint()"
+    },
+    {
+      "label": "lookup_building_height()",
+      "file_type": "code",
+      "source_file": "viewer/src/altitude.py",
+      "source_location": "L78",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_altitude_lookup_building_height",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "lookup_building_height()"
     },
     {
       "label": "lookup_prohibited_area_geometry()",
@@ -669,8 +754,164 @@
       "_origin": "ast",
       "id": "viewer_src_altitude_lookup_prohibited_area_geometry",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "lookup_prohibited_area_geometry()"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L46",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_apierror_init",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": "_center_spatial_id()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L80",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_center_spatial_id",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "_center_spatial_id()"
+    },
+    {
+      "label": ".check_connection()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L171",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_check_connection",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": ".check_connection()"
+    },
+    {
+      "label": ".check_connection_detail()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L137",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_check_connection_detail",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": ".check_connection_detail()"
+    },
+    {
+      "label": "._get()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L431",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_get",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "._get()"
+    },
+    {
+      "label": ".get_ground_feature_voxel()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L237",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_get_ground_feature_voxel",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": ".get_ground_feature_voxel()"
+    },
+    {
+      "label": "._headers()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L133",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_headers",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "._headers()"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L107",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_init",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".list_areas()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L340",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_list_areas",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": ".list_areas()"
+    },
+    {
+      "label": ".list_flight_prohibited_areas()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L394",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_list_flight_prohibited_areas",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": ".list_flight_prohibited_areas()"
+    },
+    {
+      "label": ".list_routes()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L218",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_list_routes",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": ".list_routes()"
+    },
+    {
+      "label": "._mock_buildings()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L456",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_mock_buildings",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "._mock_buildings()"
+    },
+    {
+      "label": "._post()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L443",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_post",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "._post()"
     },
     {
       "label": ".register_area()",
@@ -681,8 +922,20 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_digitaltwinapiclient_register_area",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": ".register_area()"
+    },
+    {
+      "label": ".register_flight_prohibited_area()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L377",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_digitaltwinapiclient_register_flight_prohibited_area",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": ".register_flight_prohibited_area()"
     },
     {
       "label": ".register_route()",
@@ -693,7 +946,7 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_digitaltwinapiclient_register_route",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": ".register_route()"
     },
     {
@@ -705,7 +958,7 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_generate_numeric_id",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "_generate_numeric_id()"
     },
     {
@@ -717,7 +970,7 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_now_iso",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "_now_iso()"
     },
     {
@@ -729,7 +982,7 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_now_mysql_datetime",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "_now_mysql_datetime()"
     },
     {
@@ -741,8 +994,116 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_poc_metadata",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "poc_metadata()"
+    },
+    {
+      "label": "_safe_json()",
+      "file_type": "code",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L68",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_api_client_safe_json",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "_safe_json()"
+    },
+    {
+      "label": "_bbox_from_route()",
+      "file_type": "code",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L21",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_bbox_from_route",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "_bbox_from_route()"
+    },
+    {
+      "label": "_default_base_url()",
+      "file_type": "code",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L27",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_default_base_url",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "_default_base_url()"
+    },
+    {
+      "label": "_handle_query()",
+      "file_type": "code",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L164",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_handle_query",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "_handle_query()"
+    },
+    {
+      "label": "_handle_register()",
+      "file_type": "code",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L131",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_handle_register",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "_handle_register()"
+    },
+    {
+      "label": "_handle_register_area()",
+      "file_type": "code",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L196",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_handle_register_area",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "_handle_register_area()"
+    },
+    {
+      "label": "render_settings_panel()",
+      "file_type": "code",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L38",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_render_settings_panel",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "render_settings_panel()"
+    },
+    {
+      "label": "render_space_id()",
+      "file_type": "code",
+      "source_file": "viewer/src/components/status_panel.py",
+      "source_location": "L24",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_components_status_panel_render_space_id",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "render_space_id()"
+    },
+    {
+      "label": "compute_real_spatial_id()",
+      "file_type": "code",
+      "source_file": "viewer/src/spatial_id.py",
+      "source_location": "L20",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_spatial_id_compute_real_spatial_id",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "compute_real_spatial_id()"
     },
     {
       "label": "maplibreWorkerAssets()",
@@ -755,6 +1116,30 @@
       "community": 21,
       "community_name": "vite.config.ts",
       "norm_label": "maplibreworkerassets()"
+    },
+    {
+      "label": "boundsContain()",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L52",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_react_src_app_boundscontain",
+      "community": 24,
+      "community_name": "App.tsx",
+      "norm_label": "boundscontain()"
+    },
+    {
+      "label": "padBounds()",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L41",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_react_src_app_padbounds",
+      "community": 24,
+      "community_name": "App.tsx",
+      "norm_label": "padbounds()"
     },
     {
       "label": "evaluate_building_vertical()",
@@ -1341,7 +1726,7 @@
       "_origin": "ast",
       "id": "viewer_src_access_gate_require_access_code",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "require_access_code()"
     },
     {
@@ -1353,104 +1738,44 @@
       "_origin": "ast",
       "id": "viewer_src_components_map_view_render_map",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "render_map()"
     },
     {
-      "label": "_bbox()",
+      "label": "render_altitude_verification_status()",
       "file_type": "code",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L17",
+      "source_file": "viewer/src/components/status_panel.py",
+      "source_location": "L50",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_results_table_bbox",
+      "id": "viewer_src_components_status_panel_render_altitude_verification_status",
       "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "_bbox()"
+      "community_name": "status_panel.py",
+      "norm_label": "render_altitude_verification_status()"
     },
     {
-      "label": "_bbox_overlap()",
+      "label": "render_connection_status()",
       "file_type": "code",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L23",
+      "source_file": "viewer/src/components/status_panel.py",
+      "source_location": "L13",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_results_table_bbox_overlap",
+      "id": "viewer_src_components_status_panel_render_connection_status",
       "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "_bbox_overlap()"
+      "community_name": "status_panel.py",
+      "norm_label": "render_connection_status()"
     },
     {
-      "label": "build_result_rows()",
+      "label": "render_poc_badge()",
       "file_type": "code",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L86",
+      "source_file": "viewer/src/components/status_panel.py",
+      "source_location": "L70",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_results_table_build_result_rows",
+      "id": "viewer_src_components_status_panel_render_poc_badge",
       "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "build_result_rows()"
-    },
-    {
-      "label": "_render_downloads()",
-      "file_type": "code",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L228",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_components_results_table_render_downloads",
-      "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "_render_downloads()"
-    },
-    {
-      "label": "render_intersection_table()",
-      "file_type": "code",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L202",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_components_results_table_render_intersection_table",
-      "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "render_intersection_table()"
-    },
-    {
-      "label": "render_query_result_summary()",
-      "file_type": "code",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L48",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_components_results_table_render_query_result_summary",
-      "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "render_query_result_summary()"
-    },
-    {
-      "label": "render_registration_result()",
-      "file_type": "code",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L27",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_components_results_table_render_registration_result",
-      "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "render_registration_result()"
-    },
-    {
-      "label": "_to_geojson()",
-      "file_type": "code",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L250",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_components_results_table_to_geojson",
-      "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "_to_geojson()"
+      "community_name": "status_panel.py",
+      "norm_label": "render_poc_badge()"
     },
     {
       "label": "disclaimer_footer_html()",
@@ -1461,7 +1786,7 @@
       "_origin": "ast",
       "id": "viewer_src_theme_disclaimer_footer_html",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "disclaimer_footer_html()"
     },
     {
@@ -1473,7 +1798,7 @@
       "_origin": "ast",
       "id": "viewer_src_theme_disclaimer_inline_html",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "disclaimer_inline_html()"
     },
     {
@@ -1485,8 +1810,32 @@
       "_origin": "ast",
       "id": "viewer_src_theme_inject_theme",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "inject_theme()"
+    },
+    {
+      "label": "poc_badge_html()",
+      "file_type": "code",
+      "source_file": "viewer/src/theme.py",
+      "source_location": "L227",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_theme_poc_badge_html",
+      "community": 5,
+      "community_name": "status_panel.py",
+      "norm_label": "poc_badge_html()"
+    },
+    {
+      "label": "status_badge_html()",
+      "file_type": "code",
+      "source_file": "viewer/src/theme.py",
+      "source_location": "L219",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "viewer_src_theme_status_badge_html",
+      "community": 5,
+      "community_name": "status_panel.py",
+      "norm_label": "status_badge_html()"
     },
     {
       "label": "describeError()",
@@ -1497,7 +1846,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_describeerror",
       "community": 56,
-      "community_name": "App.tsx",
+      "community_name": "client.ts",
       "norm_label": "describeerror()"
     },
     {
@@ -1509,7 +1858,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_getbuildingsinbbox",
       "community": 56,
-      "community_name": "App.tsx",
+      "community_name": "client.ts",
       "norm_label": "getbuildingsinbbox()"
     },
     {
@@ -1521,7 +1870,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_getconnectionstatus",
       "community": 56,
-      "community_name": "App.tsx",
+      "community_name": "client.ts",
       "norm_label": "getconnectionstatus()"
     },
     {
@@ -1533,7 +1882,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_getflightprohibitedareas",
       "community": 56,
-      "community_name": "App.tsx",
+      "community_name": "client.ts",
       "norm_label": "getflightprohibitedareas()"
     },
     {
@@ -1545,7 +1894,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_getgroundfeatures",
       "community": 56,
-      "community_name": "App.tsx",
+      "community_name": "client.ts",
       "norm_label": "getgroundfeatures()"
     },
     {
@@ -1557,7 +1906,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_getgroundfeaturesinbbox",
       "community": 56,
-      "community_name": "App.tsx",
+      "community_name": "client.ts",
       "norm_label": "getgroundfeaturesinbbox()"
     },
     {
@@ -1569,7 +1918,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_getknownprohibitedareas",
       "community": 56,
-      "community_name": "App.tsx",
+      "community_name": "client.ts",
       "norm_label": "getknownprohibitedareas()"
     },
     {
@@ -1581,7 +1930,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_parsedatasetmeta",
       "community": 56,
-      "community_name": "App.tsx",
+      "community_name": "client.ts",
       "norm_label": "parsedatasetmeta()"
     },
     {
@@ -1593,7 +1942,7 @@
       "_origin": "ast",
       "id": "viewer_react_src_api_client_registerroute",
       "community": 56,
-      "community_name": "App.tsx",
+      "community_name": "client.ts",
       "norm_label": "registerroute()"
     },
     {
@@ -1605,32 +1954,8 @@
       "_origin": "ast",
       "id": "viewer_react_src_app_app",
       "community": 56,
-      "community_name": "App.tsx",
+      "community_name": "client.ts",
       "norm_label": "app()"
-    },
-    {
-      "label": "boundsContain()",
-      "file_type": "code",
-      "source_file": "src/App.tsx",
-      "source_location": "L52",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_react_src_app_boundscontain",
-      "community": 56,
-      "community_name": "App.tsx",
-      "norm_label": "boundscontain()"
-    },
-    {
-      "label": "padBounds()",
-      "file_type": "code",
-      "source_file": "src/App.tsx",
-      "source_location": "L41",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_react_src_app_padbounds",
-      "community": 56,
-      "community_name": "App.tsx",
-      "norm_label": "padbounds()"
     },
     {
       "label": "AccordionIcon()",
@@ -1655,30 +1980,6 @@
       "community": 57,
       "community_name": "ResultsPanel.stories.tsx",
       "norm_label": "resultspanel()"
-    },
-    {
-      "label": "describeConnection()",
-      "file_type": "code",
-      "source_file": "src/components/SettingsPanel.tsx",
-      "source_location": "L40",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_react_src_components_settingspanel_describeconnection",
-      "community": 58,
-      "community_name": "SettingsPanel.stories.tsx",
-      "norm_label": "describeconnection()"
-    },
-    {
-      "label": "SettingsPanel()",
-      "file_type": "code",
-      "source_file": "src/components/SettingsPanel.tsx",
-      "source_location": "L67",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_react_src_components_settingspanel_settingspanel",
-      "community": 58,
-      "community_name": "SettingsPanel.stories.tsx",
-      "norm_label": "settingspanel()"
     },
     {
       "label": "query_features_endpoint()",
@@ -1717,292 +2018,124 @@
       "norm_label": "plateau_dataset_meta()"
     },
     {
-      "label": "render_altitude_verification_status()",
+      "label": "_bbox()",
       "file_type": "code",
-      "source_file": "viewer/src/components/status_panel.py",
-      "source_location": "L50",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_status_panel_render_altitude_verification_status",
+      "id": "viewer_src_components_results_table_bbox",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "render_altitude_verification_status()"
+      "community_name": "results_table.py",
+      "norm_label": "_bbox()"
     },
     {
-      "label": "render_connection_status()",
+      "label": "_bbox_overlap()",
       "file_type": "code",
-      "source_file": "viewer/src/components/status_panel.py",
-      "source_location": "L13",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L23",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_status_panel_render_connection_status",
+      "id": "viewer_src_components_results_table_bbox_overlap",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "render_connection_status()"
+      "community_name": "results_table.py",
+      "norm_label": "_bbox_overlap()"
     },
     {
-      "label": "render_poc_badge()",
+      "label": "build_result_rows()",
       "file_type": "code",
-      "source_file": "viewer/src/components/status_panel.py",
-      "source_location": "L70",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L86",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_status_panel_render_poc_badge",
+      "id": "viewer_src_components_results_table_build_result_rows",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "render_poc_badge()"
+      "community_name": "results_table.py",
+      "norm_label": "build_result_rows()"
     },
     {
-      "label": "render_space_id()",
+      "label": "_render_downloads()",
       "file_type": "code",
-      "source_file": "viewer/src/components/status_panel.py",
-      "source_location": "L24",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L228",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_status_panel_render_space_id",
+      "id": "viewer_src_components_results_table_render_downloads",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "render_space_id()"
+      "community_name": "results_table.py",
+      "norm_label": "_render_downloads()"
     },
     {
-      "label": "compute_real_spatial_id()",
+      "label": "render_intersection_table()",
       "file_type": "code",
-      "source_file": "viewer/src/spatial_id.py",
-      "source_location": "L20",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L202",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_spatial_id_compute_real_spatial_id",
+      "id": "viewer_src_components_results_table_render_intersection_table",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "compute_real_spatial_id()"
+      "community_name": "results_table.py",
+      "norm_label": "render_intersection_table()"
     },
     {
-      "label": "poc_badge_html()",
+      "label": "render_query_result_summary()",
       "file_type": "code",
-      "source_file": "viewer/src/theme.py",
-      "source_location": "L227",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L48",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_theme_poc_badge_html",
+      "id": "viewer_src_components_results_table_render_query_result_summary",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "poc_badge_html()"
+      "community_name": "results_table.py",
+      "norm_label": "render_query_result_summary()"
     },
     {
-      "label": "status_badge_html()",
+      "label": "render_registration_result()",
       "file_type": "code",
-      "source_file": "viewer/src/theme.py",
-      "source_location": "L219",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_theme_status_badge_html",
-      "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "status_badge_html()"
-    },
-    {
-      "label": "lookup_building_height()",
-      "file_type": "code",
-      "source_file": "viewer/src/altitude.py",
-      "source_location": "L78",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_altitude_lookup_building_height",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": "lookup_building_height()"
-    },
-    {
-      "label": "_center_spatial_id()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L80",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_center_spatial_id",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": "_center_spatial_id()"
-    },
-    {
-      "label": ".check_connection()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L171",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_check_connection",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": ".check_connection()"
-    },
-    {
-      "label": ".check_connection_detail()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L137",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_check_connection_detail",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": ".check_connection_detail()"
-    },
-    {
-      "label": "._get()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L431",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_get",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": "._get()"
-    },
-    {
-      "label": ".get_ground_feature_voxel()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L237",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_get_ground_feature_voxel",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": ".get_ground_feature_voxel()"
-    },
-    {
-      "label": "._headers()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L133",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_headers",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": "._headers()"
-    },
-    {
-      "label": ".list_areas()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L340",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_list_areas",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": ".list_areas()"
-    },
-    {
-      "label": ".list_flight_prohibited_areas()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L394",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_list_flight_prohibited_areas",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": ".list_flight_prohibited_areas()"
-    },
-    {
-      "label": ".list_routes()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L218",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_list_routes",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": ".list_routes()"
-    },
-    {
-      "label": "._mock_buildings()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L456",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_mock_buildings",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": "._mock_buildings()"
-    },
-    {
-      "label": "_bbox_from_route()",
-      "file_type": "code",
-      "source_file": "viewer/src/components/route_form.py",
-      "source_location": "L21",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_components_route_form_bbox_from_route",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "_bbox_from_route()"
-    },
-    {
-      "label": "_default_base_url()",
-      "file_type": "code",
-      "source_file": "viewer/src/components/route_form.py",
+      "source_file": "viewer/src/components/results_table.py",
       "source_location": "L27",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_route_form_default_base_url",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "_default_base_url()"
+      "id": "viewer_src_components_results_table_render_registration_result",
+      "community": 63,
+      "community_name": "results_table.py",
+      "norm_label": "render_registration_result()"
     },
     {
-      "label": "_handle_query()",
+      "label": "_to_geojson()",
       "file_type": "code",
-      "source_file": "viewer/src/components/route_form.py",
-      "source_location": "L164",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L250",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_route_form_handle_query",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "_handle_query()"
+      "id": "viewer_src_components_results_table_to_geojson",
+      "community": 63,
+      "community_name": "results_table.py",
+      "norm_label": "_to_geojson()"
     },
     {
-      "label": "_handle_register()",
+      "label": "describeConnection()",
       "file_type": "code",
-      "source_file": "viewer/src/components/route_form.py",
-      "source_location": "L131",
+      "source_file": "src/components/SettingsPanel.tsx",
+      "source_location": "L40",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_route_form_handle_register",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "_handle_register()"
+      "id": "viewer_react_src_components_settingspanel_describeconnection",
+      "community": 65,
+      "community_name": "SettingsPanel.tsx",
+      "norm_label": "describeconnection()"
     },
     {
-      "label": "_handle_register_area()",
+      "label": "SettingsPanel()",
       "file_type": "code",
-      "source_file": "viewer/src/components/route_form.py",
-      "source_location": "L196",
+      "source_file": "src/components/SettingsPanel.tsx",
+      "source_location": "L67",
       "_callable": true,
       "_origin": "ast",
-      "id": "viewer_src_components_route_form_handle_register_area",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "_handle_register_area()"
-    },
-    {
-      "label": "render_settings_panel()",
-      "file_type": "code",
-      "source_file": "viewer/src/components/route_form.py",
-      "source_location": "L38",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_components_route_form_render_settings_panel",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "render_settings_panel()"
+      "id": "viewer_react_src_components_settingspanel_settingspanel",
+      "community": 65,
+      "community_name": "SettingsPanel.tsx",
+      "norm_label": "settingspanel()"
     },
     {
       "label": "health_check()",
@@ -2063,126 +2196,6 @@
       "community": 67,
       "community_name": "get",
       "norm_label": "list_known_prohibited_areas()"
-    },
-    {
-      "label": ".__init__()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L46",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_apierror_init",
-      "community": 68,
-      "community_name": "ApiError",
-      "norm_label": ".__init__()"
-    },
-    {
-      "label": ".__init__()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L107",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_init",
-      "community": 68,
-      "community_name": "ApiError",
-      "norm_label": ".__init__()"
-    },
-    {
-      "label": "._post()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L443",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_post",
-      "community": 68,
-      "community_name": "ApiError",
-      "norm_label": "._post()"
-    },
-    {
-      "label": ".register_flight_prohibited_area()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L377",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_digitaltwinapiclient_register_flight_prohibited_area",
-      "community": 68,
-      "community_name": "ApiError",
-      "norm_label": ".register_flight_prohibited_area()"
-    },
-    {
-      "label": "_safe_json()",
-      "file_type": "code",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L68",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_src_api_client_safe_json",
-      "community": 68,
-      "community_name": "ApiError",
-      "norm_label": "_safe_json()"
-    },
-    {
-      "label": "_base_url()",
-      "file_type": "code",
-      "source_file": "viewer_api/app.py",
-      "source_location": "L110",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_api_app_base_url",
-      "community": 70,
-      "community_name": "_client",
-      "norm_label": "_base_url()"
-    },
-    {
-      "label": "_client()",
-      "file_type": "code",
-      "source_file": "viewer_api/app.py",
-      "source_location": "L146",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_api_app_client",
-      "community": 70,
-      "community_name": "_client",
-      "norm_label": "_client()"
-    },
-    {
-      "label": "connection_status_endpoint()",
-      "file_type": "code",
-      "source_file": "viewer_api/app.py",
-      "source_location": "L281",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_api_app_connection_status_endpoint",
-      "community": 70,
-      "community_name": "_client",
-      "norm_label": "connection_status_endpoint()"
-    },
-    {
-      "label": "mock_mode()",
-      "file_type": "code",
-      "source_file": "viewer_api/app.py",
-      "source_location": "L132",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_api_app_mock_mode",
-      "community": 70,
-      "community_name": "_client",
-      "norm_label": "mock_mode()"
-    },
-    {
-      "label": "_truthy()",
-      "file_type": "code",
-      "source_file": "viewer_api/app.py",
-      "source_location": "L128",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "viewer_api_app_truthy",
-      "community": 70,
-      "community_name": "_client",
-      "norm_label": "_truthy()"
     },
     {
       "label": "ground_features_bbox_endpoint()",
@@ -2328,6 +2341,17 @@
       "norm_label": "basemodel"
     },
     {
+      "label": "Exception",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "exception",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "exception"
+    },
+    {
       "label": "Request",
       "file_type": "code",
       "source_file": "",
@@ -2361,6 +2385,39 @@
       "norm_label": "bff(backend for frontend)api \u30b5\u30fc\u30cf\u30fc\u3002 react \u30d5\u30ed\u30f3\u30c8\u30a8\u30f3\u30c8(viewer-react)\u304b\u3089\u306e\u552f\u4e00\u306e\u63a5\u7d9a\u5148\u3002laravel..."
     },
     {
+      "label": "Laravel \u306e\u30d9\u30fc\u30b9URL\u3002 \u512a\u5148\u9806\u4f4d: 1. DIGITAL_TWIN_BASE_URL\uff08\u30ed\u30fc\u30ab\u30eb\u3067\u5b9fLaravel\u3078\u5411\u3051\u308b\u5834\u5408\u306b\u4f7f\u3046\uff09 2.\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer_api/app.py",
+      "source_location": "L111",
+      "_origin": "ast",
+      "id": "viewer_api_app_rationale_111",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "laravel \u306e\u30d8\u30fc\u30b9url\u3002 \u512a\u5148\u9806\u4f4d: 1. digital_twin_base_url(\u30ed\u30fc\u30ab\u30eb\u3066\u5b9flaravel\u3078\u5411\u3051\u308b\u5834\u5408\u306b\u4f7f\u3046) 2...."
+    },
+    {
+      "label": "\u30e2\u30c3\u30af\u3067\u52d5\u304b\u3059\u304b\u3069\u3046\u304b\u3002 MOCK_MODE \u3092\u660e\u793a\u6307\u5b9a\u3057\u305f\u5834\u5408\u306f\u5fc5\u305a\u305d\u308c\u306b\u5f93\u3046\u3002\u30ed\u30fc\u30ab\u30eb\u3067\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer_api/app.py",
+      "source_location": "L133",
+      "_origin": "ast",
+      "id": "viewer_api_app_rationale_133",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "\u30e2\u30c3\u30af\u3066\u52d5\u304b\u3059\u304b\u3068\u3046\u304b\u3002 mock_mode \u3092\u660e\u793a\u6307\u5b9a\u3057\u305f\u5834\u5408\u306f\u5fc5\u3059\u305d\u308c\u306b\u5f93\u3046\u3002\u30ed\u30fc\u30ab\u30eb\u3066..."
+    },
+    {
+      "label": "\u30ea\u30af\u30a8\u30b9\u30c8\u3054\u3068\u306b\u30af\u30e9\u30a4\u30a2\u30f3\u30c8\u3092\u4f5c\u308b\u3002BFF \u81ea\u4f53\u306f\u6c38\u7d9a\u5c64\u3092\u6301\u305f\u305a\u3001 Laravel \u304c\u552f\u4e00\u306e\u771f\u5b9f\uff08mock \u6642\u306e\u307f _MOCK_STORE \u304c\u305d\u306e\u4ee3\u5f79\uff09\u3002",
+      "file_type": "rationale",
+      "source_file": "viewer_api/app.py",
+      "source_location": "L147",
+      "_origin": "ast",
+      "id": "viewer_api_app_rationale_147",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "\u30ea\u30af\u30a8\u30b9\u30c8\u3053\u3068\u306b\u30af\u30e9\u30a4\u30a2\u30f3\u30c8\u3092\u4f5c\u308b\u3002bff \u81ea\u4f53\u306f\u6c38\u7d9a\u5c64\u3092\u6301\u305f\u3059\u3001 laravel \u304b\u552f\u4e00\u306e\u771f\u5b9f(mock \u6642\u306e\u307f _mock_store \u304b\u305d\u306e\u4ee3\u5f79)\u3002"
+    },
+    {
       "label": "\u59cb\u70b9\u30fb\u7d42\u70b9\u306e\u4e21\u65b9\u304b\u3089bbox\u3092\u4f5c\u308b\uff08`_bbox_from_route`\u3001route_form.py\u76f8\u5f53\uff09\u3002\u2026",
       "file_type": "rationale",
       "source_file": "viewer_api/app.py",
@@ -2370,6 +2427,17 @@
       "community": 0,
       "community_name": "viewer_api/app.py",
       "norm_label": "\u59cb\u70b9\u30fb\u7d42\u70b9\u306e\u4e21\u65b9\u304b\u3089bbox\u3092\u4f5c\u308b(`_bbox_from_route`\u3001route_form.py\u76f8\u5f53)\u3002..."
+    },
+    {
+      "label": "Laravel API \u3078\u306e\u5230\u9054\u53ef\u5426\u3002'connected' / 'disconnected' / 'error'\u3002 mock \u3068 base_url\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer_api/app.py",
+      "source_location": "L282",
+      "_origin": "ast",
+      "id": "viewer_api_app_rationale_282",
+      "community": 0,
+      "community_name": "viewer_api/app.py",
+      "norm_label": "laravel api \u3078\u306e\u5230\u9054\u53ef\u5426\u3002'connected' / 'disconnected' / 'error'\u3002 mock \u3068 base_url..."
     },
     {
       "label": "\u822a\u8def\u3092\u767b\u9332\u3059\u308b\u3002\u623b\u308a\u5024\u306e data.id \u304c\u822a\u8def\u306e\u8b58\u5225\u5b50\u3002",
@@ -2513,6 +2581,39 @@
       "community": 1,
       "community_name": "MapContainer.tsx",
       "norm_label": "route_source_ids"
+    },
+    {
+      "label": "MapContainer.stories.tsx",
+      "file_type": "code",
+      "source_file": "src/components/MapContainer.stories.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "viewer_react_src_components_mapcontainer_stories",
+      "community": 1,
+      "community_name": "MapContainer.tsx",
+      "norm_label": "mapcontainer.stories.tsx"
+    },
+    {
+      "label": "CollapsibleLegend",
+      "file_type": "code",
+      "source_file": "src/components/MapContainer.stories.tsx",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "viewer_react_src_components_mapcontainer_stories_collapsiblelegend",
+      "community": 1,
+      "community_name": "MapContainer.tsx",
+      "norm_label": "collapsiblelegend"
+    },
+    {
+      "label": "meta",
+      "file_type": "code",
+      "source_file": "src/components/MapContainer.stories.tsx",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "viewer_react_src_components_mapcontainer_stories_meta",
+      "community": 1,
+      "community_name": "MapContainer.tsx",
+      "norm_label": "meta"
     },
     {
       "label": ".claude/skills/graphify/SKILL.md",
@@ -5811,6 +5912,17 @@
       "norm_label": "ods-is-uasl \u30b3\u30fc\u30c8\u5b9f\u88c5\u8abf\u67fb"
     },
     {
+      "label": "Response",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "response",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "response"
+    },
+    {
       "label": "api_client.py",
       "file_type": "code",
       "source_file": "viewer/src/api_client.py",
@@ -5818,8 +5930,41 @@
       "_origin": "ast",
       "id": "viewer_src_api_client",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "api_client.py"
+    },
+    {
+      "label": "components/__init__.py",
+      "file_type": "code",
+      "source_file": "viewer/src/components/__init__.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "viewer_src_components_init",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "components/__init__.py"
+    },
+    {
+      "label": "route_form.py",
+      "file_type": "code",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "route_form.py"
+    },
+    {
+      "label": "spatial_id.py",
+      "file_type": "code",
+      "source_file": "viewer/src/spatial_id.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "viewer_src_spatial_id",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "spatial_id.py"
     },
     {
       "label": "voxelBitFileName\uff08`flight_prohibited_area/{flightProhibitedAreaId}.json`\uff09\u304b\u3089\u2026",
@@ -5829,7 +5974,7 @@
       "_origin": "ast",
       "id": "viewer_src_altitude_rationale_111",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "voxelbitfilename(`flight_prohibited_area/{flightprohibitedareaid}.json`)\u304b\u3089..."
     },
     {
@@ -5840,7 +5985,7 @@
       "_origin": "ast",
       "id": "viewer_src_altitude_rationale_120",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "flightprohibitedareaid\u304b\u3089[lat, lon]\u306e\u9589\u3057\u305f\u30ea\u30f3\u30af\u306e\u30ea\u30b9\u30c8(multipolygon\u3001..."
     },
     {
@@ -5851,7 +5996,7 @@
       "_origin": "ast",
       "id": "viewer_src_altitude_rationale_71",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "voxelbitfilename(`.../plateau/{mesh}/{buildingid}.json`)\u304b\u3089buildingid\u3092\u53d6\u308a\u51fa\u3059\u3002"
     },
     {
@@ -5862,7 +6007,7 @@
       "_origin": "ast",
       "id": "viewer_src_altitude_rationale_85",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "buildingid\u304b\u3089[lat, lon]\u306e\u9589\u3057\u305f\u30ea\u30f3\u30af(\u5730\u56f3\u63cf\u753b\u7528)\u3092\u8fd4\u3059\u3002"
     },
     {
@@ -5873,8 +6018,41 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_rationale_1",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "\u7a7a\u57df\u30c6\u30b7\u30bf\u30eb\u30c4\u30a4\u30f3api(\u4ed5\u69d8\u66f8\u00a76)\u30af\u30e9\u30a4\u30a2\u30f3\u30c8\u3002 phase a(`drone-web`+mysql\u306e\u30ed\u30fc\u30ab\u30ebdocker\u8d77\u52d5)\u304b\u672a\u5b9f\u65bd\u306e\u305f\u3081\u3001 \u65e2\u5b9a\u306f..."
+    },
+    {
+      "label": "('connected' / 'disconnected' / 'error', \u7406\u7531) \u3092\u8fd4\u3059\u3002 \u5b9f\u30b3\u30fc\u30c9\u78ba\u8a8d\u6e08\u307f: GET /drone_route \u306f\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L138",
+      "_origin": "ast",
+      "id": "viewer_src_api_client_rationale_138",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "('connected' / 'disconnected' / 'error', \u7406\u7531) \u3092\u8fd4\u3059\u3002 \u5b9f\u30b3\u30fc\u30c8\u78ba\u8a8d\u6e08\u307f: get /drone_route \u306f..."
+    },
+    {
+      "label": "connected' / 'disconnected' / 'error' \u306e\u3044\u305a\u308c\u304b\u3092\u8fd4\u3059\u3002",
+      "file_type": "rationale",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L172",
+      "_origin": "ast",
+      "id": "viewer_src_api_client_rationale_172",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "connected' / 'disconnected' / 'error' \u306e\u3044\u3059\u308c\u304b\u3092\u8fd4\u3059\u3002"
+    },
+    {
+      "label": "bbox = (min_lat, min_lon, max_lat, max_lon) Phase\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L238",
+      "_origin": "ast",
+      "id": "viewer_src_api_client_rationale_238",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "bbox = (min_lat, min_lon, max_lat, max_lon) phase..."
     },
     {
       "label": "\u5b9f\u30b3\u30fc\u30c9\u78ba\u8a8d\u6e08\u307f\uff08AreaObjectController::set_area_object_masters\uff09\u3002 features\u306fGeoJSON\u2026",
@@ -5884,8 +6062,19 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_rationale_292",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "\u5b9f\u30b3\u30fc\u30c8\u78ba\u8a8d\u6e08\u307f(areaobjectcontroller::set_area_object_masters)\u3002 features\u306fgeojson..."
+    },
+    {
+      "label": "\u5b9f\u30b3\u30fc\u30c9\u78ba\u8a8d\u6e08\u307f\uff08FlightProhibitedAreaController::set_flight_prohibited_area\uff09:\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L378",
+      "_origin": "ast",
+      "id": "viewer_src_api_client_rationale_378",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "\u5b9f\u30b3\u30fc\u30c8\u78ba\u8a8d\u6e08\u307f(flightprohibitedareacontroller::set_flight_prohibited_area):..."
     },
     {
       "label": "\u5b9f\u30b3\u30fc\u30c9\u78ba\u8a8d\u6e08\u307f: ApiFunction::check_datetime \u306f 'Y-m-d H:i:s' \u306e\u53b3\u5bc6\u4e00\u81f4\u306e\u307f\u8a31\u53ef\u3059\u308b \uff08airway-\u2026",
@@ -5895,7 +6084,7 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_rationale_57",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "\u5b9f\u30b3\u30fc\u30c8\u78ba\u8a8d\u6e08\u307f: apifunction::check_datetime \u306f 'y-m-d h:i:s' \u306e\u53b3\u5bc6\u4e00\u81f4\u306e\u307f\u8a31\u53ef\u3059\u308b (airway-..."
     },
     {
@@ -5906,8 +6095,19 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_rationale_63",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "droneroutecontroller::drone_route \u306f drone_route_id(\u6570\u5024\u3001\u30af\u30e9\u30a4\u30a2\u30f3\u30c8\u63a1\u756a)\u3092..."
+    },
+    {
+      "label": "\u5b9f\u30b3\u30fc\u30c9\u78ba\u8a8d\u6e08\u307f: drone_route \u306e\u767b\u9332\u6210\u529f\u6642\u306a\u3069\u3001\u672c\u6587\u304c\u7a7a\u306e\u30ec\u30b9\u30dd\u30f3\u30b9\u304c\u3042\u308b \uff08DroneRouteController::drone_route\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "viewer_src_api_client_rationale_69",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "\u5b9f\u30b3\u30fc\u30c8\u78ba\u8a8d\u6e08\u307f: drone_route \u306e\u767b\u9332\u6210\u529f\u6642\u306a\u3068\u3001\u672c\u6587\u304b\u7a7a\u306e\u30ec\u30b9\u30db\u30f3\u30b9\u304b\u3042\u308b (droneroutecontroller::drone_route..."
     },
     {
       "label": "\u4ed5\u69d8\u66f8\u00a76-1: \u3059\u3079\u3066\u306ePoC\u30ec\u30b3\u30fc\u30c9\u306b\u5fc5\u9808\u306e\u30e1\u30bf\u30c7\u30fc\u30bf\u3002",
@@ -5917,8 +6117,107 @@
       "_origin": "ast",
       "id": "viewer_src_api_client_rationale_87",
       "community": 2,
-      "community_name": "api_client.py",
+      "community_name": "DigitalTwinApiClient",
       "norm_label": "\u4ed5\u69d8\u66f8\u00a76-1: \u3059\u3078\u3066\u306epoc\u30ec\u30b3\u30fc\u30c8\u306b\u5fc5\u9808\u306e\u30e1\u30bf\u30c6\u30fc\u30bf\u3002"
+    },
+    {
+      "label": "api_key \u3092\u6307\u5b9a\u3059\u308b\u3068\u3001Drone-web\u5074\u306e\u7c21\u6613API\u30ad\u30fc\u8a8d\u8a3c\uff08junhongo-ccs/airway-digitaltwin-db \u306e\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/api_client.py",
+      "source_location": "L98",
+      "_origin": "ast",
+      "id": "viewer_src_api_client_rationale_98",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "api_key \u3092\u6307\u5b9a\u3059\u308b\u3068\u3001drone-web\u5074\u306e\u7c21\u6613api\u30ad\u30fc\u8a8d\u8a3c(junhongo-ccs/airway-digitaltwin-db \u306e..."
+    },
+    {
+      "label": "design.md \u00a74-1\u30fb\u00a710: \u5de6\u8a2d\u5b9a\u30d1\u30cd\u30eb\uff08API\u72b6\u614b\u30fb\u8a55\u4fa1\u72b6\u614b\u30fb\u822a\u8def\u8a2d\u5b9a\u30fb\u30ec\u30a4\u30e4\u9078\u629e\u30fb\u767b\u9332\u30fb\u7167\u4f1a\uff09\u3002",
+      "file_type": "rationale",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_rationale_1",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "design.md \u00a74-1\u30fb\u00a710: \u5de6\u8a2d\u5b9a\u30cf\u30cd\u30eb(api\u72b6\u614b\u30fb\u8a55\u4fa1\u72b6\u614b\u30fb\u822a\u8def\u8a2d\u5b9a\u30fb\u30ec\u30a4\u30e4\u9078\u629e\u30fb\u767b\u9332\u30fb\u7167\u4f1a)\u3002"
+    },
+    {
+      "label": "design.md \u00a710: \u5b9f\u884c\u524d\u306e\u4ef6\u6570\u30fb\u5bfe\u8c61\u30ec\u30a4\u30e4\u306f\u30b5\u30a4\u30c9\u30d0\u30fc\u306ecaption\u3067\u65e2\u306b\u660e\u793a\u6e08\u307f\u3002 \u3053\u3053\u3067\u306f\u5b9f\u884c\u5f8c\u306e\u7d50\u679c\u4ef6\u6570\u3068API\u5fdc\u7b54\u6642\u523b\u3092\u8a18\u9332\u3059\u308b\u3002",
+      "file_type": "rationale",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L132",
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_rationale_132",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "design.md \u00a710: \u5b9f\u884c\u524d\u306e\u4ef6\u6570\u30fb\u5bfe\u8c61\u30ec\u30a4\u30e4\u306f\u30b5\u30a4\u30c8\u30cf\u30fc\u306ecaption\u3066\u65e2\u306b\u660e\u793a\u6e08\u307f\u3002 \u3053\u3053\u3066\u306f\u5b9f\u884c\u5f8c\u306e\u7d50\u679c\u4ef6\u6570\u3068api\u5fdc\u7b54\u6642\u523b\u3092\u8a18\u9332\u3059\u308b\u3002"
+    },
+    {
+      "label": "4\u3064\u306e\u53d6\u5f97\u5143\uff08\u822a\u8def\u30fb\u5730\u7269\u30dc\u30af\u30bb\u30eb\u30fb\u6ce8\u610f\u533a\u57df\u30fb\u7981\u6b62\u533a\u57df\uff09\u306f\u305d\u308c\u305e\u308c\u72ec\u7acb\u3057\u305fAPI\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L165",
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_rationale_165",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "4\u3064\u306e\u53d6\u5f97\u5143(\u822a\u8def\u30fb\u5730\u7269\u30db\u30af\u30bb\u30eb\u30fb\u6ce8\u610f\u533a\u57df\u30fb\u7981\u6b62\u533a\u57df)\u306f\u305d\u308c\u305d\u308c\u72ec\u7acb\u3057\u305fapi..."
+    },
+    {
+      "label": "Phase A\u53d7\u5165\u57fa\u6e96\uff08\u4ed5\u69d8\u66f8\u00a710-3\u3001\u00a711-3\uff09\u300c\u30b5\u30f3\u30d7\u30eb\u306e\u6ce8\u610f\u533a\u57df\u3092\u767b\u9332\u3057\u3001API\u304b\u3089\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L197",
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_rationale_197",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "phase a\u53d7\u5165\u57fa\u6e96(\u4ed5\u69d8\u66f8\u00a710-3\u3001\u00a711-3)\u300c\u30b5\u30f3\u30d5\u30eb\u306e\u6ce8\u610f\u533a\u57df\u3092\u767b\u9332\u3057\u3001api\u304b\u3089..."
+    },
+    {
+      "label": "Render\u306eairspaceviewer\u304cPrivate Service airspace-drone-web\u3068\u540c\u5c45\u3059\u308b\u5834\u5408\u3001\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/components/route_form.py",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "viewer_src_components_route_form_rationale_28",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "render\u306eairspaceviewer\u304bprivate service airspace-drone-web\u3068\u540c\u5c45\u3059\u308b\u5834\u5408\u3001..."
+    },
+    {
+      "label": "design.md \u00a79-1: \u5bfe\u8c61\u7a7a\u9593ID\uff0f\u30dc\u30af\u30bb\u30eb\u89e3\u50cf\u5ea6\u3092\u8868\u793a\u3059\u308b\u3002\u30e6\u30fc\u30b6\u30fc\u5165\u529b\u3067\u306f\u306a\u304f\u3001 \u59cb\u70b9\u30fb\u7d42\u70b9\u30fbAGL\u304b\u3089\u7b97\u51fa\u3057\u305f\u5024\u3092\u8868\u793a\u3059\u308b\uff08\u4ed5\u69d8\u66f8\u00a78\uff09\u3002\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/components/status_panel.py",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "viewer_src_components_status_panel_rationale_25",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "design.md \u00a79-1: \u5bfe\u8c61\u7a7a\u9593id/\u30db\u30af\u30bb\u30eb\u89e3\u50cf\u5ea6\u3092\u8868\u793a\u3059\u308b\u3002\u30e6\u30fc\u30b5\u30fc\u5165\u529b\u3066\u306f\u306a\u304f\u3001 \u59cb\u70b9\u30fb\u7d42\u70b9\u30fbagl\u304b\u3089\u7b97\u51fa\u3057\u305f\u5024\u3092\u8868\u793a\u3059\u308b(\u4ed5\u69d8\u66f8\u00a78)\u3002..."
+    },
+    {
+      "label": "\u7a7a\u9593ID\u8a08\u7b97\u3002 \u4ed5\u69d8\u66f8\u00a712\u300c\u672a\u6c7a\u5b9a\u4e8b\u9805\u300d\u306f\u300c\u7a7a\u9593ID\u30fb\u30dc\u30af\u30bb\u30eb\uff1aID\u4ed5\u69d8\u3001\u5ea7\u6a19\u7cfb\u3001\u5358\u4f4d\u3001\u9ad8\u5ea6\u57fa\u6e96\u3001\u89e3\u50cf\u5ea6\u3092 \u78ba\u8a8d\u3059\u308b\u300d\u3068\u3057\u3066\u3044\u305f\u304c\u3001Drone-\u2026",
+      "file_type": "rationale",
+      "source_file": "viewer/src/spatial_id.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "viewer_src_spatial_id_rationale_1",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "\u7a7a\u9593id\u8a08\u7b97\u3002 \u4ed5\u69d8\u66f8\u00a712\u300c\u672a\u6c7a\u5b9a\u4e8b\u9805\u300d\u306f\u300c\u7a7a\u9593id\u30fb\u30db\u30af\u30bb\u30eb:id\u4ed5\u69d8\u3001\u5ea7\u6a19\u7cfb\u3001\u5358\u4f4d\u3001\u9ad8\u5ea6\u57fa\u6e96\u3001\u89e3\u50cf\u5ea6\u3092 \u78ba\u8a8d\u3059\u308b\u300d\u3068\u3057\u3066\u3044\u305f\u304b\u3001drone-..."
+    },
+    {
+      "label": "ApiFunction::get_spatial_xy_on_point\u306ePython\u79fb\u690d\u3002\"z/0/x/y\"\u5f62\u5f0f\u306e\u7a7a\u9593ID\u6587\u5b57\u5217\u3092\u8fd4\u3059\u3002",
+      "file_type": "rationale",
+      "source_file": "viewer/src/spatial_id.py",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "viewer_src_spatial_id_rationale_21",
+      "community": 2,
+      "community_name": "DigitalTwinApiClient",
+      "norm_label": "apifunction::get_spatial_xy_on_point\u306epython\u79fb\u690d\u3002\"z/0/x/y\"\u5f62\u5f0f\u306e\u7a7a\u9593id\u6587\u5b57\u5217\u3092\u8fd4\u3059\u3002"
     },
     {
       "label": "\u6539\u5584\u30bf\u30b9\u30af_\u79e9\u7236\u5e02\u5468\u8fbaPLATEAU\u5efa\u7269\u30ec\u30a4\u30e4\u30fc.md",
@@ -6110,15 +6409,26 @@
       "norm_label": "stop-log-reminder.ps1"
     },
     {
-      "label": "client.ts",
+      "label": "App.tsx",
       "file_type": "code",
-      "source_file": "src/api/client.ts",
+      "source_file": "src/App.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "viewer_react_src_api_client",
+      "id": "viewer_react_src_app",
       "community": 24,
-      "community_name": "client.ts",
-      "norm_label": "client.ts"
+      "community_name": "App.tsx",
+      "norm_label": "app.tsx"
+    },
+    {
+      "label": "GROUND_FEATURE_LAYERS",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "viewer_react_src_app_ground_feature_layers",
+      "community": 24,
+      "community_name": "App.tsx",
+      "norm_label": "ground_feature_layers"
     },
     {
       "label": "CLAUDE.md",
@@ -7447,6 +7757,17 @@
       "norm_label": "devdependencies"
     },
     {
+      "label": "autoprefixer",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_autoprefixer",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "autoprefixer"
+    },
+    {
       "label": "@chromatic-com/storybook",
       "file_type": "code",
       "source_file": "package.json",
@@ -7456,6 +7777,28 @@
       "community": 4,
       "community_name": "devDependencies",
       "norm_label": "@chromatic-com/storybook"
+    },
+    {
+      "label": "oxlint",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_oxlint",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "oxlint"
+    },
+    {
+      "label": "playwright",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_playwright",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "playwright"
     },
     {
       "label": "postcss",
@@ -7480,6 +7823,28 @@
       "norm_label": "storybook"
     },
     {
+      "label": "@storybook/addon-a11y",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_storybook_addon_a11y",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@storybook/addon-a11y"
+    },
+    {
+      "label": "@storybook/addon-docs",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_storybook_addon_docs",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@storybook/addon-docs"
+    },
+    {
       "label": "@storybook/addon-mcp",
       "file_type": "code",
       "source_file": "package.json",
@@ -7489,6 +7854,50 @@
       "community": 4,
       "community_name": "devDependencies",
       "norm_label": "@storybook/addon-mcp"
+    },
+    {
+      "label": "@storybook/addon-vitest",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_storybook_addon_vitest",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@storybook/addon-vitest"
+    },
+    {
+      "label": "@storybook/react-vite",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_storybook_react_vite",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@storybook/react-vite"
+    },
+    {
+      "label": "tailwindcss",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_tailwindcss",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "tailwindcss"
+    },
+    {
+      "label": "@types/geojson",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_types_geojson",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@types/geojson"
     },
     {
       "label": "@types/node",
@@ -7513,6 +7922,61 @@
       "norm_label": "@types/react"
     },
     {
+      "label": "@types/react-dom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_types_react_dom",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@types/react-dom"
+    },
+    {
+      "label": "typescript",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_typescript",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "typescript"
+    },
+    {
+      "label": "vite",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_vite",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "vite"
+    },
+    {
+      "label": "@vitejs/plugin-react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_vitejs_plugin_react",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@vitejs/plugin-react"
+    },
+    {
+      "label": "vitest",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_vitest",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "vitest"
+    },
+    {
       "label": "@vitest/browser-playwright",
       "file_type": "code",
       "source_file": "package.json",
@@ -7524,6 +7988,28 @@
       "norm_label": "@vitest/browser-playwright"
     },
     {
+      "label": "@vitest/coverage-v8",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "viewer_react_package_devdependencies_vitest_coverage_v8",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@vitest/coverage-v8"
+    },
+    {
+      "label": "autoprefixer",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "autoprefixer",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "autoprefixer"
+    },
+    {
       "label": "@chromatic-com/storybook",
       "file_type": "concept",
       "source_file": "package.json",
@@ -7533,6 +8019,28 @@
       "community": 4,
       "community_name": "devDependencies",
       "norm_label": "@chromatic-com/storybook"
+    },
+    {
+      "label": "oxlint",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "oxlint",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "oxlint"
+    },
+    {
+      "label": "playwright",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "playwright",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "playwright"
     },
     {
       "label": "postcss",
@@ -7557,6 +8065,28 @@
       "norm_label": "storybook"
     },
     {
+      "label": "@storybook/addon-a11y",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "storybook_addon_a11y",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@storybook/addon-a11y"
+    },
+    {
+      "label": "@storybook/addon-docs",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "storybook_addon_docs",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@storybook/addon-docs"
+    },
+    {
       "label": "@storybook/addon-mcp",
       "file_type": "concept",
       "source_file": "package.json",
@@ -7566,6 +8096,39 @@
       "community": 4,
       "community_name": "devDependencies",
       "norm_label": "@storybook/addon-mcp"
+    },
+    {
+      "label": "@storybook/addon-vitest",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "storybook_addon_vitest",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@storybook/addon-vitest"
+    },
+    {
+      "label": "@storybook/react-vite",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "storybook_react_vite",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@storybook/react-vite"
+    },
+    {
+      "label": "@types/geojson",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "types_geojson",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@types/geojson"
     },
     {
       "label": "@types/node",
@@ -7590,6 +8153,72 @@
       "norm_label": "@types/react"
     },
     {
+      "label": "@types/react-dom",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "types_react_dom",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@types/react-dom"
+    },
+    {
+      "label": "typescript",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "typescript",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "typescript"
+    },
+    {
+      "label": "tailwindcss",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "viewer_react_package_json_tailwindcss",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "tailwindcss"
+    },
+    {
+      "label": "vite",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "vite",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "vite"
+    },
+    {
+      "label": "@vitejs/plugin-react",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "vitejs_plugin_react",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@vitejs/plugin-react"
+    },
+    {
+      "label": "vitest",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "vitest",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "vitest"
+    },
+    {
       "label": "@vitest/browser-playwright",
       "file_type": "concept",
       "source_file": "package.json",
@@ -7599,6 +8228,17 @@
       "community": 4,
       "community_name": "devDependencies",
       "norm_label": "@vitest/browser-playwright"
+    },
+    {
+      "label": "@vitest/coverage-v8",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "vitest_coverage_v8",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@vitest/coverage-v8"
     },
     {
       "label": "postcss.config.js",
@@ -7934,17 +8574,6 @@
       "norm_label": "source nodes"
     },
     {
-      "label": "DataFrame",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "dataframe",
-      "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "dataframe"
-    },
-    {
       "label": "viewer/app.py",
       "file_type": "code",
       "source_file": "viewer/app.py",
@@ -7952,7 +8581,7 @@
       "_origin": "ast",
       "id": "viewer_app",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "viewer/app.py"
     },
     {
@@ -7963,7 +8592,7 @@
       "_origin": "ast",
       "id": "viewer_src_access_gate",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "access_gate.py"
     },
     {
@@ -7974,19 +8603,19 @@
       "_origin": "ast",
       "id": "viewer_src_components_map_view",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "map_view.py"
     },
     {
-      "label": "results_table.py",
+      "label": "status_panel.py",
       "file_type": "code",
-      "source_file": "viewer/src/components/results_table.py",
+      "source_file": "viewer/src/components/status_panel.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "viewer_src_components_results_table",
+      "id": "viewer_src_components_status_panel",
       "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "results_table.py"
+      "community_name": "status_panel.py",
+      "norm_label": "status_panel.py"
     },
     {
       "label": "config.py",
@@ -7996,7 +8625,7 @@
       "_origin": "ast",
       "id": "viewer_src_config",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "config.py"
     },
     {
@@ -8007,7 +8636,7 @@
       "_origin": "ast",
       "id": "viewer_src_theme",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "theme.py"
     },
     {
@@ -8018,7 +8647,7 @@
       "_origin": "ast",
       "id": "viewer_app_rationale_1",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "\u7a7a\u57df\u30c6\u30b7\u30bf\u30eb\u30c4\u30a4\u30f3gis viewer(poc) design.md(v1.2)\u306e\u30ec\u30a4\u30a2\u30a6\u30c8\u30fb\u30ab\u30e9\u30fc\u30fb\u30bf\u30a4\u30db\u30af\u30e9\u30d5\u30a3\u30fb\u72b6\u614b\u8868\u793a\u898f\u5b9a\u3068\u3001 `\u30c8\u30ed\u30fc\u30f3\u822a\u8defgis-..."
     },
     {
@@ -8029,7 +8658,7 @@
       "_origin": "ast",
       "id": "viewer_src_access_gate_rationale_1",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "\u7c21\u6613\u30a2\u30af\u30bb\u30b9\u30b1\u30fc\u30c8\u3002 \u4ed5\u69d8\u66f8\u00a79\u300c\u516c\u958b\u7bc4\u56f2:\u521d\u671f\u306f\u30a2\u30af\u30bb\u30b9\u5236\u9650\u3092\u639b\u3051\u305f\u691c\u8a3c\u74b0\u5883\u3068\u3059\u308b\u300d\u306b\u5bfe\u5fdc\u3059\u308b\u3002..."
     },
     {
@@ -8040,74 +8669,52 @@
       "_origin": "ast",
       "id": "viewer_src_components_map_view_rationale_1",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "design.md \u00a77, \u00a78: \u5730\u56f3\u8868\u793a\u3002 \u30ec\u30a4\u30e4\u8272\u306f design.md \u00a75-3 \u306e\u30c8\u30fc\u30af\u30f3\u3092\u305d\u306e\u307e\u307e\u4f7f\u7528\u3059\u308b\u3002\u305f\u305f\u3057\u5857\u308a\u30cf\u30bf\u30fc\u30f3..."
     },
     {
-      "label": "design.md \u00a77\u30fb\u00a77-1: \u7d50\u679c\u30c6\u30fc\u30d6\u30eb\u3002\u00a710-1: \u7a7a\u72b6\u614b\u30fb\u30a8\u30e9\u30fc\u30fb\u51e6\u7406\u4e2d\u8868\u793a\u3002 \u00a74-1:\u2026",
+      "label": "design.md \u00a79-1\u301c\u00a79-3: API\u63a5\u7d9a\u72b6\u614b\uff0f\u7a7a\u9593ID\u8868\u793a\uff0f\u8a55\u4fa1\u72b6\u614b\uff08\u9ad8\u5ea6\u57fa\u6e96\uff09\uff0fPoC\u8b58\u5225\u30d0\u30c3\u30b8\u3002",
       "file_type": "rationale",
-      "source_file": "viewer/src/components/results_table.py",
+      "source_file": "viewer/src/components/status_panel.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "viewer_src_components_results_table_rationale_1",
+      "id": "viewer_src_components_status_panel_rationale_1",
       "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "design.md \u00a77\u30fb\u00a77-1: \u7d50\u679c\u30c6\u30fc\u30d5\u30eb\u3002\u00a710-1: \u7a7a\u72b6\u614b\u30fb\u30a8\u30e9\u30fc\u30fb\u51e6\u7406\u4e2d\u8868\u793a\u3002 \u00a74-1:..."
+      "community_name": "status_panel.py",
+      "norm_label": "design.md \u00a79-1\u301c\u00a79-3: api\u63a5\u7d9a\u72b6\u614b/\u7a7a\u9593id\u8868\u793a/\u8a55\u4fa1\u72b6\u614b(\u9ad8\u5ea6\u57fa\u6e96)/poc\u8b58\u5225\u30cf\u30c3\u30b7\u3002"
     },
     {
-      "label": "design.md \u00a74-1\u300c\u4ea4\u5dee\u30fb\u8a73\u7d30\u8868\uff0f\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u300d\u30a8\u30ea\u30a2\u3002",
+      "label": "design.md \u00a79-1: \u5de6\u8a2d\u5b9a\u30d1\u30cd\u30eb\u6700\u4e0a\u90e8\u306b\u5e38\u6642\u8868\u793a\u3002\u8272\u3060\u3051\u306b\u4f9d\u5b58\u305b\u305a\u72b6\u614b\u6587\u5b57\u5217\u3092\u4f75\u8a18\u3059\u308b\u3002",
       "file_type": "rationale",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L203",
+      "source_file": "viewer/src/components/status_panel.py",
+      "source_location": "L14",
       "_origin": "ast",
-      "id": "viewer_src_components_results_table_rationale_203",
+      "id": "viewer_src_components_status_panel_rationale_14",
       "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "design.md \u00a74-1\u300c\u4ea4\u5dee\u30fb\u8a73\u7d30\u8868/\u30bf\u30a6\u30f3\u30ed\u30fc\u30c8\u300d\u30a8\u30ea\u30a2\u3002"
+      "community_name": "status_panel.py",
+      "norm_label": "design.md \u00a79-1: \u5de6\u8a2d\u5b9a\u30cf\u30cd\u30eb\u6700\u4e0a\u90e8\u306b\u5e38\u6642\u8868\u793a\u3002\u8272\u305f\u3051\u306b\u4f9d\u5b58\u305b\u3059\u72b6\u614b\u6587\u5b57\u5217\u3092\u4f75\u8a18\u3059\u308b\u3002"
     },
     {
-      "label": "design.md \u00a79-4: \u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u51fa\u529b\u306b\u3082\u514d\u8cac\u6587\u8a00\u3092\u540c\u4e00\u6587\u5b57\u5217\u3067\u542b\u3081\u308b\u3002",
+      "label": "design.md \u00a79-2: \u4ed5\u69d8\u66f8\u00a75-3\u306e\u9ad8\u5ea6\u57fa\u6e96\u7d71\u4e00\u3068\u53d7\u5165\u57fa\u6e96#9\u306b\u5bfe\u5fdc\u3059\u308b\u3002\u2026",
       "file_type": "rationale",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L229",
+      "source_file": "viewer/src/components/status_panel.py",
+      "source_location": "L51",
       "_origin": "ast",
-      "id": "viewer_src_components_results_table_rationale_229",
+      "id": "viewer_src_components_status_panel_rationale_51",
       "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "design.md \u00a79-4: \u30bf\u30a6\u30f3\u30ed\u30fc\u30c8\u51fa\u529b\u306b\u3082\u514d\u8cac\u6587\u8a00\u3092\u540c\u4e00\u6587\u5b57\u5217\u3066\u542b\u3081\u308b\u3002"
+      "community_name": "status_panel.py",
+      "norm_label": "design.md \u00a79-2: \u4ed5\u69d8\u66f8\u00a75-3\u306e\u9ad8\u5ea6\u57fa\u6e96\u7d71\u4e00\u3068\u53d7\u5165\u57fa\u6e96#9\u306b\u5bfe\u5fdc\u3059\u308b\u3002..."
     },
     {
-      "label": "design.md \u00a74-1\u300c\u767b\u9332\u30fb\u7167\u4f1a\u7d50\u679c\u300d\u30a8\u30ea\u30a2\uff08\u767b\u9332\u5074\uff09\u3002",
+      "label": "design.md \u00a79-3: \u753b\u9762\u53f3\u4e0a\u306b\u5e38\u6642\u8868\u793a\uff08\u4ed5\u69d8\u66f8\u00a76-1\uff09\u3002",
       "file_type": "rationale",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L28",
+      "source_file": "viewer/src/components/status_panel.py",
+      "source_location": "L71",
       "_origin": "ast",
-      "id": "viewer_src_components_results_table_rationale_28",
+      "id": "viewer_src_components_status_panel_rationale_71",
       "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "design.md \u00a74-1\u300c\u767b\u9332\u30fb\u7167\u4f1a\u7d50\u679c\u300d\u30a8\u30ea\u30a2(\u767b\u9332\u5074)\u3002"
-    },
-    {
-      "label": "design.md \u00a74-1\u300c\u767b\u9332\u30fb\u7167\u4f1a\u7d50\u679c\u300d\u30a8\u30ea\u30a2\uff08\u7167\u4f1a\u5074\uff09\u3002",
-      "file_type": "rationale",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L49",
-      "_origin": "ast",
-      "id": "viewer_src_components_results_table_rationale_49",
-      "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "design.md \u00a74-1\u300c\u767b\u9332\u30fb\u7167\u4f1a\u7d50\u679c\u300d\u30a8\u30ea\u30a2(\u7167\u4f1a\u5074)\u3002"
-    },
-    {
-      "label": "design.md \u00a77-1 \u5fc5\u9808\u5217\u3092\u6e80\u305f\u3059\u884c\u30c7\u30fc\u30bf\u3092\u7d44\u307f\u7acb\u3066\u308b\u3002 \u300c\u4ea4\u5dee\u5224\u5b9a\u300d\u306f\u57fa\u672c\u7684\u306b\u6c34\u5e73\u65b9\u5411\u306e\u30d0\u30a6\u30f3\u30c7\u30a3\u30f3\u30b0\u30dc\u30c3\u30af\u30b9\u91cd\u306a\u308a\u306e\u307f\u3092\u898b\u305f\u7c21\u6613\u5224\u5b9a\u3067\u3042\u308b\u3002\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/components/results_table.py",
-      "source_location": "L87",
-      "_origin": "ast",
-      "id": "viewer_src_components_results_table_rationale_87",
-      "community": 5,
-      "community_name": "results_table.py",
-      "norm_label": "design.md \u00a77-1 \u5fc5\u9808\u5217\u3092\u6e80\u305f\u3059\u884c\u30c6\u30fc\u30bf\u3092\u7d44\u307f\u7acb\u3066\u308b\u3002 \u300c\u4ea4\u5dee\u5224\u5b9a\u300d\u306f\u57fa\u672c\u7684\u306b\u6c34\u5e73\u65b9\u5411\u306e\u30cf\u30a6\u30f3\u30c6\u30a3\u30f3\u30af\u30db\u30c3\u30af\u30b9\u91cd\u306a\u308a\u306e\u307f\u3092\u898b\u305f\u7c21\u6613\u5224\u5b9a\u3066\u3042\u308b\u3002..."
+      "community_name": "status_panel.py",
+      "norm_label": "design.md \u00a79-3: \u753b\u9762\u53f3\u4e0a\u306b\u5e38\u6642\u8868\u793a(\u4ed5\u69d8\u66f8\u00a76-1)\u3002"
     },
     {
       "label": "\u30a2\u30d7\u30ea\u5168\u4f53\u306e\u5b9a\u6570\u3002 \u514d\u8cac\u6587\u8a00\u306f `\u30c9\u30ed\u30fc\u30f3\u822a\u8defGIS-PoC_\u4ed5\u69d8\u66f8.md` \u00a72-2 \u3092\u6b63\u6587\u3068\u3059\u308b\u3002 design.md \u00a79-4\u2026",
@@ -8117,7 +8724,7 @@
       "_origin": "ast",
       "id": "viewer_src_config_rationale_1",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "\u30a2\u30d5\u30ea\u5168\u4f53\u306e\u5b9a\u6570\u3002 \u514d\u8cac\u6587\u8a00\u306f `\u30c8\u30ed\u30fc\u30f3\u822a\u8defgis-poc_\u4ed5\u69d8\u66f8.md` \u00a72-2 \u3092\u6b63\u6587\u3068\u3059\u308b\u3002 design.md \u00a79-4..."
     },
     {
@@ -8128,8 +8735,19 @@
       "_origin": "ast",
       "id": "viewer_src_theme_rationale_1",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "design.md \u306e\u30ab\u30e9\u30fc\u30c8\u30fc\u30af\u30f3\u30fb\u30bf\u30a4\u30db\u30af\u30e9\u30d5\u30a3\u30fb\u30ec\u30a4\u30a2\u30a6\u30c8\u3092css\u3068\u3057\u3066\u6ce8\u5165\u3059\u308b\u3002 \u5bfe\u5fdc\u8868: - \u00a75-1\u301c\u00a75-4 \u30ab\u30e9\u30fc\u30c8\u30fc\u30af\u30f3 - \u00a76..."
+    },
+    {
+      "label": "state: ok / warn / error / idle",
+      "file_type": "rationale",
+      "source_file": "viewer/src/theme.py",
+      "source_location": "L220",
+      "_origin": "ast",
+      "id": "viewer_src_theme_rationale_220",
+      "community": 5,
+      "community_name": "status_panel.py",
+      "norm_label": "state: ok / warn / error / idle"
     },
     {
       "label": "design.md \u00a79-4: \u4ed5\u69d8\u66f8\u00a72-2\u306e\u6587\u8a00\u3092\u305d\u306e\u307e\u307e\u8868\u793a\u3059\u308b\u3002\u6587\u8a00\u306e\u4fdd\u6301\u306f config.py \u306e1\u7b87\u6240\u306e\u307f\u3002",
@@ -8139,7 +8757,7 @@
       "_origin": "ast",
       "id": "viewer_src_theme_rationale_232",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "design.md \u00a79-4: \u4ed5\u69d8\u66f8\u00a72-2\u306e\u6587\u8a00\u3092\u305d\u306e\u307e\u307e\u8868\u793a\u3059\u308b\u3002\u6587\u8a00\u306e\u4fdd\u6301\u306f config.py \u306e1\u7b87\u6240\u306e\u307f\u3002"
     },
     {
@@ -8150,7 +8768,7 @@
       "_origin": "ast",
       "id": "viewer_src_theme_rationale_237",
       "community": 5,
-      "community_name": "results_table.py",
+      "community_name": "status_panel.py",
       "norm_label": "\u56fa\u5b9a\u30d5\u30c3\u30bf\u30fc\u304b\u52b9\u304b\u306a\u3044\u5b9f\u884c\u74b0\u5883\u5411\u3051\u306e\u30d5\u30a9\u30fc\u30eb\u30cf\u30c3\u30af(design.md \u00a714)\u3002"
     },
     {
@@ -8394,37 +9012,15 @@
       "norm_label": "graphify reference: extraction subagent prompt (compact)"
     },
     {
-      "label": "App.tsx",
+      "label": "client.ts",
       "file_type": "code",
-      "source_file": "src/App.tsx",
+      "source_file": "src/api/client.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "viewer_react_src_app",
+      "id": "viewer_react_src_api_client",
       "community": 56,
-      "community_name": "App.tsx",
-      "norm_label": "app.tsx"
-    },
-    {
-      "label": "GROUND_FEATURE_LAYERS",
-      "file_type": "code",
-      "source_file": "src/App.tsx",
-      "source_location": "L30",
-      "_origin": "ast",
-      "id": "viewer_react_src_app_ground_feature_layers",
-      "community": 56,
-      "community_name": "App.tsx",
-      "norm_label": "ground_feature_layers"
-    },
-    {
-      "label": "main.tsx",
-      "file_type": "code",
-      "source_file": "src/main.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "viewer_react_src_main",
-      "community": 56,
-      "community_name": "App.tsx",
-      "norm_label": "main.tsx"
+      "community_name": "client.ts",
+      "norm_label": "client.ts"
     },
     {
       "label": "ResultsPanel.tsx",
@@ -8496,7 +9092,7 @@
       "label": "EmptyResult",
       "file_type": "code",
       "source_file": "src/components/ResultsPanel.stories.tsx",
-      "source_location": "L93",
+      "source_location": "L95",
       "_origin": "ast",
       "id": "viewer_react_src_components_resultspanel_stories_emptyresult",
       "community": 57,
@@ -8507,7 +9103,7 @@
       "label": "ErrorState",
       "file_type": "code",
       "source_file": "src/components/ResultsPanel.stories.tsx",
-      "source_location": "L132",
+      "source_location": "L134",
       "_origin": "ast",
       "id": "viewer_react_src_components_resultspanel_stories_errorstate",
       "community": 57,
@@ -8562,7 +9158,7 @@
       "label": "PartialWithMessage",
       "file_type": "code",
       "source_file": "src/components/ResultsPanel.stories.tsx",
-      "source_location": "L115",
+      "source_location": "L117",
       "_origin": "ast",
       "id": "viewer_react_src_components_resultspanel_stories_partialwithmessage",
       "community": 57,
@@ -8590,17 +9186,6 @@
       "community": 57,
       "community_name": "ResultsPanel.stories.tsx",
       "norm_label": "successwithdata"
-    },
-    {
-      "label": "SettingsPanel.tsx",
-      "file_type": "code",
-      "source_file": "src/components/SettingsPanel.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "viewer_react_src_components_settingspanel",
-      "community": 58,
-      "community_name": "SettingsPanel.stories.tsx",
-      "norm_label": "settingspanel.tsx"
     },
     {
       "label": "SettingsPanel.stories.tsx",
@@ -8757,17 +9342,6 @@
       "norm_label": "querybuttoninteraction"
     },
     {
-      "label": "react",
-      "file_type": "concept",
-      "source_file": ".oxlintrc.json",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "ref_react",
-      "community": 58,
-      "community_name": "SettingsPanel.stories.tsx",
-      "norm_label": "react"
-    },
-    {
       "label": "package.json",
       "file_type": "code",
       "source_file": "package.json",
@@ -8777,6 +9351,61 @@
       "community": 59,
       "community_name": "package.json",
       "norm_label": "package.json"
+    },
+    {
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "viewer_react_package_dependencies",
+      "community": 59,
+      "community_name": "package.json",
+      "norm_label": "dependencies"
+    },
+    {
+      "label": "maplibre-gl",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "viewer_react_package_dependencies_maplibre_gl",
+      "community": 59,
+      "community_name": "package.json",
+      "norm_label": "maplibre-gl"
+    },
+    {
+      "label": "react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "viewer_react_package_dependencies_react",
+      "community": 59,
+      "community_name": "package.json",
+      "norm_label": "react"
+    },
+    {
+      "label": "react-dom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "viewer_react_package_dependencies_react_dom",
+      "community": 59,
+      "community_name": "package.json",
+      "norm_label": "react-dom"
+    },
+    {
+      "label": "react-icons",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "viewer_react_package_dependencies_react_icons",
+      "community": 59,
+      "community_name": "package.json",
+      "norm_label": "react-icons"
     },
     {
       "label": "name",
@@ -8900,6 +9529,50 @@
       "norm_label": "version"
     },
     {
+      "label": "maplibre-gl",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "maplibre_gl",
+      "community": 59,
+      "community_name": "package.json",
+      "norm_label": "maplibre-gl"
+    },
+    {
+      "label": "react",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "react",
+      "community": 59,
+      "community_name": "package.json",
+      "norm_label": "react"
+    },
+    {
+      "label": "react-dom",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "react_dom",
+      "community": 59,
+      "community_name": "package.json",
+      "norm_label": "react-dom"
+    },
+    {
+      "label": "react-icons",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "react_icons",
+      "community": 59,
+      "community_name": "package.json",
+      "norm_label": "react-icons"
+    },
+    {
       "label": "post",
       "file_type": "code",
       "source_file": "",
@@ -9010,114 +9683,92 @@
       "norm_label": "tailwindcss"
     },
     {
-      "label": "status_panel.py",
+      "label": "DataFrame",
       "file_type": "code",
-      "source_file": "viewer/src/components/status_panel.py",
-      "source_location": "L1",
+      "source_file": "",
+      "source_location": "",
       "_origin": "ast",
-      "id": "viewer_src_components_status_panel",
+      "id": "dataframe",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "status_panel.py"
+      "community_name": "results_table.py",
+      "norm_label": "dataframe"
     },
     {
-      "label": "spatial_id.py",
+      "label": "results_table.py",
       "file_type": "code",
-      "source_file": "viewer/src/spatial_id.py",
+      "source_file": "viewer/src/components/results_table.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "viewer_src_spatial_id",
+      "id": "viewer_src_components_results_table",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "spatial_id.py"
+      "community_name": "results_table.py",
+      "norm_label": "results_table.py"
     },
     {
-      "label": "design.md \u00a79-1\u301c\u00a79-3: API\u63a5\u7d9a\u72b6\u614b\uff0f\u7a7a\u9593ID\u8868\u793a\uff0f\u8a55\u4fa1\u72b6\u614b\uff08\u9ad8\u5ea6\u57fa\u6e96\uff09\uff0fPoC\u8b58\u5225\u30d0\u30c3\u30b8\u3002",
+      "label": "design.md \u00a77\u30fb\u00a77-1: \u7d50\u679c\u30c6\u30fc\u30d6\u30eb\u3002\u00a710-1: \u7a7a\u72b6\u614b\u30fb\u30a8\u30e9\u30fc\u30fb\u51e6\u7406\u4e2d\u8868\u793a\u3002 \u00a74-1:\u2026",
       "file_type": "rationale",
-      "source_file": "viewer/src/components/status_panel.py",
+      "source_file": "viewer/src/components/results_table.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "viewer_src_components_status_panel_rationale_1",
+      "id": "viewer_src_components_results_table_rationale_1",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "design.md \u00a79-1\u301c\u00a79-3: api\u63a5\u7d9a\u72b6\u614b/\u7a7a\u9593id\u8868\u793a/\u8a55\u4fa1\u72b6\u614b(\u9ad8\u5ea6\u57fa\u6e96)/poc\u8b58\u5225\u30cf\u30c3\u30b7\u3002"
+      "community_name": "results_table.py",
+      "norm_label": "design.md \u00a77\u30fb\u00a77-1: \u7d50\u679c\u30c6\u30fc\u30d5\u30eb\u3002\u00a710-1: \u7a7a\u72b6\u614b\u30fb\u30a8\u30e9\u30fc\u30fb\u51e6\u7406\u4e2d\u8868\u793a\u3002 \u00a74-1:..."
     },
     {
-      "label": "design.md \u00a79-1: \u5de6\u8a2d\u5b9a\u30d1\u30cd\u30eb\u6700\u4e0a\u90e8\u306b\u5e38\u6642\u8868\u793a\u3002\u8272\u3060\u3051\u306b\u4f9d\u5b58\u305b\u305a\u72b6\u614b\u6587\u5b57\u5217\u3092\u4f75\u8a18\u3059\u308b\u3002",
+      "label": "design.md \u00a74-1\u300c\u4ea4\u5dee\u30fb\u8a73\u7d30\u8868\uff0f\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u300d\u30a8\u30ea\u30a2\u3002",
       "file_type": "rationale",
-      "source_file": "viewer/src/components/status_panel.py",
-      "source_location": "L14",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L203",
       "_origin": "ast",
-      "id": "viewer_src_components_status_panel_rationale_14",
+      "id": "viewer_src_components_results_table_rationale_203",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "design.md \u00a79-1: \u5de6\u8a2d\u5b9a\u30cf\u30cd\u30eb\u6700\u4e0a\u90e8\u306b\u5e38\u6642\u8868\u793a\u3002\u8272\u305f\u3051\u306b\u4f9d\u5b58\u305b\u3059\u72b6\u614b\u6587\u5b57\u5217\u3092\u4f75\u8a18\u3059\u308b\u3002"
+      "community_name": "results_table.py",
+      "norm_label": "design.md \u00a74-1\u300c\u4ea4\u5dee\u30fb\u8a73\u7d30\u8868/\u30bf\u30a6\u30f3\u30ed\u30fc\u30c8\u300d\u30a8\u30ea\u30a2\u3002"
     },
     {
-      "label": "design.md \u00a79-1: \u5bfe\u8c61\u7a7a\u9593ID\uff0f\u30dc\u30af\u30bb\u30eb\u89e3\u50cf\u5ea6\u3092\u8868\u793a\u3059\u308b\u3002\u30e6\u30fc\u30b6\u30fc\u5165\u529b\u3067\u306f\u306a\u304f\u3001 \u59cb\u70b9\u30fb\u7d42\u70b9\u30fbAGL\u304b\u3089\u7b97\u51fa\u3057\u305f\u5024\u3092\u8868\u793a\u3059\u308b\uff08\u4ed5\u69d8\u66f8\u00a78\uff09\u3002\u2026",
+      "label": "design.md \u00a79-4: \u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u51fa\u529b\u306b\u3082\u514d\u8cac\u6587\u8a00\u3092\u540c\u4e00\u6587\u5b57\u5217\u3067\u542b\u3081\u308b\u3002",
       "file_type": "rationale",
-      "source_file": "viewer/src/components/status_panel.py",
-      "source_location": "L25",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L229",
       "_origin": "ast",
-      "id": "viewer_src_components_status_panel_rationale_25",
+      "id": "viewer_src_components_results_table_rationale_229",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "design.md \u00a79-1: \u5bfe\u8c61\u7a7a\u9593id/\u30db\u30af\u30bb\u30eb\u89e3\u50cf\u5ea6\u3092\u8868\u793a\u3059\u308b\u3002\u30e6\u30fc\u30b5\u30fc\u5165\u529b\u3066\u306f\u306a\u304f\u3001 \u59cb\u70b9\u30fb\u7d42\u70b9\u30fbagl\u304b\u3089\u7b97\u51fa\u3057\u305f\u5024\u3092\u8868\u793a\u3059\u308b(\u4ed5\u69d8\u66f8\u00a78)\u3002..."
+      "community_name": "results_table.py",
+      "norm_label": "design.md \u00a79-4: \u30bf\u30a6\u30f3\u30ed\u30fc\u30c8\u51fa\u529b\u306b\u3082\u514d\u8cac\u6587\u8a00\u3092\u540c\u4e00\u6587\u5b57\u5217\u3066\u542b\u3081\u308b\u3002"
     },
     {
-      "label": "design.md \u00a79-2: \u4ed5\u69d8\u66f8\u00a75-3\u306e\u9ad8\u5ea6\u57fa\u6e96\u7d71\u4e00\u3068\u53d7\u5165\u57fa\u6e96#9\u306b\u5bfe\u5fdc\u3059\u308b\u3002\u2026",
+      "label": "design.md \u00a74-1\u300c\u767b\u9332\u30fb\u7167\u4f1a\u7d50\u679c\u300d\u30a8\u30ea\u30a2\uff08\u767b\u9332\u5074\uff09\u3002",
       "file_type": "rationale",
-      "source_file": "viewer/src/components/status_panel.py",
-      "source_location": "L51",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L28",
       "_origin": "ast",
-      "id": "viewer_src_components_status_panel_rationale_51",
+      "id": "viewer_src_components_results_table_rationale_28",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "design.md \u00a79-2: \u4ed5\u69d8\u66f8\u00a75-3\u306e\u9ad8\u5ea6\u57fa\u6e96\u7d71\u4e00\u3068\u53d7\u5165\u57fa\u6e96#9\u306b\u5bfe\u5fdc\u3059\u308b\u3002..."
+      "community_name": "results_table.py",
+      "norm_label": "design.md \u00a74-1\u300c\u767b\u9332\u30fb\u7167\u4f1a\u7d50\u679c\u300d\u30a8\u30ea\u30a2(\u767b\u9332\u5074)\u3002"
     },
     {
-      "label": "design.md \u00a79-3: \u753b\u9762\u53f3\u4e0a\u306b\u5e38\u6642\u8868\u793a\uff08\u4ed5\u69d8\u66f8\u00a76-1\uff09\u3002",
+      "label": "design.md \u00a74-1\u300c\u767b\u9332\u30fb\u7167\u4f1a\u7d50\u679c\u300d\u30a8\u30ea\u30a2\uff08\u7167\u4f1a\u5074\uff09\u3002",
       "file_type": "rationale",
-      "source_file": "viewer/src/components/status_panel.py",
-      "source_location": "L71",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L49",
       "_origin": "ast",
-      "id": "viewer_src_components_status_panel_rationale_71",
+      "id": "viewer_src_components_results_table_rationale_49",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "design.md \u00a79-3: \u753b\u9762\u53f3\u4e0a\u306b\u5e38\u6642\u8868\u793a(\u4ed5\u69d8\u66f8\u00a76-1)\u3002"
+      "community_name": "results_table.py",
+      "norm_label": "design.md \u00a74-1\u300c\u767b\u9332\u30fb\u7167\u4f1a\u7d50\u679c\u300d\u30a8\u30ea\u30a2(\u7167\u4f1a\u5074)\u3002"
     },
     {
-      "label": "\u7a7a\u9593ID\u8a08\u7b97\u3002 \u4ed5\u69d8\u66f8\u00a712\u300c\u672a\u6c7a\u5b9a\u4e8b\u9805\u300d\u306f\u300c\u7a7a\u9593ID\u30fb\u30dc\u30af\u30bb\u30eb\uff1aID\u4ed5\u69d8\u3001\u5ea7\u6a19\u7cfb\u3001\u5358\u4f4d\u3001\u9ad8\u5ea6\u57fa\u6e96\u3001\u89e3\u50cf\u5ea6\u3092 \u78ba\u8a8d\u3059\u308b\u300d\u3068\u3057\u3066\u3044\u305f\u304c\u3001Drone-\u2026",
+      "label": "design.md \u00a77-1 \u5fc5\u9808\u5217\u3092\u6e80\u305f\u3059\u884c\u30c7\u30fc\u30bf\u3092\u7d44\u307f\u7acb\u3066\u308b\u3002 \u300c\u4ea4\u5dee\u5224\u5b9a\u300d\u306f\u57fa\u672c\u7684\u306b\u6c34\u5e73\u65b9\u5411\u306e\u30d0\u30a6\u30f3\u30c7\u30a3\u30f3\u30b0\u30dc\u30c3\u30af\u30b9\u91cd\u306a\u308a\u306e\u307f\u3092\u898b\u305f\u7c21\u6613\u5224\u5b9a\u3067\u3042\u308b\u3002\u2026",
       "file_type": "rationale",
-      "source_file": "viewer/src/spatial_id.py",
-      "source_location": "L1",
+      "source_file": "viewer/src/components/results_table.py",
+      "source_location": "L87",
       "_origin": "ast",
-      "id": "viewer_src_spatial_id_rationale_1",
+      "id": "viewer_src_components_results_table_rationale_87",
       "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "\u7a7a\u9593id\u8a08\u7b97\u3002 \u4ed5\u69d8\u66f8\u00a712\u300c\u672a\u6c7a\u5b9a\u4e8b\u9805\u300d\u306f\u300c\u7a7a\u9593id\u30fb\u30db\u30af\u30bb\u30eb:id\u4ed5\u69d8\u3001\u5ea7\u6a19\u7cfb\u3001\u5358\u4f4d\u3001\u9ad8\u5ea6\u57fa\u6e96\u3001\u89e3\u50cf\u5ea6\u3092 \u78ba\u8a8d\u3059\u308b\u300d\u3068\u3057\u3066\u3044\u305f\u304b\u3001drone-..."
-    },
-    {
-      "label": "ApiFunction::get_spatial_xy_on_point\u306ePython\u79fb\u690d\u3002\"z/0/x/y\"\u5f62\u5f0f\u306e\u7a7a\u9593ID\u6587\u5b57\u5217\u3092\u8fd4\u3059\u3002",
-      "file_type": "rationale",
-      "source_file": "viewer/src/spatial_id.py",
-      "source_location": "L21",
-      "_origin": "ast",
-      "id": "viewer_src_spatial_id_rationale_21",
-      "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "apifunction::get_spatial_xy_on_point\u306epython\u79fb\u690d\u3002\"z/0/x/y\"\u5f62\u5f0f\u306e\u7a7a\u9593id\u6587\u5b57\u5217\u3092\u8fd4\u3059\u3002"
-    },
-    {
-      "label": "state: ok / warn / error / idle",
-      "file_type": "rationale",
-      "source_file": "viewer/src/theme.py",
-      "source_location": "L220",
-      "_origin": "ast",
-      "id": "viewer_src_theme_rationale_220",
-      "community": 63,
-      "community_name": "status_panel.py",
-      "norm_label": "state: ok / warn / error / idle"
+      "community_name": "results_table.py",
+      "norm_label": "design.md \u00a77-1 \u5fc5\u9808\u5217\u3092\u6e80\u305f\u3059\u884c\u30c6\u30fc\u30bf\u3092\u7d44\u307f\u7acb\u3066\u308b\u3002 \u300c\u4ea4\u5dee\u5224\u5b9a\u300d\u306f\u57fa\u672c\u7684\u306b\u6c34\u5e73\u65b9\u5411\u306e\u30cf\u30a6\u30f3\u30c6\u30a3\u30f3\u30af\u30db\u30c3\u30af\u30b9\u91cd\u306a\u308a\u306e\u307f\u3092\u898b\u305f\u7c21\u6613\u5224\u5b9a\u3066\u3042\u308b\u3002..."
     },
     {
       "label": "vitest.shims.d.ts",
@@ -9131,125 +9782,37 @@
       "norm_label": "vitest.shims.d.ts"
     },
     {
-      "label": "('connected' / 'disconnected' / 'error', \u7406\u7531) \u3092\u8fd4\u3059\u3002 \u5b9f\u30b3\u30fc\u30c9\u78ba\u8a8d\u6e08\u307f: GET /drone_route \u306f\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L138",
-      "_origin": "ast",
-      "id": "viewer_src_api_client_rationale_138",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": "('connected' / 'disconnected' / 'error', \u7406\u7531) \u3092\u8fd4\u3059\u3002 \u5b9f\u30b3\u30fc\u30c8\u78ba\u8a8d\u6e08\u307f: get /drone_route \u306f..."
-    },
-    {
-      "label": "connected' / 'disconnected' / 'error' \u306e\u3044\u305a\u308c\u304b\u3092\u8fd4\u3059\u3002",
-      "file_type": "rationale",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L172",
-      "_origin": "ast",
-      "id": "viewer_src_api_client_rationale_172",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": "connected' / 'disconnected' / 'error' \u306e\u3044\u3059\u308c\u304b\u3092\u8fd4\u3059\u3002"
-    },
-    {
-      "label": "bbox = (min_lat, min_lon, max_lat, max_lon) Phase\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L238",
-      "_origin": "ast",
-      "id": "viewer_src_api_client_rationale_238",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": "bbox = (min_lat, min_lon, max_lat, max_lon) phase..."
-    },
-    {
-      "label": "api_key \u3092\u6307\u5b9a\u3059\u308b\u3068\u3001Drone-web\u5074\u306e\u7c21\u6613API\u30ad\u30fc\u8a8d\u8a3c\uff08junhongo-ccs/airway-digitaltwin-db \u306e\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L98",
-      "_origin": "ast",
-      "id": "viewer_src_api_client_rationale_98",
-      "community": 65,
-      "community_name": "DigitalTwinApiClient",
-      "norm_label": "api_key \u3092\u6307\u5b9a\u3059\u308b\u3068\u3001drone-web\u5074\u306e\u7c21\u6613api\u30ad\u30fc\u8a8d\u8a3c(junhongo-ccs/airway-digitaltwin-db \u306e..."
-    },
-    {
-      "label": "components/__init__.py",
+      "label": "SettingsPanel.tsx",
       "file_type": "code",
-      "source_file": "viewer/src/components/__init__.py",
+      "source_file": "src/components/SettingsPanel.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "viewer_src_components_init",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "components/__init__.py"
+      "id": "viewer_react_src_components_settingspanel",
+      "community": 65,
+      "community_name": "SettingsPanel.tsx",
+      "norm_label": "settingspanel.tsx"
     },
     {
-      "label": "route_form.py",
+      "label": "main.tsx",
       "file_type": "code",
-      "source_file": "viewer/src/components/route_form.py",
+      "source_file": "src/main.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "viewer_src_components_route_form",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "route_form.py"
+      "id": "viewer_react_src_main",
+      "community": 65,
+      "community_name": "SettingsPanel.tsx",
+      "norm_label": "main.tsx"
     },
     {
-      "label": "design.md \u00a74-1\u30fb\u00a710: \u5de6\u8a2d\u5b9a\u30d1\u30cd\u30eb\uff08API\u72b6\u614b\u30fb\u8a55\u4fa1\u72b6\u614b\u30fb\u822a\u8def\u8a2d\u5b9a\u30fb\u30ec\u30a4\u30e4\u9078\u629e\u30fb\u767b\u9332\u30fb\u7167\u4f1a\uff09\u3002",
-      "file_type": "rationale",
-      "source_file": "viewer/src/components/route_form.py",
-      "source_location": "L1",
+      "label": "react",
+      "file_type": "concept",
+      "source_file": ".oxlintrc.json",
+      "source_location": "L3",
       "_origin": "ast",
-      "id": "viewer_src_components_route_form_rationale_1",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "design.md \u00a74-1\u30fb\u00a710: \u5de6\u8a2d\u5b9a\u30cf\u30cd\u30eb(api\u72b6\u614b\u30fb\u8a55\u4fa1\u72b6\u614b\u30fb\u822a\u8def\u8a2d\u5b9a\u30fb\u30ec\u30a4\u30e4\u9078\u629e\u30fb\u767b\u9332\u30fb\u7167\u4f1a)\u3002"
-    },
-    {
-      "label": "design.md \u00a710: \u5b9f\u884c\u524d\u306e\u4ef6\u6570\u30fb\u5bfe\u8c61\u30ec\u30a4\u30e4\u306f\u30b5\u30a4\u30c9\u30d0\u30fc\u306ecaption\u3067\u65e2\u306b\u660e\u793a\u6e08\u307f\u3002 \u3053\u3053\u3067\u306f\u5b9f\u884c\u5f8c\u306e\u7d50\u679c\u4ef6\u6570\u3068API\u5fdc\u7b54\u6642\u523b\u3092\u8a18\u9332\u3059\u308b\u3002",
-      "file_type": "rationale",
-      "source_file": "viewer/src/components/route_form.py",
-      "source_location": "L132",
-      "_origin": "ast",
-      "id": "viewer_src_components_route_form_rationale_132",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "design.md \u00a710: \u5b9f\u884c\u524d\u306e\u4ef6\u6570\u30fb\u5bfe\u8c61\u30ec\u30a4\u30e4\u306f\u30b5\u30a4\u30c8\u30cf\u30fc\u306ecaption\u3066\u65e2\u306b\u660e\u793a\u6e08\u307f\u3002 \u3053\u3053\u3066\u306f\u5b9f\u884c\u5f8c\u306e\u7d50\u679c\u4ef6\u6570\u3068api\u5fdc\u7b54\u6642\u523b\u3092\u8a18\u9332\u3059\u308b\u3002"
-    },
-    {
-      "label": "4\u3064\u306e\u53d6\u5f97\u5143\uff08\u822a\u8def\u30fb\u5730\u7269\u30dc\u30af\u30bb\u30eb\u30fb\u6ce8\u610f\u533a\u57df\u30fb\u7981\u6b62\u533a\u57df\uff09\u306f\u305d\u308c\u305e\u308c\u72ec\u7acb\u3057\u305fAPI\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/components/route_form.py",
-      "source_location": "L165",
-      "_origin": "ast",
-      "id": "viewer_src_components_route_form_rationale_165",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "4\u3064\u306e\u53d6\u5f97\u5143(\u822a\u8def\u30fb\u5730\u7269\u30db\u30af\u30bb\u30eb\u30fb\u6ce8\u610f\u533a\u57df\u30fb\u7981\u6b62\u533a\u57df)\u306f\u305d\u308c\u305d\u308c\u72ec\u7acb\u3057\u305fapi..."
-    },
-    {
-      "label": "Phase A\u53d7\u5165\u57fa\u6e96\uff08\u4ed5\u69d8\u66f8\u00a710-3\u3001\u00a711-3\uff09\u300c\u30b5\u30f3\u30d7\u30eb\u306e\u6ce8\u610f\u533a\u57df\u3092\u767b\u9332\u3057\u3001API\u304b\u3089\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/components/route_form.py",
-      "source_location": "L197",
-      "_origin": "ast",
-      "id": "viewer_src_components_route_form_rationale_197",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "phase a\u53d7\u5165\u57fa\u6e96(\u4ed5\u69d8\u66f8\u00a710-3\u3001\u00a711-3)\u300c\u30b5\u30f3\u30d5\u30eb\u306e\u6ce8\u610f\u533a\u57df\u3092\u767b\u9332\u3057\u3001api\u304b\u3089..."
-    },
-    {
-      "label": "Render\u306eairspaceviewer\u304cPrivate Service airspace-drone-web\u3068\u540c\u5c45\u3059\u308b\u5834\u5408\u3001\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/components/route_form.py",
-      "source_location": "L28",
-      "_origin": "ast",
-      "id": "viewer_src_components_route_form_rationale_28",
-      "community": 66,
-      "community_name": "route_form.py",
-      "norm_label": "render\u306eairspaceviewer\u304bprivate service airspace-drone-web\u3068\u540c\u5c45\u3059\u308b\u5834\u5408\u3001..."
+      "id": "ref_react",
+      "community": 65,
+      "community_name": "SettingsPanel.tsx",
+      "norm_label": "react"
     },
     {
       "label": "get",
@@ -9316,149 +9879,6 @@
       "community": 67,
       "community_name": "get",
       "norm_label": "\u5730\u56f3\u8868\u793a\u53ef\u80fd\u306a\u5efa\u7269\u3092\u8fd4\u3059(\u73fe\u72b6\u306fphase b\u6295\u5165\u6e08\u307f\u306e29\u4ef6)\u3002 \u822a\u8def\u7167\u4f1a\u306e\u7d50\u679c\u306b\u4f9d\u5b58\u3055\u305b\u3059\u3001\u30ec\u30a4\u30e4\u30fcon\u6642\u306b\u5bfe\u8c61\u5efa\u7269\u3092\u5e38\u306b\u8868\u793a\u3059\u308b\u305f\u3081\u306e..."
-    },
-    {
-      "label": "Exception",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "exception",
-      "community": 68,
-      "community_name": "ApiError",
-      "norm_label": "exception"
-    },
-    {
-      "label": "Response",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "response",
-      "community": 68,
-      "community_name": "ApiError",
-      "norm_label": "response"
-    },
-    {
-      "label": "\u5b9f\u30b3\u30fc\u30c9\u78ba\u8a8d\u6e08\u307f\uff08FlightProhibitedAreaController::set_flight_prohibited_area\uff09:\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L378",
-      "_origin": "ast",
-      "id": "viewer_src_api_client_rationale_378",
-      "community": 68,
-      "community_name": "ApiError",
-      "norm_label": "\u5b9f\u30b3\u30fc\u30c8\u78ba\u8a8d\u6e08\u307f(flightprohibitedareacontroller::set_flight_prohibited_area):..."
-    },
-    {
-      "label": "\u5b9f\u30b3\u30fc\u30c9\u78ba\u8a8d\u6e08\u307f: drone_route \u306e\u767b\u9332\u6210\u529f\u6642\u306a\u3069\u3001\u672c\u6587\u304c\u7a7a\u306e\u30ec\u30b9\u30dd\u30f3\u30b9\u304c\u3042\u308b \uff08DroneRouteController::drone_route\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer/src/api_client.py",
-      "source_location": "L69",
-      "_origin": "ast",
-      "id": "viewer_src_api_client_rationale_69",
-      "community": 68,
-      "community_name": "ApiError",
-      "norm_label": "\u5b9f\u30b3\u30fc\u30c8\u78ba\u8a8d\u6e08\u307f: drone_route \u306e\u767b\u9332\u6210\u529f\u6642\u306a\u3068\u3001\u672c\u6587\u304b\u7a7a\u306e\u30ec\u30b9\u30db\u30f3\u30b9\u304b\u3042\u308b (droneroutecontroller::drone_route..."
-    },
-    {
-      "label": "dependencies",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L14",
-      "_origin": "ast",
-      "id": "viewer_react_package_dependencies",
-      "community": 69,
-      "community_name": "dependencies",
-      "norm_label": "dependencies"
-    },
-    {
-      "label": "maplibre-gl",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L15",
-      "_origin": "ast",
-      "id": "viewer_react_package_dependencies_maplibre_gl",
-      "community": 69,
-      "community_name": "dependencies",
-      "norm_label": "maplibre-gl"
-    },
-    {
-      "label": "react",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "viewer_react_package_dependencies_react",
-      "community": 69,
-      "community_name": "dependencies",
-      "norm_label": "react"
-    },
-    {
-      "label": "react-dom",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L17",
-      "_origin": "ast",
-      "id": "viewer_react_package_dependencies_react_dom",
-      "community": 69,
-      "community_name": "dependencies",
-      "norm_label": "react-dom"
-    },
-    {
-      "label": "react-icons",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L18",
-      "_origin": "ast",
-      "id": "viewer_react_package_dependencies_react_icons",
-      "community": 69,
-      "community_name": "dependencies",
-      "norm_label": "react-icons"
-    },
-    {
-      "label": "maplibre-gl",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L15",
-      "_origin": "ast",
-      "id": "maplibre_gl",
-      "community": 69,
-      "community_name": "dependencies",
-      "norm_label": "maplibre-gl"
-    },
-    {
-      "label": "react",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "react",
-      "community": 69,
-      "community_name": "dependencies",
-      "norm_label": "react"
-    },
-    {
-      "label": "react-dom",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L17",
-      "_origin": "ast",
-      "id": "react_dom",
-      "community": 69,
-      "community_name": "dependencies",
-      "norm_label": "react-dom"
-    },
-    {
-      "label": "react-icons",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L18",
-      "_origin": "ast",
-      "id": "react_icons",
-      "community": 69,
-      "community_name": "dependencies",
-      "norm_label": "react-icons"
     },
     {
       "label": "tsconfig.app.json",
@@ -9725,50 +10145,6 @@
       "norm_label": "es2023"
     },
     {
-      "label": "Laravel \u306e\u30d9\u30fc\u30b9URL\u3002 \u512a\u5148\u9806\u4f4d: 1. DIGITAL_TWIN_BASE_URL\uff08\u30ed\u30fc\u30ab\u30eb\u3067\u5b9fLaravel\u3078\u5411\u3051\u308b\u5834\u5408\u306b\u4f7f\u3046\uff09 2.\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer_api/app.py",
-      "source_location": "L111",
-      "_origin": "ast",
-      "id": "viewer_api_app_rationale_111",
-      "community": 70,
-      "community_name": "_client",
-      "norm_label": "laravel \u306e\u30d8\u30fc\u30b9url\u3002 \u512a\u5148\u9806\u4f4d: 1. digital_twin_base_url(\u30ed\u30fc\u30ab\u30eb\u3066\u5b9flaravel\u3078\u5411\u3051\u308b\u5834\u5408\u306b\u4f7f\u3046) 2...."
-    },
-    {
-      "label": "\u30e2\u30c3\u30af\u3067\u52d5\u304b\u3059\u304b\u3069\u3046\u304b\u3002 MOCK_MODE \u3092\u660e\u793a\u6307\u5b9a\u3057\u305f\u5834\u5408\u306f\u5fc5\u305a\u305d\u308c\u306b\u5f93\u3046\u3002\u30ed\u30fc\u30ab\u30eb\u3067\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer_api/app.py",
-      "source_location": "L133",
-      "_origin": "ast",
-      "id": "viewer_api_app_rationale_133",
-      "community": 70,
-      "community_name": "_client",
-      "norm_label": "\u30e2\u30c3\u30af\u3066\u52d5\u304b\u3059\u304b\u3068\u3046\u304b\u3002 mock_mode \u3092\u660e\u793a\u6307\u5b9a\u3057\u305f\u5834\u5408\u306f\u5fc5\u3059\u305d\u308c\u306b\u5f93\u3046\u3002\u30ed\u30fc\u30ab\u30eb\u3066..."
-    },
-    {
-      "label": "\u30ea\u30af\u30a8\u30b9\u30c8\u3054\u3068\u306b\u30af\u30e9\u30a4\u30a2\u30f3\u30c8\u3092\u4f5c\u308b\u3002BFF \u81ea\u4f53\u306f\u6c38\u7d9a\u5c64\u3092\u6301\u305f\u305a\u3001 Laravel \u304c\u552f\u4e00\u306e\u771f\u5b9f\uff08mock \u6642\u306e\u307f _MOCK_STORE \u304c\u305d\u306e\u4ee3\u5f79\uff09\u3002",
-      "file_type": "rationale",
-      "source_file": "viewer_api/app.py",
-      "source_location": "L147",
-      "_origin": "ast",
-      "id": "viewer_api_app_rationale_147",
-      "community": 70,
-      "community_name": "_client",
-      "norm_label": "\u30ea\u30af\u30a8\u30b9\u30c8\u3053\u3068\u306b\u30af\u30e9\u30a4\u30a2\u30f3\u30c8\u3092\u4f5c\u308b\u3002bff \u81ea\u4f53\u306f\u6c38\u7d9a\u5c64\u3092\u6301\u305f\u3059\u3001 laravel \u304b\u552f\u4e00\u306e\u771f\u5b9f(mock \u6642\u306e\u307f _mock_store \u304b\u305d\u306e\u4ee3\u5f79)\u3002"
-    },
-    {
-      "label": "Laravel API \u3078\u306e\u5230\u9054\u53ef\u5426\u3002'connected' / 'disconnected' / 'error'\u3002 mock \u3068 base_url\u2026",
-      "file_type": "rationale",
-      "source_file": "viewer_api/app.py",
-      "source_location": "L282",
-      "_origin": "ast",
-      "id": "viewer_api_app_rationale_282",
-      "community": 70,
-      "community_name": "_client",
-      "norm_label": "laravel api \u3078\u306e\u5230\u9054\u53ef\u5426\u3002'connected' / 'disconnected' / 'error'\u3002 mock \u3068 base_url..."
-    },
-    {
       "label": "plateau_ground_features.py",
       "file_type": "code",
       "source_file": "viewer/src/plateau_ground_features.py",
@@ -9925,138 +10301,6 @@
       "community": 73,
       "community_name": "React + TypeScript + Vite",
       "norm_label": "react + typescript + vite"
-    },
-    {
-      "label": "autoprefixer",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_autoprefixer",
-      "community": 74,
-      "community_name": "autoprefixer",
-      "norm_label": "autoprefixer"
-    },
-    {
-      "label": "autoprefixer",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "autoprefixer",
-      "community": 74,
-      "community_name": "autoprefixer",
-      "norm_label": "autoprefixer"
-    },
-    {
-      "label": "oxlint",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L35",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_oxlint",
-      "community": 75,
-      "community_name": "oxlint",
-      "norm_label": "oxlint"
-    },
-    {
-      "label": "oxlint",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L35",
-      "_origin": "ast",
-      "id": "oxlint",
-      "community": 75,
-      "community_name": "oxlint",
-      "norm_label": "oxlint"
-    },
-    {
-      "label": "playwright",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L36",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_playwright",
-      "community": 76,
-      "community_name": "playwright",
-      "norm_label": "playwright"
-    },
-    {
-      "label": "playwright",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L36",
-      "_origin": "ast",
-      "id": "playwright",
-      "community": 76,
-      "community_name": "playwright",
-      "norm_label": "playwright"
-    },
-    {
-      "label": "@storybook/addon-a11y",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L22",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_storybook_addon_a11y",
-      "community": 77,
-      "community_name": "@storybook/addon-a11y",
-      "norm_label": "@storybook/addon-a11y"
-    },
-    {
-      "label": "@storybook/addon-a11y",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L22",
-      "_origin": "ast",
-      "id": "storybook_addon_a11y",
-      "community": 77,
-      "community_name": "@storybook/addon-a11y",
-      "norm_label": "@storybook/addon-a11y"
-    },
-    {
-      "label": "@storybook/addon-docs",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L23",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_storybook_addon_docs",
-      "community": 78,
-      "community_name": "@storybook/addon-docs",
-      "norm_label": "@storybook/addon-docs"
-    },
-    {
-      "label": "@storybook/addon-docs",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L23",
-      "_origin": "ast",
-      "id": "storybook_addon_docs",
-      "community": 78,
-      "community_name": "@storybook/addon-docs",
-      "norm_label": "@storybook/addon-docs"
-    },
-    {
-      "label": "@storybook/addon-vitest",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L25",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_storybook_addon_vitest",
-      "community": 79,
-      "community_name": "@storybook/addon-vitest",
-      "norm_label": "@storybook/addon-vitest"
-    },
-    {
-      "label": "@storybook/addon-vitest",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L25",
-      "_origin": "ast",
-      "id": "storybook_addon_vitest",
-      "community": 79,
-      "community_name": "@storybook/addon-vitest",
-      "norm_label": "@storybook/addon-vitest"
     },
     {
       "label": "tsconfig.node.json",
@@ -10277,204 +10521,6 @@
       "community": 8,
       "community_name": "compilerOptions",
       "norm_label": "es2023"
-    },
-    {
-      "label": "@storybook/react-vite",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L26",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_storybook_react_vite",
-      "community": 80,
-      "community_name": "@storybook/react-vite",
-      "norm_label": "@storybook/react-vite"
-    },
-    {
-      "label": "@storybook/react-vite",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L26",
-      "_origin": "ast",
-      "id": "storybook_react_vite",
-      "community": 80,
-      "community_name": "@storybook/react-vite",
-      "norm_label": "@storybook/react-vite"
-    },
-    {
-      "label": "@types/geojson",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L27",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_types_geojson",
-      "community": 81,
-      "community_name": "@types/geojson",
-      "norm_label": "@types/geojson"
-    },
-    {
-      "label": "@types/geojson",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L27",
-      "_origin": "ast",
-      "id": "types_geojson",
-      "community": 81,
-      "community_name": "@types/geojson",
-      "norm_label": "@types/geojson"
-    },
-    {
-      "label": "@types/react-dom",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L30",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_types_react_dom",
-      "community": 82,
-      "community_name": "@types/react-dom",
-      "norm_label": "@types/react-dom"
-    },
-    {
-      "label": "@types/react-dom",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L30",
-      "_origin": "ast",
-      "id": "types_react_dom",
-      "community": 82,
-      "community_name": "@types/react-dom",
-      "norm_label": "@types/react-dom"
-    },
-    {
-      "label": "typescript",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_typescript",
-      "community": 83,
-      "community_name": "typescript",
-      "norm_label": "typescript"
-    },
-    {
-      "label": "typescript",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "typescript",
-      "community": 83,
-      "community_name": "typescript",
-      "norm_label": "typescript"
-    },
-    {
-      "label": "tailwindcss",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L39",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_tailwindcss",
-      "community": 84,
-      "community_name": "tailwindcss",
-      "norm_label": "tailwindcss"
-    },
-    {
-      "label": "tailwindcss",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L39",
-      "_origin": "ast",
-      "id": "viewer_react_package_json_tailwindcss",
-      "community": 84,
-      "community_name": "tailwindcss",
-      "norm_label": "tailwindcss"
-    },
-    {
-      "label": "vite",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L41",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_vite",
-      "community": 85,
-      "community_name": "vite",
-      "norm_label": "vite"
-    },
-    {
-      "label": "vite",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L41",
-      "_origin": "ast",
-      "id": "vite",
-      "community": 85,
-      "community_name": "vite",
-      "norm_label": "vite"
-    },
-    {
-      "label": "@vitejs/plugin-react",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L31",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_vitejs_plugin_react",
-      "community": 86,
-      "community_name": "@vitejs/plugin-react",
-      "norm_label": "@vitejs/plugin-react"
-    },
-    {
-      "label": "@vitejs/plugin-react",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L31",
-      "_origin": "ast",
-      "id": "vitejs_plugin_react",
-      "community": 86,
-      "community_name": "@vitejs/plugin-react",
-      "norm_label": "@vitejs/plugin-react"
-    },
-    {
-      "label": "vitest",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L42",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_vitest",
-      "community": 87,
-      "community_name": "vitest",
-      "norm_label": "vitest"
-    },
-    {
-      "label": "vitest",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L42",
-      "_origin": "ast",
-      "id": "vitest",
-      "community": 87,
-      "community_name": "vitest",
-      "norm_label": "vitest"
-    },
-    {
-      "label": "@vitest/coverage-v8",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L33",
-      "_origin": "ast",
-      "id": "viewer_react_package_devdependencies_vitest_coverage_v8",
-      "community": 88,
-      "community_name": "@vitest/coverage-v8",
-      "norm_label": "@vitest/coverage-v8"
-    },
-    {
-      "label": "@vitest/coverage-v8",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L33",
-      "_origin": "ast",
-      "id": "vitest_coverage_v8",
-      "community": 88,
-      "community_name": "@vitest/coverage-v8",
-      "norm_label": "@vitest/coverage-v8"
     },
     {
       "label": "Point",
@@ -14671,6 +14717,18 @@
       "_origin": "ast",
       "source": "viewer_react_src_components_mapcontainer",
       "target": "viewer_react_src_api_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/MapContainer.stories.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "viewer_react_src_components_mapcontainer_stories",
+      "target": "viewer_react_src_components_mapcontainer",
       "confidence_score": 1.0
     },
     {
@@ -20166,35 +20224,35 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "README.md",
+      "source_file": "C:/github/airspace/README.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_readme",
-      "target": "viewer_react_readme_react_typescript_vite",
-      "confidence_score": 1.0
+      "target": "viewer_react_readme_react_typescript_vite"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "README.md",
+      "source_file": "C:/github/airspace/README.md",
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_readme_react_typescript_vite",
-      "target": "viewer_react_readme_react_compiler",
-      "confidence_score": 1.0
+      "target": "viewer_react_readme_react_compiler"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "README.md",
+      "source_file": "C:/github/airspace/README.md",
       "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "viewer_react_readme_react_typescript_vite",
-      "target": "viewer_react_readme_expanding_the_oxlint_configuration",
-      "confidence_score": 1.0
+      "target": "viewer_react_readme_expanding_the_oxlint_configuration"
     },
     {
       "relation": "contains",
@@ -20760,6 +20818,39 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/components/MapContainer.stories.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "viewer_react_src_components_mapcontainer_stories",
+      "target": "viewer_react_src_components_mapcontainer_stories_story",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/MapContainer.stories.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "viewer_react_src_components_mapcontainer_stories",
+      "target": "viewer_react_src_components_mapcontainer_stories_collapsiblelegend",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/MapContainer.stories.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "viewer_react_src_components_mapcontainer_stories",
+      "target": "viewer_react_src_components_mapcontainer_stories_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/components/ResultsPanel.tsx",
       "source_location": "L15",
       "weight": 1.0,
@@ -20827,7 +20918,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/ResultsPanel.stories.tsx",
-      "source_location": "L115",
+      "source_location": "L117",
       "weight": 1.0,
       "_origin": "ast",
       "source": "viewer_react_src_components_resultspanel_stories",
@@ -20838,7 +20929,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/ResultsPanel.stories.tsx",
-      "source_location": "L132",
+      "source_location": "L134",
       "weight": 1.0,
       "_origin": "ast",
       "source": "viewer_react_src_components_resultspanel_stories",
@@ -20937,7 +21028,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/ResultsPanel.stories.tsx",
-      "source_location": "L93",
+      "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast",
       "source": "viewer_react_src_components_resultspanel_stories",
@@ -24062,6 +24153,18 @@
       "source": "viewer_api_app_register_route_endpoint",
       "target": "viewer_src_api_client_apierror",
       "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "source_file": "src/components/MapContainer.stories.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 0.8,
+      "source": "viewer_react_src_components_mapcontainer_stories",
+      "target": "viewer_react_src_components_mapcontainer_mapcontainer"
     },
     {
       "relation": "indirect_call",

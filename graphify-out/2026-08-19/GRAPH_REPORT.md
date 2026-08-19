@@ -1,12 +1,12 @@
 # Graph Report - airspace  (2026-08-19)
 
 ## Corpus Check
-- 90 files · ~57,096 words
+- 91 files · ~57,233 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 902 nodes · 1191 edges · 89 communities (62 shown, 27 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.54)
+- 906 nodes · 1196 edges · 70 communities (58 shown, 12 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 16 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
@@ -17,10 +17,10 @@
 ## Community Hubs (Navigation)
 - viewer_api/app.py
 - MapContainer.tsx
-- api_client.py
+- DigitalTwinApiClient
 - extract_ground_features.py
 - devDependencies
-- results_table.py
+- status_panel.py
 - query_features_endpoint
 - compilerOptions
 - compilerOptions
@@ -36,7 +36,7 @@
 - ドローン航路システム（ODS-IS-UASL）調査メモ
 - ODS-IS-UASL コード実装調査
 - 改善タスク：秩父市周辺PLATEAU地物レイヤーと航路影響表示の拡張
-- client.ts
+- App.tsx
 - CLAUDE.md
 - graphify reference: extra exports and benchmark
 - altitude.py
@@ -63,37 +63,18 @@
 - graphify reference: GitHub clone and cross-repo merge
 - graphify reference: transcribe video and audio
 - extraction-spec.md
-- App.tsx
+- client.ts
 - ResultsPanel.stories.tsx
 - SettingsPanel.stories.tsx
 - package.json
 - main.ts
 - preview.tsx
-- status_panel.py
-- DigitalTwinApiClient
-- route_form.py
+- results_table.py
+- SettingsPanel.tsx
 - get
-- ApiError
-- dependencies
-- _client
 - get_ground_features_in_bbox
 - get_buildings_in_bbox
 - React + TypeScript + Vite
-- autoprefixer
-- oxlint
-- playwright
-- @storybook/addon-a11y
-- @storybook/addon-docs
-- @storybook/addon-vitest
-- @storybook/react-vite
-- @types/geojson
-- @types/react-dom
-- typescript
-- tailwindcss
-- vite
-- @vitejs/plugin-react
-- vitest
-- @vitest/coverage-v8
 
 ## God Nodes (most connected - your core abstractions)
 1. `DigitalTwinApiClient` - 23 edges
@@ -108,45 +89,45 @@
 10. `What You Must Do When Invoked` - 12 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `query_prohibited_areas_endpoint()` --uses--> `ApiError`  [INFERRED]
-  viewer_api/app.py → viewer/src/api_client.py
-- `register_route_endpoint()` --uses--> `ApiError`  [INFERRED]
-  viewer_api/app.py → viewer/src/api_client.py
 - `query_features_endpoint()` --uses--> `BboxTooLargeError`  [INFERRED]
   viewer_api/app.py → viewer/src/plateau_buildings.py
 - `query_features_endpoint()` --uses--> `BboxTooLargeError`  [INFERRED]
   viewer_api/app.py → viewer/src/plateau_ground_features.py
+- `query_prohibited_areas_endpoint()` --uses--> `ApiError`  [INFERRED]
+  viewer_api/app.py → viewer/src/api_client.py
+- `register_route_endpoint()` --uses--> `ApiError`  [INFERRED]
+  viewer_api/app.py → viewer/src/api_client.py
 - `_client()` --calls--> `DigitalTwinApiClient`  [EXTRACTED]
   viewer_api/app.py → viewer/src/api_client.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (89 total, 27 thin omitted)
+## Communities (70 total, 12 thin omitted)
 
 ### Community 0 - "viewer_api/app.py"
-Cohesion: 0.18
-Nodes (15): BaseModel, Request, _bbox(), _bbox_overlap(), _enforce_rate_limit(), query_prohibited_areas_endpoint(), QueryFeaturesRequest, QueryProhibitedAreasRequest (+7 more)
+Cohesion: 0.12
+Nodes (26): BaseModel, Exception, Request, _base_url(), _bbox(), _bbox_overlap(), _client(), connection_status_endpoint() (+18 more)
 
 ### Community 1 - "MapContainer.tsx"
-Cohesion: 0.13
-Nodes (20): ALL_LAYERS_VISIBLE, BUILDING_LAYER_IDS, BUILDING_SOURCE_IDS, EMPTY_GROUND_FEATURES, ensureDiagonalHatchPattern(), ensureHatchPattern(), GROUND_FEATURE_LAYER_KEYS, GROUND_LAYER_STYLE (+12 more)
+Cohesion: 0.10
+Nodes (23): ALL_LAYERS_VISIBLE, BUILDING_LAYER_IDS, BUILDING_SOURCE_IDS, EMPTY_GROUND_FEATURES, ensureDiagonalHatchPattern(), ensureHatchPattern(), GROUND_FEATURE_LAYER_KEYS, GROUND_LAYER_STYLE (+15 more)
 
-### Community 2 - "api_client.py"
-Cohesion: 0.12
-Nodes (17): extract_building_id(), extract_prohibited_area_id(), lookup_building_footprint(), lookup_prohibited_area_geometry(), voxelBitFileName（`flight_prohibited_area/{flightProhibitedAreaId}.json`）から…, flightProhibitedAreaIdから[lat, lon]の閉じたリングのリスト（MultiPolygon、…, voxelBitFileName（`.../plateau/{mesh}/{buildingId}.json`）からbuildingIdを取り出す。, buildingIdから[lat, lon]の閉じたリング（地図描画用）を返す。 (+9 more)
+### Community 2 - "DigitalTwinApiClient"
+Cohesion: 0.05
+Nodes (44): Response, extract_building_id(), extract_prohibited_area_id(), lookup_building_footprint(), lookup_building_height(), lookup_prohibited_area_geometry(), voxelBitFileName（`flight_prohibited_area/{flightProhibitedAreaId}.json`）から…, flightProhibitedAreaIdから[lat, lon]の閉じたリングのリスト（MultiPolygon、… (+36 more)
 
 ### Community 3 - "extract_ground_features.py"
 Cohesion: 0.05
 Nodes (66): Pattern, RawIOBase, load_codelist(), parse_codelist(), PLATEAU CityGMLのコードリスト（`codelists/*.xml`）を読み、コード→日本語名の辞書にする。…, gml:Dictionaryのbytesから{コード値: 日本語名}を返す。, `codelists/{codelist_name}.xml`を取得してパースする。, _building_to_feature() (+58 more)
 
 ### Community 4 - "devDependencies"
-Cohesion: 0.13
-Nodes (15): @chromatic-com/storybook, postcss, storybook, @storybook/addon-mcp, @types/node, @types/react, devDependencies, @chromatic-com/storybook (+7 more)
+Cohesion: 0.04
+Nodes (45): autoprefixer, @chromatic-com/storybook, oxlint, playwright, postcss, storybook, @storybook/addon-a11y, @storybook/addon-docs (+37 more)
 
-### Community 5 - "results_table.py"
-Cohesion: 0.07
-Nodes (24): DataFrame, 空域デジタルツインGIS Viewer（PoC） design.md（v1.2）のレイアウト・カラー・タイポグラフィ・状態表示規定と、 `ドローン航路GIS-…, 簡易アクセスゲート。 仕様書§9「公開範囲：初期はアクセス制限を掛けた検証環境とする」に対応する。…, design.md §7, §8: 地図表示。 レイヤ色は design.md §5-3 のトークンをそのまま使用する。ただし塗りパターン…, _bbox(), _bbox_overlap(), build_result_rows(), design.md §7・§7-1: 結果テーブル。§10-1: 空状態・エラー・処理中表示。 §4-1:… (+16 more)
+### Community 5 - "status_panel.py"
+Cohesion: 0.09
+Nodes (19): 空域デジタルツインGIS Viewer（PoC） design.md（v1.2）のレイアウト・カラー・タイポグラフィ・状態表示規定と、 `ドローン航路GIS-…, 簡易アクセスゲート。 仕様書§9「公開範囲：初期はアクセス制限を掛けた検証環境とする」に対応する。…, design.md §7, §8: 地図表示。 レイヤ色は design.md §5-3 のトークンをそのまま使用する。ただし塗りパターン…, design.md §9-1〜§9-3: API接続状態／空間ID表示／評価状態（高度基準）／PoC識別バッジ。, design.md §9-1: 左設定パネル最上部に常時表示。色だけに依存せず状態文字列を併記する。, design.md §9-2: 仕様書§5-3の高度基準統一と受入基準#9に対応する。…, design.md §9-3: 画面右上に常時表示（仕様書§6-1）。, render_altitude_verification_status() (+11 more)
 
 ### Community 6 - "query_features_endpoint"
 Cohesion: 0.25
@@ -204,9 +185,9 @@ Nodes (22): 1. 結論, 2. 実装上の全体像, 3-1. 航路予約：`airway-res
 Cohesion: 0.15
 Nodes (12): 1. 背景, 2. 目的, 3. 完了後の利用イメージ, 4. 対象範囲, 5. 着手前に決めること, 6. 実装タスク, 7. 受入条件, 8. 技術方針と留意点 (+4 more)
 
-### Community 24 - "client.ts"
-Cohesion: 0.23
-Nodes (11): ApiResponse, BboxFeatureResult, DroneRoute, GroundFeatureLayerKey, GroundFeatureResult, KnownProhibitedArea, PlateauBuildingFeature, PlateauBuildingGeometry (+3 more)
+### Community 24 - "App.tsx"
+Cohesion: 0.29
+Nodes (9): GroundFeatureLayerKey, KnownProhibitedArea, PlateauBuildingFeature, PlateauDatasetMeta, PlateauGroundFeature, boundsContain(), GROUND_FEATURE_LAYERS, padBounds() (+1 more)
 
 ### Community 25 - "CLAUDE.md"
 Cohesion: 0.20
@@ -276,49 +257,33 @@ Nodes (3): For git commit hook, For native CLAUDE.md integration, graphify refer
 Cohesion: 0.50
 Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
-### Community 56 - "App.tsx"
-Cohesion: 0.30
-Nodes (13): describeError(), getBuildingsInBbox(), getConnectionStatus(), getFlightProhibitedAreas(), getGroundFeatures(), getGroundFeaturesInBbox(), getKnownProhibitedAreas(), parseDatasetMeta() (+5 more)
+### Community 56 - "client.ts"
+Cohesion: 0.26
+Nodes (15): ApiResponse, BboxFeatureResult, describeError(), DroneRoute, getBuildingsInBbox(), getConnectionStatus(), getFlightProhibitedAreas(), getGroundFeatures() (+7 more)
 
 ### Community 57 - "ResultsPanel.stories.tsx"
 Cohesion: 0.11
 Nodes (21): GroundFeature, GroundFeatureGroup, NearbyFeatureSummary, ProhibitedArea, QueryResult, GROUP_LABELS, GROUP_ORDER, LAYER_LABELS (+13 more)
 
 ### Community 58 - "SettingsPanel.stories.tsx"
-Cohesion: 0.11
-Nodes (19): react, ConnectionStatus, describeConnection(), SettingsPanel(), SettingsPanelProps, Connected, connectedStatus, ConnectionChecking (+11 more)
+Cohesion: 0.13
+Nodes (14): Connected, connectedStatus, ConnectionChecking, ConnectionError, CssCheck, errorStatus, HighAltitudeWarning, Loading (+6 more)
 
 ### Community 59 - "package.json"
+Cohesion: 0.10
+Nodes (20): maplibre-gl, react, react-dom, react-icons, dependencies, maplibre-gl, react, react-dom (+12 more)
+
+### Community 63 - "results_table.py"
 Cohesion: 0.17
-Nodes (11): name, private, scripts, build, build-storybook, dev, lint, preview (+3 more)
+Nodes (15): DataFrame, _bbox(), _bbox_overlap(), build_result_rows(), design.md §7・§7-1: 結果テーブル。§10-1: 空状態・エラー・処理中表示。 §4-1:…, design.md §4-1「交差・詳細表／ダウンロード」エリア。, design.md §9-4: ダウンロード出力にも免責文言を同一文字列で含める。, design.md §4-1「登録・照会結果」エリア（登録側）。 (+7 more)
 
-### Community 63 - "status_panel.py"
-Cohesion: 0.15
-Nodes (15): design.md §9-1〜§9-3: API接続状態／空間ID表示／評価状態（高度基準）／PoC識別バッジ。, design.md §9-1: 左設定パネル最上部に常時表示。色だけに依存せず状態文字列を併記する。, design.md §9-1: 対象空間ID／ボクセル解像度を表示する。ユーザー入力ではなく、 始点・終点・AGLから算出した値を表示する（仕様書§8）。…, design.md §9-2: 仕様書§5-3の高度基準統一と受入基準#9に対応する。…, design.md §9-3: 画面右上に常時表示（仕様書§6-1）。, render_altitude_verification_status(), render_connection_status(), render_poc_badge() (+7 more)
-
-### Community 65 - "DigitalTwinApiClient"
-Cohesion: 0.21
-Nodes (7): lookup_building_height(), _center_spatial_id(), DigitalTwinApiClient, ('connected' / 'disconnected' / 'error', 理由) を返す。 実コード確認済み: GET /drone_route は…, connected' / 'disconnected' / 'error' のいずれかを返す。, bbox = (min_lat, min_lon, max_lat, max_lon) Phase…, api_key を指定すると、Drone-web側の簡易APIキー認証（junhongo-ccs/airway-digitaltwin-db の…
-
-### Community 66 - "route_form.py"
-Cohesion: 0.23
-Nodes (11): _bbox_from_route(), _default_base_url(), _handle_query(), _handle_register(), _handle_register_area(), design.md §4-1・§10: 左設定パネル（API状態・評価状態・航路設定・レイヤ選択・登録・照会）。, design.md §10: 実行前の件数・対象レイヤはサイドバーのcaptionで既に明示済み。 ここでは実行後の結果件数とAPI応答時刻を記録する。, 4つの取得元（航路・地物ボクセル・注意区域・禁止区域）はそれぞれ独立したAPI… (+3 more)
+### Community 65 - "SettingsPanel.tsx"
+Cohesion: 0.38
+Nodes (5): react, ConnectionStatus, describeConnection(), SettingsPanel(), SettingsPanelProps
 
 ### Community 67 - "get"
 Cohesion: 0.18
 Nodes (11): get, health_check(), known_buildings_endpoint(), known_prohibited_areas_endpoint(), Render のヘルスチェック用。Laravel には触らない。, ジオメトリを再取得済みの飛行禁止区域を、Laravelへの照会なしで返す。 航路を登録・照会する前から地図に危険区域を表示できるようにするための…, 地図描画可能な建物を、Laravelへの照会なしで返す。 PLATEAU秩父市2025から抽出したPhase B投入分29件（mesh…, list_known_buildings() (+3 more)
-
-### Community 68 - "ApiError"
-Cohesion: 0.20
-Nodes (6): Exception, Response, ApiError, 実コード確認済み（FlightProhibitedAreaController::set_flight_prohibited_area）:…, 実コード確認済み: drone_route の登録成功時など、本文が空のレスポンスがある （DroneRouteController::drone_route…, _safe_json()
-
-### Community 69 - "dependencies"
-Cohesion: 0.22
-Nodes (9): maplibre-gl, react, react-dom, react-icons, dependencies, maplibre-gl, react, react-dom (+1 more)
-
-### Community 70 - "_client"
-Cohesion: 0.28
-Nodes (9): _base_url(), _client(), connection_status_endpoint(), mock_mode(), Laravel のベースURL。 優先順位: 1. DIGITAL_TWIN_BASE_URL（ローカルで実Laravelへ向ける場合に使う） 2.…, モックで動かすかどうか。 MOCK_MODE を明示指定した場合は必ずそれに従う。ローカルで…, リクエストごとにクライアントを作る。BFF 自体は永続層を持たず、 Laravel が唯一の真実（mock 時のみ _MOCK_STORE がその代役）。, Laravel API への到達可否。'connected' / 'disconnected' / 'error'。 mock と base_url… (+1 more)
 
 ### Community 71 - "get_ground_features_in_bbox"
 Cohesion: 0.39
@@ -333,24 +298,24 @@ Cohesion: 0.50
 Nodes (3): Expanding the Oxlint configuration, React Compiler, React + TypeScript + Vite
 
 ## Knowledge Gaps
-- **405 isolated node(s):** `$schema`, `typescript`, `oxc`, `react/rules-of-hooks`, `warn` (+400 more)
+- **408 isolated node(s):** `$schema`, `typescript`, `oxc`, `react/rules-of-hooks`, `warn` (+403 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **27 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `DigitalTwinApiClient` connect `DigitalTwinApiClient` to `viewer_api/app.py`, `api_client.py`, `route_form.py`, `ApiError`, `_client`?**
-  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `DigitalTwinApiClient` connect `DigitalTwinApiClient` to `viewer_api/app.py`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
 - **Why does `空域デジタルツインGIS Viewer デザインガイドライン` connect `空域デジタルツインGIS Viewer デザインガイドライン` to `空域デジタルツイン活用・ドローン航路GIS-PoC 実装タスクリスト`?**
   _High betweenness centrality (0.015) - this node is a cross-community bridge._
 - **Why does `実装進捗ログ` connect `実装進捗ログ` to `空域デジタルツイン活用・ドローン航路GIS-PoC 実装タスクリスト`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **What connects `$schema`, `typescript`, `oxc` to the rest of the system?**
-  _405 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _408 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `viewer_api/app.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.11904761904761904 - nodes in this community are weakly interconnected._
 - **Should `MapContainer.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.12554112554112554 - nodes in this community are weakly interconnected._
-- **Should `api_client.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.12105263157894737 - nodes in this community are weakly interconnected._
-- **Should `extract_ground_features.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.05297334244702666 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10461538461538461 - nodes in this community are weakly interconnected._
+- **Should `DigitalTwinApiClient` be split into smaller, more focused modules?**
+  _Cohesion score 0.05478750640040963 - nodes in this community are weakly interconnected._

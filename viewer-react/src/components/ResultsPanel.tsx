@@ -65,7 +65,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
           <h2 className="text-sm font-semibold text-text-primary">
             照会結果
           </h2>
-          <AccordionIcon expanded={queryExpanded} />
+          <AccordionIcon expanded={queryExpanded} opensUpward />
         </button>
         {queryExpanded && (
           <div className="px-6 py-4 bg-bg-app text-sm text-text-secondary">
@@ -130,7 +130,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
           <h2 className="text-sm font-semibold text-text-primary">
             判定詳細
           </h2>
-          <AccordionIcon expanded={detailsExpanded} />
+          <AccordionIcon expanded={detailsExpanded} opensUpward />
         </button>
         {detailsExpanded && (
           <div className="px-6 py-4 bg-bg-app text-sm text-text-secondary border-t border-bg-table-head space-y-4">
@@ -256,8 +256,12 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
   );
 }
 
-function AccordionIcon({ expanded }: { expanded: boolean }) {
-  return expanded ? (
+function AccordionIcon({ expanded, opensUpward = false }: { expanded: boolean; opensUpward?: boolean }) {
+  // 親パネルは画面下部から上方向へ展開するため、開く前は上向き、開いた後は
+  // 閉じる方向の下向きを示す。判定詳細内の子アコーディオンは従来の向きを保つ。
+  const showUpward = opensUpward ? !expanded : expanded;
+
+  return showUpward ? (
     <FiChevronUp aria-hidden="true" className="h-4 w-4 shrink-0 text-text-secondary" />
   ) : (
     <FiChevronDown aria-hidden="true" className="h-4 w-4 shrink-0 text-text-secondary" />
