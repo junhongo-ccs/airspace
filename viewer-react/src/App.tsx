@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './index.css';
+import CollapsibleSidebar from './components/CollapsibleSidebar';
 import SettingsPanel from './components/SettingsPanel';
 import MapContainer, { type MapBounds } from './components/MapContainer';
 import ResultsPanel from './components/ResultsPanel';
@@ -365,8 +366,9 @@ function App() {
     <div className="flex flex-col h-screen bg-bg-app">
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left settings panel */}
-        <SettingsPanel
+        {/* Left settings panel: GISアプリ風に幅だけを開閉し、地図領域は常に残す。 */}
+        <CollapsibleSidebar>
+          <SettingsPanel
           connection={connection}
           startLat={startLat}
           setStartLat={setStartLat}
@@ -393,8 +395,9 @@ function App() {
           showLanduse={showLanduse}
           setShowLanduse={setShowLanduse}
           onQuery={handleQuery}
-          isLoading={isLoading}
-        />
+            isLoading={isLoading}
+          />
+        </CollapsibleSidebar>
 
         {/* Map area */}
         <div className="flex-1 flex flex-col">

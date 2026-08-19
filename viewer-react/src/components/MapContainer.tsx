@@ -287,6 +287,17 @@ export default function MapContainer({
     };
   }, []);
 
+  // 左フィルタペインの開閉など、window resize を伴わないレイアウト変更でも
+  // MapLibre の canvas を親要素の幅に追従させる。
+  useEffect(() => {
+    const container = mapContainer.current;
+    if (!container || typeof ResizeObserver === 'undefined') return;
+
+    const observer = new ResizeObserver(() => map.current?.resize());
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
   // 航路ラインを描画
   useEffect(() => {
     if (!map.current || !styleReady) return;

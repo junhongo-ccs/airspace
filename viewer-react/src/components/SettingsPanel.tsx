@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import type { ConnectionStatus } from '../api/client';
 
 interface SettingsPanelProps {
@@ -94,6 +95,9 @@ export default function SettingsPanel({
   isLoading,
 }: SettingsPanelProps) {
   const [spatialId, setSpatialId] = useState<string | null>(null);
+  const [layersExpanded, setLayersExpanded] = useState(false);
+  const [impactLayersExpanded, setImpactLayersExpanded] = useState(false);
+  const [opportunityLayersExpanded, setOpportunityLayersExpanded] = useState(false);
   const connectionView = describeConnection(connection);
 
   useEffect(() => {
@@ -226,9 +230,7 @@ export default function SettingsPanel({
             {aglM < 150 ? (
               <span className="text-status-ok">150m未満（ほかの要件は未確認）</span>
             ) : (
-              <span className="text-status-warn">
-                150m以上（許可・承認が必要な可能性。ほかの要件も未確認）
-              </span>
+              <span className="text-status-error">150m以上：原則不可。飛行には個別許可が必要</span>
             )}
           </div>
         </div>
@@ -236,28 +238,41 @@ export default function SettingsPanel({
         {/* Query button: レイヤ切り替えUIより上に配置する。会社貸与ノートPC等の
             低解像度画面ではレイヤ一覧が長くボタンがファーストビューから完全に
             消えていた（ユーザー報告2026-08-18）ため、座標・高度入力の直後に移動した。 */}
-        <button
-          onClick={onQuery}
-          disabled={isLoading}
-          className="w-full px-4 py-2.5 bg-action-primary text-white text-sm font-semibold rounded transition-colors hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {isLoading ? '実行中…' : '航路を登録して周辺データを照会'}
-        </button>
+        <div className="mb-3">
+          <button
+            onClick={onQuery}
+            disabled={isLoading}
+            className="w-full px-4 py-2.5 bg-action-primary text-white text-sm font-semibold rounded transition-colors hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {isLoading ? '実行中…' : '航路を登録して周辺データを照会'}
+          </button>
+        </div>
 
         {/* Layer visibility */}
         <div>
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary tracking-wide mb-1.5">
-            <span className="h-3 w-0.5 rounded-full bg-action-primary" aria-hidden="true" />
-            レイヤ
-          </div>
+          <LayerAccordionButton
+            label="レイヤ"
+            expanded={layersExpanded}
+            controls="layer-settings"
+            onClick={() => setLayersExpanded((expanded) => !expanded)}
+            topLevel
+          />
 
+          {layersExpanded && (
+            <div id="layer-settings" className="mt-1.5 space-y-1.5 pl-2">
           {/* 6-13: 建物・道路・DID地区等は「航路への影響」（回避・高度変更・安全距離の
               検討）、土砂災害・洪水浸水は「航路活用の可能性」（災害時の状況確認・
               物資輸送等を優先検討する根拠）として見出しを分ける。災害リスク区域を
               飛行禁止区域や障害物と同じ意味で誤認させないための区分（改善タスク§2）。 */}
           <div className="mb-2">
-            <div className="text-[11px] font-semibold text-text-secondary mb-1">航路への影響</div>
-            <div className="space-y-1.5">
+            <LayerAccordionButton
+              label="航路への影響"
+              expanded={impactLayersExpanded}
+              controls="impact-layer-settings"
+              onClick={() => setImpactLayersExpanded((expanded) => !expanded)}
+            />
+            {impactLayersExpanded && (
+              <div id="impact-layer-settings" className="mt-1.5 space-y-1.5 pl-4">
               {/* 6-6/6-8: 建物外形は秩父市周辺（対象範囲は viewer/src/target_area.py
                   参照、既存デフォルト地図中心の20km四方）で地図移動・ズームに応じて
                   取得する。対象範囲外へ地図を移動すると表示対象外になる
@@ -300,12 +315,19 @@ export default function SettingsPanel({
                 <span className="text-sm text-text-primary">人口集中地区（飛行禁止）</span>
                 <span className="text-xs text-text-secondary">（秩父市のみ地図描画対応）</span>
               </label>
-            </div>
+              </div>
+            )}
           </div>
 
           <div className="mb-2">
-            <div className="text-[11px] font-semibold text-text-secondary mb-1">航路活用の可能性</div>
-            <div className="space-y-1.5">
+            <LayerAccordionButton
+              label="航路活用の可能性"
+              expanded={opportunityLayersExpanded}
+              controls="opportunity-layer-settings"
+              onClick={() => setOpportunityLayersExpanded((expanded) => !expanded)}
+            />
+            {opportunityLayersExpanded && (
+              <div id="opportunity-layer-settings" className="mt-1.5 space-y-1.5 pl-4">
               <label className="flex items-center gap-2 cursor-pointer leading-4">
                 <input
                   type="checkbox"
@@ -324,12 +346,13 @@ export default function SettingsPanel({
                 />
                 <span className="text-sm text-text-primary">洪水浸水想定区域</span>
               </label>
-            </div>
+              </div>
+            )}
           </div>
 
           {/* 6-6a: 土地利用は分類ごとに影響／活用のどちらの意味も持ちうるため、
               上記2グループとは別枠で表示する（改善タスク§2）。 */}
-          <div className="mb-2">
+          <div className="mb-2 pl-1">
             <label className="flex items-center gap-2 cursor-pointer leading-4">
               <input
                 type="checkbox"
@@ -342,7 +365,7 @@ export default function SettingsPanel({
             </label>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 pl-1">
             <label className="flex items-center gap-2 cursor-pointer leading-4">
               <input
                 type="checkbox"
@@ -353,8 +376,43 @@ export default function SettingsPanel({
               <span className="text-sm text-text-primary">航路</span>
             </label>
           </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
+  );
+}
+
+function LayerAccordionButton({
+  label,
+  expanded,
+  controls,
+  onClick,
+  topLevel = false,
+}: {
+  label: string;
+  expanded: boolean;
+  controls: string;
+  onClick: () => void;
+  topLevel?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      className={`flex w-full items-center justify-between rounded px-1 py-1 text-left hover:bg-bg-table-head focus:outline-none focus-visible:ring-2 focus-visible:ring-action-primary ${
+        topLevel
+          ? 'text-sm font-semibold text-text-primary'
+          : 'text-xs font-semibold tracking-wide text-text-secondary'
+      }`}
+      aria-expanded={expanded}
+      aria-controls={controls}
+      onClick={onClick}
+    >
+      <span className="flex items-center gap-1.5">
+        {label}
+      </span>
+      {expanded ? <FiChevronUp aria-hidden="true" /> : <FiChevronDown aria-hidden="true" />}
+    </button>
   );
 }

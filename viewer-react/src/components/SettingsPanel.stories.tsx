@@ -96,12 +96,12 @@ export const ConnectionError: Story = {
   },
 };
 
-// aglM >= 150で「許可・承認が必要な可能性」の警告文言に切り替わる（航空法150m上限）。
+// aglM >= 150で、個別許可が必要である旨の警告文言に切り替わる（航空法150m上限）。
 export const HighAltitudeWarning: Story = {
   args: { aglM: 200 },
   play: async ({ canvas }) => {
     await expect(
-      canvas.getByText('150m以上（許可・承認が必要な可能性。ほかの要件も未確認）')
+      canvas.getByText('150m以上：原則不可。飛行には個別許可が必要')
     ).toBeVisible();
   },
 };
@@ -131,5 +131,24 @@ export const CssCheck: Story = {
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: '航路を登録して周辺データを照会' });
     await expect(getComputedStyle(button).backgroundColor).toBe('rgb(15, 111, 198)');
+  },
+};
+
+// レイヤ全体は初期状態で畳み、航路を含む選択項目は見せない。カテゴリも個別に
+// 展開してからチェックボックスを操作する。
+export const NestedLayers: Story = {
+  play: async ({ canvas, userEvent }) => {
+    const layers = canvas.getByRole('button', { name: 'レイヤ' });
+    await expect(layers).toHaveAttribute('aria-expanded', 'false');
+    await expect(canvas.queryByText('航路')).toBeNull();
+
+    await userEvent.click(layers);
+    await expect(layers).toHaveAttribute('aria-expanded', 'true');
+    await expect(canvas.getByText('航路')).toBeVisible();
+
+    const impact = canvas.getByRole('button', { name: '航路への影響' });
+    await expect(impact).toHaveAttribute('aria-expanded', 'false');
+    await userEvent.click(impact);
+    await expect(canvas.getByRole('checkbox', { name: /建物/ })).toBeVisible();
   },
 };

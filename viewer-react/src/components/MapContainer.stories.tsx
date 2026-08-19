@@ -7,7 +7,7 @@ const meta = {
   tags: ['ai-generated'],
   decorators: [
     (Story) => (
-      <div className="h-[640px] w-full">
+      <div className="flex h-[640px] w-full">
         <Story />
       </div>
     ),
