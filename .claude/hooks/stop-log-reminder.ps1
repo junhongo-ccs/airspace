@@ -22,7 +22,7 @@ $paths = @($status | ForEach-Object { ($_ -replace '^.{3}', '').Trim('"') })
 
 # 実装・データ・配備設定の変更を「記録すべき作業」とみなす
 $codePattern = '^(viewer/|viewer-react/src/|viewer-react/package|viewer_api/|scripts/|render\.yaml|CLAUDE\.md|\.claude/)'
-$changedCode = @($paths | Where-Object { $_ -match $codePattern -and $_ -notmatch '(node_modules|dist/|\.venv|__pycache__|.claude/worktrees)' })
+$changedCode = @($paths | Where-Object { $_ -match $codePattern -and $_ -notmatch '(node_modules|dist/|\.venv|__pycache__|\.claude/worktrees|settings\.local\.json)' })
 if ($changedCode.Count -eq 0) { exit 0 }
 
 $logTouched = @($paths | Where-Object { $_ -like '*進捗ログ.md*' })

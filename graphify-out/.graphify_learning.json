@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-08-19T03:58:39.795224+00:00",
+  "nodes": {
+    "viewer_src_api_client_apierror": {
+      "code_fingerprint": "64668d27c112812d2f0293678ec681cc100727f9bb2ce033203e5c352f43f382",
+      "label": "ApiError",
+      "last": "2026-08-19T03:40:46.703389+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-19T03:40:46.703389+00:00",
+          "outcome": "useful",
+          "q": "Why does DigitalTwinApiClient connect Extraction error handling to API data models?"
+        }
+      ],
+      "score": 0.999713077,
+      "source_file": "viewer/src/api_client.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "viewer_src_api_client_digitaltwinapiclient": {
+      "code_fingerprint": "64668d27c112812d2f0293678ec681cc100727f9bb2ce033203e5c352f43f382",
+      "label": "DigitalTwinApiClient",
+      "last": "2026-08-19T03:40:46.703389+00:00",
+      "provenance": [
+        {
+          "date": "2026-08-19T03:40:46.703389+00:00",
+          "outcome": "useful",
+          "q": "Why does DigitalTwinApiClient connect Extraction error handling to API data models?"
+        }
+      ],
+      "score": 0.999713077,
+      "source_file": "viewer/src/api_client.py",
+      "status": "tentative",
+      "uses": 1
+    }
+  },
+  "version": 1
+}
