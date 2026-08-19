@@ -252,6 +252,11 @@ export interface PlateauDatasetMeta {
 export interface BboxFeatureResult<T> {
   features: T[];
   meta: PlateauDatasetMeta | null;
+  // false = 通信失敗またはabort（featuresは空だが「0件取得できた」わけではない）。
+  // 呼び出し側はokがfalseのとき、取得済みキャッシュを更新してはいけない
+  // （2026-08-19、reviewer(Codex)指摘：okを区別しないと、通信失敗を「成功・0件」として
+  // キャッシュしてしまい、以後そのbboxが永久に再取得されなくなる）。
+  ok: boolean;
 }
 
 function parseDatasetMeta(raw: unknown): PlateauDatasetMeta | null {
@@ -282,17 +287,17 @@ export async function getBuildingsInBbox(
       throw new Error(await describeError(response));
     }
     const data = await response.json();
-    return { features: data.data || [], meta: parseDatasetMeta(data.meta) };
+    return { features: data.data || [], meta: parseDatasetMeta(data.meta), ok: true };
   } catch (error) {
     // 中断（AbortError）は呼び出し側が意図して起こした通常の動作のため、
-    // 実際の取得失敗と違いコンソールへは出さない。呼び出し側は
-    // signal.abortedを見て、中断時はこの戻り値（空配列）を使わない。
+    // 実際の取得失敗と違いコンソールへは出さない。
     if (error instanceof DOMException && error.name === 'AbortError') {
-      return { features: [], meta: null };
+      return { features: [], meta: null, ok: false };
     }
-    // 参照レイヤの取得失敗は航路登録・照会を妨げない。空配列を返し、表示だけを省略する。
+    // 参照レイヤの取得失敗は航路登録・照会を妨げない。空配列を返し、表示だけを省略する
+    // （ok:falseなので呼び出し側はこれを「取得済み」としてキャッシュしない）。
     console.error('Failed to fetch buildings in bbox:', error);
-    return { features: [], meta: null };
+    return { features: [], meta: null, ok: false };
   }
 }
 
@@ -340,13 +345,14 @@ export async function getGroundFeaturesInBbox(
       throw new Error(await describeError(response));
     }
     const data = await response.json();
-    return { features: data.data || [], meta: parseDatasetMeta(data.meta) };
+    return { features: data.data || [], meta: parseDatasetMeta(data.meta), ok: true };
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
-      return { features: [], meta: null };
+      return { features: [], meta: null, ok: false };
     }
+    // ok:falseなので呼び出し側はこれを「取得済み」としてキャッシュしない。
     console.error(`Failed to fetch ground features (${layer}) in bbox:`, error);
-    return { features: [], meta: null };
+    return { features: [], meta: null, ok: false };
   }
 }
 

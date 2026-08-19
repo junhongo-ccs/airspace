@@ -125,9 +125,11 @@ function App() {
   // 直近に実際取得した（バッファ込みの）bbox。次のmapBoundsがこの範囲に収まって
   // いれば、表示中のデータで足りるため取得自体をスキップする。
   const lastFetchedBuildingsBoundsRef = useRef<MapBounds | null>(null);
-  const lastFetchedGroundFeaturesBoundsRef = useRef<{ bounds: MapBounds; layerVisibilityKey: string } | null>(
-    null
-  );
+  // レイヤーごとに直近取得済みのbboxを持つ。ON/OFFの組み合わせ全体を1本の値に
+  // まとめていた旧実装は、無関係なレイヤーを1つ切り替えただけでも全レイヤー分を
+  // 再取得してしまっていた（ユーザー指摘2026-08-19：「都度fetch」が土砂災害・
+  // 洪水浸水の表示不安定の原因）。
+  const lastFetchedGroundFeaturesBoundsRef = useRef<Partial<Record<GroundFeatureLayerKey, MapBounds>>>({});
 
   const refreshConnection = useCallback(async () => {
     setConnection(await getConnectionStatus());
@@ -152,11 +154,11 @@ function App() {
   // OFFのときは取得自体を行わない（6-7）。連続したbounds変化はデバウンスして
   // 最後の1回だけ実際に取得する。
   useEffect(() => {
-    if (!showBuildings || !mapBounds) {
-      setPlateauBuildings([]);
-      lastFetchedBuildingsBoundsRef.current = null;
-      return;
-    }
+    // OFF中はキャッシュ（plateauBuildings・lastFetchedBuildingsBoundsRef）を破棄
+    // しない。破棄すると同じ範囲でON/OFFを繰り返すだけで毎回再取得が発生していた
+    // （ユーザー指摘2026-08-19）。非表示自体はMapContainer側がshowBuildingsで
+    // 行うため、ここでは取得を止めるだけでよい。
+    if (!showBuildings || !mapBounds) return;
     // 既に読み込み済みのバッファ範囲に収まる移動なら、表示中のデータで足りるため
     // 取得しない（手でわずかにドラッグするたびに再取得・再描画が走る問題への対応）。
     if (
@@ -168,7 +170,6 @@ function App() {
     if (boundsFetchTimer.current) clearTimeout(boundsFetchTimer.current);
     boundsFetchTimer.current = setTimeout(() => {
       const fetchBounds = padBounds(mapBounds, VIEWPORT_BUFFER_RATIO);
-      lastFetchedBuildingsBoundsRef.current = fetchBounds;
       const controller = new AbortController();
       buildingsFetchControllerRef.current = controller;
       void getBuildingsInBbox(
@@ -177,10 +178,18 @@ function App() {
         fetchBounds.minLon,
         fetchBounds.maxLon,
         controller.signal
-      ).then(({ features, meta }) => {
+      ).then(({ features, meta, ok }) => {
         // 中断済み（＝この後により新しい表示範囲のリクエストが発行済み）なら、
-        // 古い結果で状態を上書きしない。
-        if (controller.signal.aborted) return;
+        // 古い結果で状態を上書きしない。キャッシュへの書き込みも成功後にのみ行う
+        // （2026-08-19、reviewer(Codex)指摘：成功前にキャッシュへ書くと、abortされた
+        // ときに「取得済みだが中身は空」のまま固定され、以後再取得されなくなる
+        // バグがあった）。okもあわせて見るのは、通信失敗時も`getBuildingsInBbox`は
+        // 例外を投げず空配列で解決するため（表示だけを省略し航路照会は妨げない設計）、
+        // signal.abortedだけでは通信失敗を「成功・0件」と区別できないため
+        // （2026-08-19、reviewer(Codex)指摘）。失敗時は表示を空にせず、直前の
+        // データを残したまま次回に再取得を試みる。
+        if (controller.signal.aborted || !ok) return;
+        lastFetchedBuildingsBoundsRef.current = fetchBounds;
         setPlateauBuildings(features);
         if (meta) setDatasetMeta(meta);
       });
@@ -191,9 +200,12 @@ function App() {
     };
   }, [showBuildings, mapBounds]);
 
-  // 6-6a: 道路・土砂災害・洪水浸水・土地利用も同じ考え方で、ONのレイヤーだけ
-  // 表示範囲が変わるたびに取得し直す。4レイヤーまとめて1回デバウンスし、
-  // 有効なものだけ並行取得する（6-7: OFFのレイヤーは取得しない）。
+  // 6-6a: 道路・土砂災害・洪水浸水・土地利用も同じ考え方で、ONかつキャッシュが
+  // 現在の表示範囲をカバーしていないレイヤーだけ取得し直す。複数レイヤーの取得は
+  // 1回のデバウンスにまとめるが、キャッシュ済みのレイヤーは対象から外す（6-7:
+  // OFFのレイヤーは取得しない。OFF中もデータは破棄せず、再ONの際に同じ範囲なら
+  // 再取得しない。ユーザー指摘2026-08-19：全レイヤーを1本のキーで管理していた旧
+  // 実装は、1レイヤーだけの切り替えでも他レイヤーまで巻き込んで再取得していた）。
   //
   // useMemoで包まないと、mapBoundsの更新（＝地図を動かすたび）を含むAppの
   // 再レンダーのたびにこのオブジェクトが新しい参照として作られ、MapContainer側の
@@ -208,43 +220,24 @@ function App() {
 
   useEffect(() => {
     const enabledLayers = GROUND_FEATURE_LAYERS.filter((l) => layerVisibility[l]);
-    setGroundFeaturesByLayer((prev) => {
-      // 実際にOFFへ切り替わって中身が空になるレイヤーが無ければprevをそのまま
-      // 返す。{...prev}のスプレッドは中身が同じでも常に新しい参照を作ってしまい、
-      // 上と同じ理由でMapContainer側のちらつきにつながるため、変更が無い限り
-      // 新しいオブジェクトを作らない。
-      let changed = false;
-      const next = { ...prev };
-      for (const layer of GROUND_FEATURE_LAYERS) {
-        if (!layerVisibility[layer] && prev[layer].length > 0) {
-          next[layer] = [];
-          changed = true;
-        }
-      }
-      return changed ? next : prev;
-    });
     if (enabledLayers.length === 0 || !mapBounds) return;
 
-    // 建物と同じ考え方：有効なレイヤーの組み合わせが前回取得時と同じで、かつ
-    // 表示範囲が読み込み済みバッファに収まっていれば取得しない（手で少し動かす
-    // たびに再取得・再描画が走る問題への対応、2026-08-17報告）。
-    const lastFetch = lastFetchedGroundFeaturesBoundsRef.current;
-    if (
-      lastFetch &&
-      lastFetch.layerVisibilityKey === layerVisibilityKey &&
-      boundsContain(lastFetch.bounds, mapBounds)
-    ) {
-      return;
-    }
+    // 有効なレイヤーのうち、直近取得済みのbboxが現在の表示範囲をカバーしていない
+    // ものだけ取得対象にする（手で少し動かすたびに再取得・再描画が走る問題への
+    // 対応、2026-08-17報告。レイヤー単位のキャッシュにしたのは2026-08-19）。
+    const layersToFetch = enabledLayers.filter((layer) => {
+      const cached = lastFetchedGroundFeaturesBoundsRef.current[layer];
+      return !(cached && boundsContain(cached, mapBounds));
+    });
+    if (layersToFetch.length === 0) return;
 
     if (groundFeaturesFetchTimer.current) clearTimeout(groundFeaturesFetchTimer.current);
     groundFeaturesFetchTimer.current = setTimeout(() => {
       const fetchBounds = padBounds(mapBounds, VIEWPORT_BUFFER_RATIO);
-      lastFetchedGroundFeaturesBoundsRef.current = { bounds: fetchBounds, layerVisibilityKey };
       const controller = new AbortController();
       groundFeaturesFetchControllerRef.current = controller;
       void Promise.all(
-        enabledLayers.map((layer) =>
+        layersToFetch.map((layer) =>
           getGroundFeaturesInBbox(
             layer,
             fetchBounds.minLat,
@@ -255,13 +248,27 @@ function App() {
           ).then((result) => [layer, result] as const)
         )
       ).then((results) => {
+        // abort済みならキャッシュにも書かない（2026-08-19、reviewer(Codex)指摘：
+        // 成功前にキャッシュへ書き込んでいたため、abortされたレイヤーが「取得済みだが
+        // 中身は空」のまま固定され、道路・建物を含め何も表示されなくなるバグがあった。
+        // 建物取得effectも同じ理由で同様に修正済み）。
         if (controller.signal.aborted) return;
+        // レイヤーごとにokを見る（Promise.allは一括だが、通信失敗した個別のレイヤーは
+        // `getGroundFeaturesInBbox`が例外を投げず空配列で解決するため、abortと同様
+        // signal.abortedだけでは区別できない。2026-08-19、reviewer(Codex)指摘）。
+        // 失敗したレイヤーはキャッシュも表示も更新せず、直前のデータを残したまま
+        // 次回に再取得を試みる。
+        const succeeded = results.filter(([, r]) => r.ok);
+        if (succeeded.length === 0) return;
+        for (const [layer] of succeeded) {
+          lastFetchedGroundFeaturesBoundsRef.current[layer] = fetchBounds;
+        }
         setGroundFeaturesByLayer((prev) => {
           const next = { ...prev };
-          for (const [layer, { features }] of results) next[layer] = features;
+          for (const [layer, { features }] of succeeded) next[layer] = features;
           return next;
         });
-        const lastMeta = results.map(([, r]) => r.meta).find((m) => m !== null);
+        const lastMeta = succeeded.map(([, r]) => r.meta).find((m) => m !== null);
         if (lastMeta) setDatasetMeta(lastMeta);
       });
     }, BOUNDS_FETCH_DEBOUNCE_MS);
