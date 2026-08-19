@@ -1,0 +1,20 @@
+{
+  "0": "devDependencies",
+  "1": "App.tsx",
+  "2": "MapContainer.tsx",
+  "3": "compilerOptions",
+  "4": "ResultsPanel.stories.tsx",
+  "5": "SettingsPanel.stories.tsx",
+  "6": "package.json",
+  "7": "compilerOptions",
+  "8": "plugins",
+  "9": "React + TypeScript + Vite",
+  "10": "tsconfig.json",
+  "11": "main.ts",
+  "12": "preview.tsx",
+  "13": "vite.config.ts",
+  "14": "postcss.config.js",
+  "15": "tailwind.config.js",
+  "16": "tailwindcss",
+  "17": "vitest.shims.d.ts"
+}
