@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import type { QueryResult } from '../App';
-import type { GroundFeatureGroup } from '../api/client';
+import type { GroundFeature, GroundFeatureGroup } from '../api/client';
 
 interface ResultsPanelProps {
   queryResult: QueryResult;
@@ -29,6 +29,22 @@ const GROUP_LABELS: Record<GroundFeatureGroup, string> = {
   landuse: '土地利用（影響/活用は分類による）',
 };
 const GROUP_ORDER: GroundFeatureGroup[] = ['impact', 'opportunity', 'landuse'];
+
+function buildingHeightSummary(features: GroundFeature[]) {
+  const buildings = features.filter((feature) => feature.layer === 'building');
+  if (buildings.length === 0) return null;
+
+  const clear = buildings.filter((feature) => feature.intersect.startsWith('交差なし（高さ方向')).length;
+  const needsReview = buildings.filter((feature) => feature.intersect.startsWith('要確認（高さ方向')).length;
+  const unverified = buildings.length - clear - needsReview;
+  const parts = [
+    clear > 0 && `クリア ${clear}件`,
+    needsReview > 0 && `要確認 ${needsReview}件`,
+    unverified > 0 && `未検証 ${unverified}件`,
+  ].filter(Boolean);
+
+  return `建物の高さ方向：${parts.join(' / ')}`;
+}
 
 export default function ResultsPanel({ queryResult, showProhibitedAreas }: ResultsPanelProps) {
   const [queryExpanded, setQueryExpanded] = useState(true);
@@ -142,9 +158,8 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
               <p className="text-text-secondary">対象範囲内に該当データはありませんでした。</p>
             )}
 
-            {/* 概要: 下の詳細（レイヤ別・地物1件ずつ）に入る前に、区分ごとの交差状況を
-                数行でまとめる。件数はすべて「交差」の有無を明示した値のみを使い、
-                6-11が禁じる「土砂災害 1件」のような関係不明の単独件数は出さない。 */}
+            {/* 概要: 平面上の重なり件数と、建物の高さ方向の判定を分けて示す。
+                同じ「交差」という語で別の判定軸を表して矛盾に見えることを防ぐ。 */}
             {routeQueried && hasAnyContent && (
               <div className="bg-bg-panel rounded p-3 text-xs space-y-1 border border-bg-table-head">
                 {GROUP_ORDER.map((group) => {
@@ -152,14 +167,18 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                   const nearbyCount = nearbySummary
                     .filter((s) => s.group === group)
                     .reduce((sum, s) => sum + s.count, 0);
+                  const heightSummary = buildingHeightSummary(
+                    features.filter((feature) => feature.group === group)
+                  );
                   if (intersectCount === 0 && nearbyCount === 0) return null;
                   return (
                     <div key={`summary-${group}`} className="flex justify-between gap-4">
                       <span className="text-text-secondary">{GROUP_LABELS[group]}:</span>
-                      <span className="text-text-primary font-medium text-right">
+                      <span className="text-text-primary font-medium text-right space-y-1">
                         {intersectCount > 0
-                          ? `交差 ${intersectCount}件`
-                          : `交差なし（付近に${nearbyCount}件）`}
+                          ? <span className="block">平面上で航路と重なる地物 {intersectCount}件</span>
+                          : <span className="block">平面上の重なりなし（付近に{nearbyCount}件）</span>}
+                        {heightSummary && <span className="block text-text-secondary">{heightSummary}</span>}
                       </span>
                     </div>
                   );
@@ -215,7 +234,7 @@ export default function ResultsPanel({ queryResult, showProhibitedAreas }: Resul
                           {groupFeatures.map((f) => (
                             <li key={`feature-${f.id}`} className="text-text-primary">
                               <span className="text-text-secondary">[{LAYER_LABELS[f.layer] ?? f.layer}]</span>{' '}
-                              {f.intersect}
+                              {f.layer === 'building' ? `平面上で航路と重なる／${f.intersect}` : f.intersect}
                             </li>
                           ))}
                           {groupSummaries.map((s) => (

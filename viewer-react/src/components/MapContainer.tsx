@@ -65,18 +65,20 @@ interface MapContainerProps {
 
 // 6-6a/6-13: レイヤーごとの色・パターン・表示名・区分（「航路への影響」/
 // 「航路活用の可能性」/土地利用）。design.mdの既存パレットから、まだ未使用の
-// トークンを充てる（--map-caution=土砂災害、--brand-blue-light=洪水浸水、
-// --map-terrain-high=土地利用）。道路は当初--brand-cyan（水色）を使っていたが、
-// 水面と紛らわしい（ユーザー報告2026-08-17）ため、建物（#8A96A0）より少し濃い
-// グレー系（#5C6670）に変更した。
+// トークンを充てる（--map-caution=土砂災害、--brand-blue-light=洪水浸水）。
+// 道路は当初--brand-cyan（水色）を使っていたが、水面と紛らわしい（ユーザー報告
+// 2026-08-17）ため、建物（#8A96A0）より少し濃いグレー系（#5C6670）に変更した。
+// 土地利用は当初--map-terrain-high（#8C6239、茶の塗り）だったが、他レイヤーと
+// 重なると下の情報が見えなくなる（ユーザー報告2026-08-20）ため、塗りをやめ
+// --map-landuse（#2E6B1F、濃緑。design.md v1.3で新規追加）の輪郭線のみに変更した。
 const GROUND_LAYER_STYLE: Record<
   GroundFeatureLayerKey,
-  { color: string; hatch: boolean; label: string; group: 'impact' | 'opportunity' | 'landuse' }
+  { color: string; hatch: boolean; fill: boolean; lineWidth: number; label: string; group: 'impact' | 'opportunity' | 'landuse' }
 > = {
-  road: { color: '#5C6670', hatch: false, label: '道路', group: 'impact' },
-  landslide: { color: '#FF8A00', hatch: true, label: '土砂災害警戒区域', group: 'opportunity' },
-  flood: { color: '#3E9BE0', hatch: true, label: '洪水浸水想定区域', group: 'opportunity' },
-  landuse: { color: '#8C6239', hatch: false, label: '土地利用', group: 'landuse' },
+  road: { color: '#5C6670', hatch: false, fill: true, lineWidth: 1, label: '道路', group: 'impact' },
+  landslide: { color: '#FF8A00', hatch: true, fill: true, lineWidth: 1, label: '土砂災害警戒区域', group: 'opportunity' },
+  flood: { color: '#3E9BE0', hatch: true, fill: true, lineWidth: 1, label: '洪水浸水想定区域', group: 'opportunity' },
+  landuse: { color: '#2E6B1F', hatch: false, fill: false, lineWidth: 2, label: '土地利用', group: 'landuse' },
 };
 
 const GROUND_FEATURE_LAYER_KEYS: GroundFeatureLayerKey[] = ['road', 'landslide', 'flood', 'landuse'];
@@ -557,12 +559,15 @@ export default function MapContainer({
 
     for (const layer of GROUND_FEATURE_LAYER_KEYS) {
       const ids = groundLayerIds(layer);
+      // 塗りなしレイヤー（landuse）はfillレイヤー自体を作らないため、クリック
+      // 判定はoutlineレイヤーに付ける。
+      const clickLayerId = GROUND_LAYER_STYLE[layer].fill ? ids.fill : ids.outline;
       const features = layerVisibility[layer] ? groundFeaturesByLayer[layer] : undefined;
 
       if (!features || features.length === 0) {
         const existingHandler = groundClickHandlersRef.current[layer];
         if (existingHandler) {
-          mapInstance.off('click', ids.fill, existingHandler);
+          mapInstance.off('click', clickLayerId, existingHandler);
           delete groundClickHandlersRef.current[layer];
         }
         removeGroundFeatureLayer(mapInstance, layer);
@@ -579,19 +584,20 @@ export default function MapContainer({
       const style = GROUND_LAYER_STYLE[layer];
       mapInstance.addSource(ids.source, { type: 'geojson', data });
 
-      const fillPaint: maplibregl.FillLayerSpecification['paint'] = style.hatch
-        ? (() => {
-            ensureDiagonalHatchPattern(mapInstance, ids.hatchImage, style.color);
-            return { 'fill-pattern': ids.hatchImage, 'fill-opacity': 0.6 };
-          })()
-        : { 'fill-color': style.color, 'fill-opacity': 0.35 };
-
-      mapInstance.addLayer({ id: ids.fill, type: 'fill', source: ids.source, paint: fillPaint });
+      if (style.fill) {
+        const fillPaint: maplibregl.FillLayerSpecification['paint'] = style.hatch
+          ? (() => {
+              ensureDiagonalHatchPattern(mapInstance, ids.hatchImage, style.color);
+              return { 'fill-pattern': ids.hatchImage, 'fill-opacity': 0.6 };
+            })()
+          : { 'fill-color': style.color, 'fill-opacity': 0.35 };
+        mapInstance.addLayer({ id: ids.fill, type: 'fill', source: ids.source, paint: fillPaint });
+      }
       mapInstance.addLayer({
         id: ids.outline,
         type: 'line',
         source: ids.source,
-        paint: { 'line-color': style.color, 'line-width': 1 },
+        paint: { 'line-color': style.color, 'line-width': style.lineWidth },
       });
 
       const handler = (e: maplibregl.MapLayerMouseEvent) => {
@@ -611,7 +617,7 @@ export default function MapContainer({
           .setHTML(lines.join(''))
           .addTo(mapInstance);
       };
-      mapInstance.on('click', ids.fill, handler);
+      mapInstance.on('click', clickLayerId, handler);
       groundClickHandlersRef.current[layer] = handler;
     }
   }, [groundFeaturesByLayer, layerVisibility, styleReady]);
@@ -715,7 +721,7 @@ export default function MapContainer({
 
             <div>
               <div className="mb-1 font-semibold text-text-primary">その他</div>
-              <LegendRow color="#8C6239" label="土地利用（影響/活用は分類による）" />
+              <LegendRow color="#2E6B1F" label="土地利用（影響/活用は分類による）" outline />
             </div>
 
             {datasetMeta && (
@@ -734,20 +740,26 @@ function LegendRow({
   color,
   label,
   hatch,
+  outline,
 }: {
   color: string;
   label: string;
   hatch?: 'diagonal' | 'cross';
+  // 塗りなし・輪郭線のみのレイヤー（landuse）用。塗りつぶしの凡例だと
+  // 実際の描画（線のみ）と見た目が食い違うため区別する。
+  outline?: boolean;
 }) {
-  const swatchStyle: CSSProperties = hatch
-    ? {
-        backgroundColor: `${color}33`,
-        backgroundImage:
-          hatch === 'cross'
-            ? `repeating-linear-gradient(45deg, ${color} 0, ${color} 1px, transparent 1px, transparent 4px), repeating-linear-gradient(-45deg, ${color} 0, ${color} 1px, transparent 1px, transparent 4px)`
-            : `repeating-linear-gradient(45deg, ${color} 0, ${color} 1px, transparent 1px, transparent 4px)`,
-      }
-    : { backgroundColor: color };
+  const swatchStyle: CSSProperties = outline
+    ? { backgroundColor: 'transparent', border: `2px solid ${color}` }
+    : hatch
+      ? {
+          backgroundColor: `${color}33`,
+          backgroundImage:
+            hatch === 'cross'
+              ? `repeating-linear-gradient(45deg, ${color} 0, ${color} 1px, transparent 1px, transparent 4px), repeating-linear-gradient(-45deg, ${color} 0, ${color} 1px, transparent 1px, transparent 4px)`
+              : `repeating-linear-gradient(45deg, ${color} 0, ${color} 1px, transparent 1px, transparent 4px)`,
+        }
+      : { backgroundColor: color };
   return (
     <div className="flex items-center gap-1.5 leading-4">
       <span className="inline-block w-3 h-3 rounded-sm border border-black/10 flex-shrink-0" style={swatchStyle} />
