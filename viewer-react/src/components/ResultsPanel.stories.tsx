@@ -24,9 +24,8 @@ const datasetMeta: PlateauDatasetMeta = {
   dataDate: '2025-03-31',
 };
 
-// impact（road）はnearbySummaryのみ＝交差なし、opportunity（landslide）は
-// 実際に交差、という組み合わせにして「交差 N件」/「交差なし（付近にN件）」
-// （6-11）の書き分けが両方1回ずつ確認できるようにする。
+// impact（road）はnearbySummaryのみ＝平面上の重なりなし、opportunity（landslide）は
+// 実際に交差、という組み合わせにして概要の書き分けを確認する。
 const features: GroundFeature[] = [
   {
     id: 'landslide-1',
@@ -76,17 +75,55 @@ export const SuccessWithData: Story = {
     } satisfies QueryResult,
   },
   play: async ({ canvas, userEvent }) => {
-    // 概要ブロック（交差件数の書き分け、6-11）は判定詳細アコーディオンの中にある。
+    // 概要ブロック（平面上の重なり有無の書き分け）は判定詳細アコーディオンの中にある。
     const detailsButton = canvas.getByRole('button', { name: /判定詳細/ });
     await userEvent.click(detailsButton);
-    await expect(canvas.getByText('交差 1件')).toBeVisible();
-    await expect(canvas.getByText('交差なし（付近に4件）')).toBeVisible();
+    await expect(canvas.getByText('平面上で航路と重なる地物 1件')).toBeVisible();
+    await expect(canvas.getByText('平面上の重なりなし（付近に4件）')).toBeVisible();
 
     // 凡例と同じアコーディオン操作でopportunityグループを展開すると免責文言が出る。
     const opportunityButton = canvas.getByRole('button', { name: /航路活用の可能性/ });
     await userEvent.click(opportunityButton);
     await expect(
       await canvas.findByText('土砂災害・洪水浸水は区域データであり、発災状況や飛行禁止の確定判断ではありません')
+    ).toBeVisible();
+  },
+};
+
+// 平面上の重なりと高さ方向の判定が別軸であることを確認するストーリー。
+export const BuildingHeightClearance: Story = {
+  args: {
+    queryResult: {
+      status: 'success',
+      routeId: 'route-building-clearance',
+      features: [
+        {
+          id: 'building-clear',
+          layer: 'building',
+          group: 'impact',
+          class_label: null,
+          intersect: '交差なし（高さ方向・建物高4.6m・暫定許容差±2m）',
+        },
+        {
+          id: 'building-review',
+          layer: 'building',
+          group: 'impact',
+          class_label: null,
+          intersect: '要確認（高さ方向・建物高12.7m・暫定許容差±2m）',
+        },
+      ],
+      datasetMeta,
+      timestamp: '2026-08-20T10:00:00Z',
+    } satisfies QueryResult,
+  },
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole('button', { name: /判定詳細/ }));
+    await expect(canvas.getByText('平面上で航路と重なる地物 2件')).toBeVisible();
+    await expect(canvas.getByText('建物の高さ方向：クリア 1件 / 要確認 1件')).toBeVisible();
+
+    await userEvent.click(canvas.getByRole('button', { name: '航路への影響' }));
+    await expect(
+      canvas.getByText('平面上で航路と重なる／交差なし（高さ方向・建物高4.6m・暫定許容差±2m）')
     ).toBeVisible();
   },
 };

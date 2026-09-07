@@ -8,6 +8,13 @@ const noop = fn();
 const meta = {
   component: SettingsPanel,
   tags: ['ai-generated'],
+  decorators: [
+    (Story) => (
+      <div className="h-[640px] w-80 overflow-hidden">
+        <Story />
+      </div>
+    ),
+  ],
   args: {
     // App.tsxの初期値（秩父市周辺）と揃える。
     startLat: 35.975841,
@@ -131,6 +138,28 @@ export const CssCheck: Story = {
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: '航路を登録して周辺データを照会' });
     await expect(getComputedStyle(button).backgroundColor).toBe('rgb(15, 111, 198)');
+  },
+};
+
+// 照会ボタンはスクロール領域の外（固定フッター）に置き、画面解像度や
+// レイヤ一覧の長さに関わらず、都度パネル最下部から到達できる
+// （ユーザー指示2026-09-07）。レイヤをすべて展開して内容を長くしても、
+// フッターの位置（パネル下端との差）が変わらないことを直接検証する。
+export const QueryButtonFooterReachable: Story = {
+  play: async ({ canvas, canvasElement, userEvent }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'レイヤ' }));
+    await userEvent.click(canvas.getByRole('button', { name: '航路への影響' }));
+    await userEvent.click(canvas.getByRole('button', { name: '航路活用の可能性' }));
+
+    const queryButton = canvas.getByRole('button', { name: '航路を登録して周辺データを照会' });
+    const footer = queryButton.closest('div');
+    if (!footer) throw new Error('footer container not found');
+    const panelRoot = canvasElement.firstElementChild as HTMLElement | null;
+    if (!panelRoot) throw new Error('panel root not found');
+
+    const rootRect = panelRoot.getBoundingClientRect();
+    const footerRect = footer.getBoundingClientRect();
+    await expect(rootRect.bottom - footerRect.bottom).toBeLessThan(2);
   },
 };
 

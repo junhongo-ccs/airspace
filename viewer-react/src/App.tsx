@@ -3,7 +3,7 @@ import './index.css';
 import CollapsibleSidebar from './components/CollapsibleSidebar';
 import SettingsPanel from './components/SettingsPanel';
 import MapContainer, { type MapBounds } from './components/MapContainer';
-import ResultsPanel from './components/ResultsPanel';
+import ResultsOverlay, { type LoadingStage } from './components/ResultsOverlay';
 import {
   registerRoute,
   getGroundFeatures,
@@ -101,6 +101,24 @@ function App() {
   const [showLanduse, setShowLanduse] = useState(false);
   const [queryResult, setQueryResult] = useState<QueryResult>({ status: 'idle' });
   const [isLoading, setIsLoading] = useState(false);
+  // 左ペイン結果オーバーレイ改善計画§5-2: showResults: boolean だけで
+  // 「待機」「結果」「入力」を曖昧にしない。入力ビューに戻る操作（再入力する）は
+  // このビュー状態だけを変え、queryResult・地図の確定表示は保持する（§3-5）。
+  const [view, setView] = useState<'input' | 'loading' | 'result'>('input');
+  // 待機オーバーレイの段階表示用。実際に到達した段階だけを進める（§3-3、
+  // 完了していない段階を完了済みに見せない）。
+  const [loadingStage, setLoadingStage] = useState<LoadingStage | null>(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  // §3-5: 地図に渡す航路は queryResult から独立させ、航路登録が実際に成功した
+  // 時点でだけ更新する「最後に確定した航路」を持つ。queryResult.status を直接
+  // 参照する実装だと、再照会のたびに status が一時的に 'loading' になり、
+  // 直前の確定航路が待機中だけ地図から消えてしまう（レビュー指摘2026-09-07）。
+  const [confirmedRoute, setConfirmedRoute] = useState<{
+    startLat: number;
+    startLon: number;
+    endLat: number;
+    endLon: number;
+  } | null>(null);
   // 座標入力・航路登録に依存しない参照レイヤ。ルートを引いてから交差を確認する
   // のではなく、危険区域を先に見せてルート設計時に避けられるようにするため、
   // 起動時に一度だけ取得して常に地図へ表示する。
@@ -138,6 +156,17 @@ function App() {
   const refreshConnection = useCallback(async () => {
     setConnection(await getConnectionStatus());
   }, []);
+
+  // 待機オーバーレイの経過時間表示（§3-3「実装可能な範囲での経過時間」）。
+  useEffect(() => {
+    if (view !== 'loading') return;
+    setElapsedSeconds(0);
+    const startedAt = Date.now();
+    const timer = window.setInterval(() => {
+      setElapsedSeconds(Math.floor((Date.now() - startedAt) / 1000));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [view]);
 
   // 起動時に接続状態を確認する。これが無いと、登録と照会の両方が成功するまで
   // 画面は Disconnected のままになり、接続の問題か入力の問題か切り分けられない。
@@ -325,6 +354,8 @@ function App() {
 
   const handleQuery = async () => {
     setIsLoading(true);
+    setView('loading');
+    setLoadingStage('register');
     setQueryResult({ status: 'loading' });
 
     try {
@@ -336,6 +367,9 @@ function App() {
           return;
         }
         routeId = route.id;
+        // 航路登録が成功した時点の値で確定航路を更新する。地図はここでだけ
+        // 更新され、以降このクエリが待機・失敗しても直前の確定航路のままになる。
+        setConfirmedRoute({ startLat, startLon, endLat, endLon });
       } catch (error) {
         setQueryResult({
           status: 'error',
@@ -346,12 +380,14 @@ function App() {
 
       // 航路はすでに登録済み。ここで失敗しても登録自体は取り消されないので、
       // 「登録は成功・照会は失敗」を partial として区別して表示する。
+      setLoadingStage('features');
       try {
         const { features, nearbySummary, routeJudgment, meta, landslideFloodDisclaimer } =
           await getGroundFeatures(startLat, startLon, endLat, endLon, aglM);
 
         // 飛行禁止区域は別のLaravelエンドポイント（general_purpose）経由のため、
         // 地物照会とは独立に成否を扱う。ここが失敗しても地物照会の結果は握りつぶさない。
+        setLoadingStage('prohibited');
         let prohibitedAreas: ProhibitedArea[] = [];
         let prohibitedError: string | undefined;
         try {
@@ -360,6 +396,9 @@ function App() {
           prohibitedError = error instanceof Error ? error.message : '不明なエラー';
         }
 
+        // 「結果を整理」段階は置かない：この直後に setQueryResult で結果へ
+        // 遷移するため、React のバッチ更新により待機画面へ描画される機会が
+        // 無く実際には表示されない（レビュー指摘2026-09-07）。
         setQueryResult({
           status: prohibitedError ? 'partial' : 'success',
           routeId,
@@ -386,22 +425,35 @@ function App() {
       }
     } finally {
       setIsLoading(false);
+      setLoadingStage(null);
+      // 成功・一部成功・失敗のいずれでも結果ビューへ切り替える（§5-2）。
+      setView('result');
       void refreshConnection();
     }
   };
 
-  // 航路が登録できていれば（partial でも）地図には描画する。
-  const routeRegistered =
-    queryResult.status === 'success' || queryResult.status === 'partial';
+  // 「再入力する」：ビューだけを input に戻す。queryResult・地図の確定航路は
+  // 変更しない（§3-5：idle化すると直前の確定航路まで消える可能性があるため）。
+  const handleReenter = useCallback(() => {
+    setView('input');
+  }, []);
 
-  // layerVisibility・groundFeaturesByLayer（2026-08-17）と同じ理由で、この参照を
-  // 安定させる。ここが毎回新規オブジェクトだと、登録操作と無関係な再レンダリング
-  // （レイヤーOFF/ON等）のたびにMapContainer側の航路描画effect・地図中心移動effectが
-  // 無駄に再発火してしまう。
-  const routeData = useMemo(
-    () => (routeRegistered ? { startLat, startLon, endLat, endLon } : null),
-    [routeRegistered, startLat, startLon, endLat, endLon]
-  );
+  // 待機オーバーレイの「対象レイヤ」表示用（§3-3）。座標入力・登録操作とは
+  // 無関係なので、ここで毎レンダー計算しても他の副作用には影響しない。
+  const activeLayerLabels = [
+    showBuildings && '建物',
+    showRoad && '道路',
+    showLandslide && '土砂災害警戒区域',
+    showFlood && '洪水浸水想定区域',
+    showLanduse && '土地利用',
+    showProhibitedAreas && '人口集中地区（飛行禁止）',
+  ].filter((label): label is string => Boolean(label));
+
+  // 地図には「最後に確定した航路」（confirmedRoute）を渡す。queryResult.status
+  // からではなく状態そのものが安定した参照なので、routeRegistered・useMemoに
+  // よる再計算は不要（layerVisibility等と同じ「無駄な再発火を防ぐ」目的も
+  // confirmedRouteの更新頻度が低いことで自然に満たされる）。
+  const routeData = confirmedRoute;
   const initialMapLayersReady =
     mapBounds !== null &&
     knownProhibitedAreasLoaded &&
@@ -409,40 +461,69 @@ function App() {
     initialGroundFeaturesLoaded;
 
   return (
-    <div className="flex flex-col h-screen bg-bg-app">
+    // overflow-hidden: 内部の何かがわずかにはみ出しても（境界線・パディングの
+    // 端数px等）ページ全体のスクロールとして漏れ出さないようにする防御的な
+    // 指定。h-screen ちょうどの高さに配置している「再入力する」フッター
+    // （ResultsOverlay）が、ページ全体のスクロール分だけ最下部からずれて
+    // 見える事態を確実に防ぐ（ユーザー報告2026-09-07を受けて追加。実測では
+    // 元々ページのはみ出しは無かったが、再発防止として維持する）。
+    <div className="flex flex-col h-screen overflow-hidden bg-bg-app">
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left settings panel: GISアプリ風に幅だけを開閉し、地図領域は常に残す。 */}
+        {/* Left settings panel: GISアプリ風に幅だけを開閉し、地図領域は常に残す。
+            左ペイン結果オーバーレイ改善計画§5-3: relative h-full のラッパー内に、
+            入力ビューと結果オーバーレイを兄弟要素として重ねる。CollapsibleSidebar
+            自体は既存の relative aside / overflow-hidden をそのまま使えるため
+            変更しない。 */}
         <CollapsibleSidebar>
-          <SettingsPanel
-          connection={connection}
-          startLat={startLat}
-          setStartLat={setStartLat}
-          startLon={startLon}
-          setStartLon={setStartLon}
-          endLat={endLat}
-          setEndLat={setEndLat}
-          endLon={endLon}
-          setEndLon={setEndLon}
-          aglM={aglM}
-          setAglM={setAglM}
-          showRoute={showRoute}
-          setShowRoute={setShowRoute}
-          showBuildings={showBuildings}
-          setShowBuildings={setShowBuildings}
-          showProhibitedAreas={showProhibitedAreas}
-          setShowProhibitedAreas={setShowProhibitedAreas}
-          showRoad={showRoad}
-          setShowRoad={setShowRoad}
-          showLandslide={showLandslide}
-          setShowLandslide={setShowLandslide}
-          showFlood={showFlood}
-          setShowFlood={setShowFlood}
-          showLanduse={showLanduse}
-          setShowLanduse={setShowLanduse}
-          onQuery={handleQuery}
-            isLoading={isLoading}
-          />
+          <div className="relative h-full">
+            {/* view!=='input' の間は、入力フォームをポインタ操作・Tab移動・
+                支援技術のいずれからも到達不可能にする（§5-2）。inert は視覚的な
+                非表示だけでなく、実際にフォーカス・ヒットテストの対象から外す。 */}
+            <div className="h-full" inert={view !== 'input'} aria-hidden={view !== 'input'}>
+              <SettingsPanel
+                connection={connection}
+                startLat={startLat}
+                setStartLat={setStartLat}
+                startLon={startLon}
+                setStartLon={setStartLon}
+                endLat={endLat}
+                setEndLat={setEndLat}
+                endLon={endLon}
+                setEndLon={setEndLon}
+                aglM={aglM}
+                setAglM={setAglM}
+                showRoute={showRoute}
+                setShowRoute={setShowRoute}
+                showBuildings={showBuildings}
+                setShowBuildings={setShowBuildings}
+                showProhibitedAreas={showProhibitedAreas}
+                setShowProhibitedAreas={setShowProhibitedAreas}
+                showRoad={showRoad}
+                setShowRoad={setShowRoad}
+                showLandslide={showLandslide}
+                setShowLandslide={setShowLandslide}
+                showFlood={showFlood}
+                setShowFlood={setShowFlood}
+                showLanduse={showLanduse}
+                setShowLanduse={setShowLanduse}
+                onQuery={handleQuery}
+                isLoading={isLoading}
+              />
+            </div>
+
+            {view !== 'input' && (
+              <ResultsOverlay
+                queryResult={queryResult}
+                showProhibitedAreas={showProhibitedAreas}
+                loadingStage={loadingStage}
+                elapsedSeconds={elapsedSeconds}
+                activeLayerLabels={activeLayerLabels}
+                onReenter={handleReenter}
+                onRetry={handleQuery}
+              />
+            )}
+          </div>
         </CollapsibleSidebar>
 
         {/* Map area */}
@@ -465,13 +546,6 @@ function App() {
             datasetMeta={datasetMeta}
             initialLayersReady={initialMapLayersReady}
           />
-
-          {/* Bottom results panel: 「航路を登録して周辺データを照会」を押すまでは
-              パネル自体を出さない（ユーザー指示 2026-08-18）。押下でqueryResult.status
-              がidleから変わるので、それを表示条件にする。 */}
-          {queryResult.status !== 'idle' && (
-            <ResultsPanel queryResult={queryResult} showProhibitedAreas={showProhibitedAreas} />
-          )}
         </div>
       </div>
     </div>

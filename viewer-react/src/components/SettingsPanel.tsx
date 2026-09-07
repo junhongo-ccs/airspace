@@ -115,7 +115,7 @@ export default function SettingsPanel({
   }, [startLat, startLon]);
 
   return (
-    <div className="h-full w-80 bg-bg-panel border-r border-brand-blue-light/20 flex flex-col overflow-y-auto">
+    <div className="h-full w-80 bg-bg-panel border-r border-brand-blue-light/20 flex flex-col overflow-hidden">
       {/* Connection status */}
       <div className="px-5 py-2.5 border-b border-bg-table-head">
         <div className="flex items-center gap-2">
@@ -131,8 +131,9 @@ export default function SettingsPanel({
         )}
       </div>
 
-      {/* Settings */}
-      <div className="flex-1 px-5 py-3 space-y-3">
+      {/* Settings: 照会ボタンだけを固定フッターにするため、このブロックだけが
+          縦スクロールする（結果オーバーレイのResultsOverlayと同じ構成）。 */}
+      <div className="flex-1 min-h-0 overflow-y-auto px-5 py-3 space-y-3">
         {/* Spatial ID display */}
         {spatialId && (
           <div>
@@ -235,20 +236,9 @@ export default function SettingsPanel({
           </div>
         </div>
 
-        {/* Query button: レイヤ切り替えUIより上に配置する。会社貸与ノートPC等の
-            低解像度画面ではレイヤ一覧が長くボタンがファーストビューから完全に
-            消えていた（ユーザー報告2026-08-18）ため、座標・高度入力の直後に移動した。 */}
-        <div className="mb-3">
-          <button
-            onClick={onQuery}
-            disabled={isLoading}
-            className="w-full px-4 py-2.5 bg-action-primary text-white text-sm font-semibold rounded transition-colors hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            {isLoading ? '実行中…' : '航路を登録して周辺データを照会'}
-          </button>
-        </div>
-
-        {/* Layer visibility */}
+        {/* Layer visibility: スクロール領域内でボタンより上の最後のグループに
+            する（ユーザー指示2026-09-07：照会ボタンをブラウザDOMの最下部の
+            固定フッターに置くため）。 */}
         <div>
           <LayerAccordionButton
             label="レイヤ"
@@ -379,6 +369,19 @@ export default function SettingsPanel({
             </div>
           )}
         </div>
+      </div>
+
+      {/* Query button: スクロール領域の外（固定フッター）に置き、レイヤ一覧の
+          長さや画面解像度に関わらず常に到達できるようにする（ResultsOverlayの
+          「再入力する」と同じ構成。ユーザー指示2026-09-07）。 */}
+      <div className="shrink-0 border-t border-bg-table-head px-5 py-3">
+        <button
+          onClick={onQuery}
+          disabled={isLoading}
+          className="w-full px-4 py-2.5 bg-action-primary text-white text-sm font-semibold rounded transition-colors hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          {isLoading ? '実行中…' : '航路を登録して周辺データを照会'}
+        </button>
       </div>
     </div>
   );
