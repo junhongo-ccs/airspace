@@ -1,11 +1,11 @@
 # Graph Report - airspace  (2026-09-07)
 
 ## Corpus Check
-- 101 files · ~93,322 words
+- 101 files · ~93,421 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1020 nodes · 1425 edges · 96 communities (64 shown, 32 thin omitted)
+- 1021 nodes · 1429 edges · 97 communities (65 shown, 32 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 42 edges (avg confidence: 0.71)
 - Token cost: 0 input · 0 output
 
@@ -81,7 +81,7 @@
 - @storybook/addon-vitest
 - api_client.py
 - @types/geojson
-- @storybook/addon-a11y
+- @chromatic-com/storybook
 - @types/react
 - @types/react-dom
 - vite
@@ -109,10 +109,10 @@
 3. `空域デジタルツインGIS Viewer デザインガイドライン` - 18 edges
 4. `compilerOptions` - 15 edges
 5. `空域デジタルツイン活用・ドローン航路GIS-PoC 仕様書` - 15 edges
-6. `QueryResult` - 13 edges
+6. `QueryResult` - 14 edges
 7. `fetch_entry_bytes()` - 13 edges
-8. `mesh3_codes_in_bbox()` - 12 edges
-9. `judge_route_features()` - 12 edges
+8. `judge_route_features()` - 12 edges
+9. `mesh3_codes_in_bbox()` - 12 edges
 10. `What You Must Do When Invoked` - 12 edges
 
 ## Surprising Connections (you probably didn't know these)
@@ -135,7 +135,7 @@
 - **Landuse Layer Color Token Design-to-Implementation Flow** — docs_design_map_landuse_token, docs_improvement_task_chichibu_plateau_building_layer_task_6_6a, docs_progress_log_20260820 [EXTRACTED 1.00]
 - **graphify save-result Work-Memory Loop** — claude_skills_graphify_references_query_save_result, graphify_out_memory_query_20260819_034046_why_does_digitaltwinapiclient_connect_extraction_e, graphify_out_memory_query_20260819_080515_accordion_query_judgment_results, graphify_out_memory_query_20260819_082319_when_the_application_is_loading_map_layers_show_a [INFERRED 0.85]
 
-## Communities (96 total, 32 thin omitted)
+## Communities (97 total, 32 thin omitted)
 
 ### Community 0 - "extract_ground_features.py"
 Cohesion: 0.05
@@ -218,12 +218,12 @@ Cohesion: 0.31
 Nodes (17): 2026-08-05, 2026-08-06, 2026-08-06（続き）, 2026-08-06（続き・その2）, 2026-08-06（続き・その3）, 2026-08-06（続き・その4）, 2026-08-07, 2026-08-17 (+9 more)
 
 ### Community 20 - "ResultsOverlay.stories.tsx"
-Cohesion: 0.07
-Nodes (30): GroundFeature, NearbyFeatureSummary, ProhibitedArea, QueryResult, JudgmentDetailBodyProps, datasetMeta, EmptyResult, ErrorState (+22 more)
+Cohesion: 0.08
+Nodes (29): GroundFeature, NearbyFeatureSummary, ProhibitedArea, QueryResult, datasetMeta, EmptyResult, ErrorState, features (+21 more)
 
 ### Community 21 - "devDependencies"
 Cohesion: 0.18
-Nodes (11): autoprefixer, @chromatic-com/storybook, @storybook/addon-docs, @types/node, devDependencies, autoprefixer, @chromatic-com/storybook, @storybook/addon-docs (+3 more)
+Nodes (11): autoprefixer, @storybook/addon-a11y, @storybook/addon-docs, @types/node, devDependencies, autoprefixer, @storybook/addon-a11y, @storybook/addon-docs (+3 more)
 
 ### Community 22 - "geometry.py"
 Cohesion: 0.25
@@ -246,8 +246,8 @@ Cohesion: 0.18
 Nodes (11): Step 0 - GitHub repos and multi-path merge (only if a URL or several paths), Step 1 - Ensure graphify is installed, Step 2.5 - Video and audio (only if video files detected), Step 2 - Detect files, Step 4.5 - Graph health check (read-only integrity gate), Step 4 - Build graph, cluster, analyze, generate outputs, Step 5 - Label communities, Step 6 - Generate Obsidian vault (opt-in) + HTML (+3 more)
 
 ### Community 27 - "resultsContent.tsx"
-Cohesion: 0.28
-Nodes (10): GroundFeatureGroup, buildingHeightSummary(), GROUP_LABELS, GROUP_ORDER, LAYER_LABELS, AccordionIcon(), JudgmentDetailBody(), QuerySummary() (+2 more)
+Cohesion: 0.26
+Nodes (11): GroundFeatureGroup, buildingHeightSummary(), GROUP_LABELS, GROUP_ORDER, LAYER_LABELS, AccordionIcon(), JudgmentDetailBody(), JudgmentDetailBodyProps (+3 more)
 
 ### Community 28 - "plugins"
 Cohesion: 0.22
@@ -364,7 +364,7 @@ Nodes (9): 空域デジタルツインGIS Viewer（PoC） design.md（v1.2）の
   docs/改善タスク_秩父市周辺PLATEAU建物レイヤー.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **438 isolated node(s):** `LOADING_STAGE_ORDER`, `LOADING_STAGE_LABELS`, `LOADING_STAGE_PRIMARY_TEXT`, `RESULT_STATUS_LABELS`, `ResultsOverlayProps` (+433 more)
+- **437 isolated node(s):** `$schema`, `typescript`, `oxc`, `react/rules-of-hooks`, `warn` (+432 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **32 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -376,12 +376,12 @@ _Questions this graph is uniquely positioned to answer:_
 - **What is the exact relationship between `Task 6-11: Route Impact Text + Real Line-Polygon Intersection` and `Progress Log Entry 2026-08-18 (CLAUDE.md, hooks, subagents, accordion aggregation)`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `Implementation Task List (実装タスクリスト.md)` connect `CLAUDE.md` to `SettingsPanel.tsx`?**
-  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+  _High betweenness centrality (0.066) - this node is a cross-community bridge._
 - **Why does `左ペイン結果オーバーレイ改善計画 (Left Pane Results Overlay Improvement Plan)` connect `SettingsPanel.tsx` to `CLAUDE.md`?**
-  _High betweenness centrality (0.054) - this node is a cross-community bridge._
+  _High betweenness centrality (0.064) - this node is a cross-community bridge._
 - **Why does `airspace/README.md` connect `空域デジタルツイン活用・ドローン航路GIS-PoC 実装タスクリスト` to `CLAUDE.md`?**
-  _High betweenness centrality (0.039) - this node is a cross-community bridge._
-- **What connects `LOADING_STAGE_ORDER`, `LOADING_STAGE_LABELS`, `LOADING_STAGE_PRIMARY_TEXT` to the rest of the system?**
-  _438 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.058) - this node is a cross-community bridge._
+- **What connects `$schema`, `typescript`, `oxc` to the rest of the system?**
+  _437 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `extract_ground_features.py` be split into smaller, more focused modules?**
   _Cohesion score 0.05297334244702666 - nodes in this community are weakly interconnected._

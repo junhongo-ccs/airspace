@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T10:09:13.638478+00:00",
+  "generated_at": "2026-09-07T11:13:24.715228+00:00",
   "nodes": {
     "viewer_react_src_app_app": {
       "code_fingerprint": "5bffa19df44f951df6336526afe82e16a2d50f4b3d9a0123f2def73739913fd2",
@@ -12,7 +12,7 @@
           "q": "When the application is loading map layers, show a loading indicator in the center of the map area."
         }
       ],
-      "score": 0.643590595,
+      "score": 0.642928136,
       "source_file": "viewer-react/src/App.tsx",
       "status": "tentative",
       "uses": 1
@@ -28,7 +28,7 @@
           "q": "When the application is loading map layers, show a loading indicator in the center of the map area."
         }
       ],
-      "score": 0.643590595,
+      "score": 0.642928136,
       "source_file": "viewer-react/src/components/MapContainer.tsx",
       "status": "tentative",
       "uses": 1
@@ -44,7 +44,7 @@
           "q": "照会結果・判定結果の アコーディオンについて graphifyで確認して"
         }
       ],
-      "score": 0.643404046,
+      "score": 0.64274178,
       "source_file": "viewer-react/src/components/resultsContent.tsx",
       "status": "tentative",
       "uses": 1
@@ -60,7 +60,7 @@
           "q": "照会結果・判定結果の アコーディオンについて graphifyで確認して"
         }
       ],
-      "score": 0.643404046,
+      "score": 0.64274178,
       "source_file": "viewer-react/src/components/ResultsPanel.tsx",
       "status": "tentative",
       "uses": 1
@@ -76,7 +76,7 @@
           "q": "照会結果・判定結果の アコーディオンについて graphifyで確認して"
         }
       ],
-      "score": 0.643404046,
+      "score": 0.64274178,
       "source_file": "viewer-react/src/components/ResultsPanel.tsx",
       "status": "tentative",
       "uses": 1
@@ -92,7 +92,7 @@
           "q": "Why does DigitalTwinApiClient connect Extraction error handling to API data models?"
         }
       ],
-      "score": 0.640679526,
+      "score": 0.640020064,
       "source_file": "viewer/src/api_client.py",
       "status": "tentative",
       "uses": 1
@@ -108,7 +108,7 @@
           "q": "Why does DigitalTwinApiClient connect Extraction error handling to API data models?"
         }
       ],
-      "score": 0.640679526,
+      "score": 0.640020064,
       "source_file": "viewer/src/api_client.py",
       "status": "tentative",
       "uses": 1
