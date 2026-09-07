@@ -156,12 +156,19 @@ export default function ResultsOverlay({
             <QuerySummary queryResult={queryResult} hideStatusLabel />
             <div className="pt-2 border-t border-bg-table-head">
               <h3 className="mb-2 text-xs font-semibold tracking-wide text-text-secondary">判定詳細</h3>
-              <JudgmentDetailBody
-                queryResult={queryResult}
-                showProhibitedAreas={showProhibitedAreas}
-                expandedGroups={expandedGroups}
-                onToggleGroup={toggleGroup}
-              />
+              {/* text-sm text-text-secondary: JudgmentDetailBody内の各行（li/span）は
+                  文字サイズを自前で指定していないため、ここで明示しないとブラウザ既定の
+                  text-base（16px）を継承し、周囲（text-xs/text-sm）より急に大きく見える。
+                  ResultsPanel.tsx（下部パネル版）の同じ内容ラッパーと同じ指定に揃える
+                  （ユーザー報告2026-09-07）。 */}
+              <div className="text-sm text-text-secondary">
+                <JudgmentDetailBody
+                  queryResult={queryResult}
+                  showProhibitedAreas={showProhibitedAreas}
+                  expandedGroups={expandedGroups}
+                  onToggleGroup={toggleGroup}
+                />
+              </div>
             </div>
           </div>
 
