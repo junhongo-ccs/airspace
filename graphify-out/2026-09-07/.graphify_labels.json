@@ -65,7 +65,7 @@
   "63": "@storybook/addon-vitest",
   "64": "api_client.py",
   "65": "@types/geojson",
-  "66": "@chromatic-com/storybook",
+  "66": "@storybook/addon-a11y",
   "67": "@types/react",
   "68": "@types/react-dom",
   "69": "vite",
@@ -94,6 +94,5 @@
   "92": "config.py",
   "93": "typescript",
   "94": "tailwindcss",
-  "95": "@vitest/browser-playwright",
-  "96": "tailwindcss"
+  "95": "@vitest/browser-playwright"
 }

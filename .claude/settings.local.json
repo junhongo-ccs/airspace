@@ -68,7 +68,15 @@
       "Bash(\"/c/Users/hongouj/AppData/Roaming/uv/tools/graphifyy/Scripts/graphify\" query *)",
       "Bash(wmic logicaldisk *)",
       "Bash(xargs -r du -sh)",
-      "Bash(npm cache *)"
+      "Bash(npm cache *)",
+      "Read(//c/Users/**)",
+      "Bash(where docker *)",
+      "Bash(docker system *)",
+      "Bash(npm list *)",
+      "Bash(codex --help)",
+      "Bash(codex cache *)",
+      "Bash(tasklist)",
+      "Bash(echo \"exit:$?\")"
     ]
   }
 }

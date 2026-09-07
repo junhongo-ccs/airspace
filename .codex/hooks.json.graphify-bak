@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/hongouj/.local/bin/graphify.EXE hook-check"
+            "command": "C:/Users/hongouj/AppData/Roaming/uv/tools/graphifyy/Scripts/graphify.exe hook-check"
           }
         ]
       }
