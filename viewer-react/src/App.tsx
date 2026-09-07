@@ -3,7 +3,7 @@ import './index.css';
 import CollapsibleSidebar from './components/CollapsibleSidebar';
 import SettingsPanel from './components/SettingsPanel';
 import MapContainer, { type MapBounds } from './components/MapContainer';
-import ResultsPanel from './components/ResultsPanel';
+import ResultsOverlay from './components/ResultsOverlay';
 import {
   registerRoute,
   getGroundFeatures,
@@ -101,6 +101,14 @@ function App() {
   const [showLanduse, setShowLanduse] = useState(false);
   const [queryResult, setQueryResult] = useState<QueryResult>({ status: 'idle' });
   const [isLoading, setIsLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [queryProgressStep, setQueryProgressStep] = useState(0);
+  const [confirmedRoute, setConfirmedRoute] = useState<{
+    startLat: number;
+    startLon: number;
+    endLat: number;
+    endLon: number;
+  } | null>(null);
   // 座標入力・航路登録に依存しない参照レイヤ。ルートを引いてから交差を確認する
   // のではなく、危険区域を先に見せてルート設計時に避けられるようにするため、
   // 起動時に一度だけ取得して常に地図へ表示する。
@@ -129,7 +137,7 @@ function App() {
   // 直近に実際取得した（バッファ込みの）bbox。次のmapBoundsがこの範囲に収まって
   // いれば、表示中のデータで足りるため取得自体をスキップする。
   const lastFetchedBuildingsBoundsRef = useRef<MapBounds | null>(null);
-  // レイヤーごとに直近取得済みのbboxを持つ。ON/OFFの組み合わせ全体を1本の値に
+  // レイヤーごとに直近取得済みのbboxを持つ。ON/OFFの組���合わせ全体を1本の値に
   // まとめていた旧実装は、無関係なレイヤーを1つ切り替えただけでも全レイヤー分を
   // 再取得してしまっていた（ユーザー指摘2026-08-19：「都度fetch」が土砂災害・
   // 洪水浸水の表示不安定の原因）。
@@ -285,10 +293,10 @@ function App() {
         )
       )
         .then((results) => {
-        // abort済みならキャッシュにも書かない（2026-08-19、reviewer(Codex)指摘：
+        // abort済みならキャッシュ���も書かない（2026-08-19、reviewer(Codex)指摘：
         // 成功前にキャッシュへ書き込んでいたため、abortされたレイヤーが「取得済みだが
         // 中身は空」のまま固定され、道路・建物を含め何も表示されなくなるバグがあった。
-        // 建物取得effectも同じ理由で同様に修正済み）。
+        // 建物取得effectも��じ理由で同様に修正済み）。
           if (controller.signal.aborted) return;
         // レイヤーごとにokを見る（Promise.allは一括だが、通信失敗した個別のレイヤーは
         // `getGroundFeaturesInBbox`が例外を投げず空配列で解決するため、abortと同様
@@ -324,6 +332,8 @@ function App() {
   }, [layerVisibilityKey, mapBounds]);
 
   const handleQuery = async () => {
+    setShowResults(true);
+    setQueryProgressStep(0);
     setIsLoading(true);
     setQueryResult({ status: 'loading' });
 
@@ -336,6 +346,7 @@ function App() {
           return;
         }
         routeId = route.id;
+        setQueryProgressStep(1);
       } catch (error) {
         setQueryResult({
           status: 'error',
@@ -349,6 +360,7 @@ function App() {
       try {
         const { features, nearbySummary, routeJudgment, meta, landslideFloodDisclaimer } =
           await getGroundFeatures(startLat, startLon, endLat, endLon, aglM);
+        setQueryProgressStep(2);
 
         // 飛行禁止区域は別のLaravelエンドポイント（general_purpose）経由のため、
         // 地物照会とは独立に成否を扱う。ここが失敗しても地物照会の結果は握りつぶさない。
@@ -359,7 +371,10 @@ function App() {
         } catch (error) {
           prohibitedError = error instanceof Error ? error.message : '不明なエラー';
         }
+        setQueryProgressStep(3);
 
+        setConfirmedRoute({ startLat, startLon, endLat, endLon });
+        setQueryProgressStep(4);
         setQueryResult({
           status: prohibitedError ? 'partial' : 'success',
           routeId,
@@ -375,6 +390,8 @@ function App() {
             : undefined,
         });
       } catch (error) {
+        setConfirmedRoute({ startLat, startLon, endLat, endLon });
+        setQueryProgressStep(4);
         setQueryResult({
           status: 'partial',
           routeId,
@@ -390,17 +407,20 @@ function App() {
     }
   };
 
-  // 航路が登録できていれば（partial でも）地図には描画する。
-  const routeRegistered =
-    queryResult.status === 'success' || queryResult.status === 'partial';
+  const handleEditAgain = () => {
+    setShowResults(false);
+  };
+
+  // 確定済みの航路だけを地図へ描画し、入力途中の値では上書きしない。
+  const routeRegistered = confirmedRoute !== null;
 
   // layerVisibility・groundFeaturesByLayer（2026-08-17）と同じ理由で、この参照を
   // 安定させる。ここが毎回新規オブジェクトだと、登録操作と無関係な再レンダリング
   // （レイヤーOFF/ON等）のたびにMapContainer側の航路描画effect・地図中心移動effectが
   // 無駄に再発火してしまう。
   const routeData = useMemo(
-    () => (routeRegistered ? { startLat, startLon, endLat, endLon } : null),
-    [routeRegistered, startLat, startLon, endLat, endLon]
+    () => (routeRegistered ? confirmedRoute : null),
+    [routeRegistered, confirmedRoute]
   );
   const initialMapLayersReady =
     mapBounds !== null &&
@@ -414,8 +434,14 @@ function App() {
       <div className="flex flex-1 overflow-hidden">
         {/* Left settings panel: GISアプリ風に幅だけを開閉し、地図領域は常に残す。 */}
         <CollapsibleSidebar>
-          <SettingsPanel
-          connection={connection}
+          <div className="relative h-full overflow-hidden">
+            <div
+              className="h-full"
+              aria-hidden={showResults}
+              inert={showResults}
+            >
+              <SettingsPanel
+                connection={connection}
           startLat={startLat}
           setStartLat={setStartLat}
           startLon={startLon}
@@ -442,7 +468,18 @@ function App() {
           setShowLanduse={setShowLanduse}
           onQuery={handleQuery}
             isLoading={isLoading}
-          />
+                />
+            </div>
+            {(showResults || queryResult.status !== 'idle') && (
+              <ResultsOverlay
+                queryResult={queryResult}
+                queryProgressStep={queryProgressStep}
+                showResults={showResults}
+                showProhibitedAreas={showProhibitedAreas}
+                onEditAgain={handleEditAgain}
+              />
+            )}
+          </div>
         </CollapsibleSidebar>
 
         {/* Map area */}
@@ -466,12 +503,6 @@ function App() {
             initialLayersReady={initialMapLayersReady}
           />
 
-          {/* Bottom results panel: 「航路を登録して周辺データを照会」を押すまでは
-              パネル自体を出さない（ユーザー指示 2026-08-18）。押下でqueryResult.status
-              がidleから変わるので、それを表示条件にする。 */}
-          {queryResult.status !== 'idle' && (
-            <ResultsPanel queryResult={queryResult} showProhibitedAreas={showProhibitedAreas} />
-          )}
         </div>
       </div>
     </div>
